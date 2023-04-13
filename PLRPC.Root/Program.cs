@@ -101,7 +101,7 @@ public static class Program
                 userStatus?.CurrentRoom?.RoomSlot),
                 out Entities.Slot? slotObject) && slotObject != null)
             {
-                Logging.Message.Info($"Using cached slot information for {slotObject.SlotName} as {slotObject.SlotId}");
+                Logging.Message.Info($"Using cached slot information for slot ID {slotObject.SlotId}");
                 return slotObject;
             }
 
@@ -115,7 +115,10 @@ public static class Program
                     IconHash = user?.IconHash,
                 };
 
-                Logging.Message.Info($"Caching a static slot for {slotObject.SlotName} as {slotObject.SlotId}");
+                Logging.Message.Warn($"{userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? -1} is not a real slot, diverting to static.");
+                Logging.Message.Warn($"This is likely because you are offline or playing a non-user level.");
+
+                Logging.Message.Info($"Caching a new static slot under ID {slotObject.SlotId}");
 
                 SlotCache.Add(slotObject.SlotId, slotObject);
                 return slotObject;
@@ -130,8 +133,26 @@ public static class Program
             if (slotObject == null)
                 return null;
 
+            Logging.Message.Info($"Caching a new dynamic slot under ID {slotObject.SlotId}");
             SlotCache.Add(userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? 0, slotObject);
             return slotObject;
+        }
+    }
+
+    public static class Helpers
+    {
+        public static string[] StatusBuilder
+        (
+            Entities.Slot? slot,
+            Entities.UserStatus? userStatus,
+            Types.StatusType? statusType = null,
+            Types.SlotType? slotType = null
+        )
+        {
+            string Status = Types.StateTypeExtensions.Status(statusType, userStatus);
+            string Slot = Types.StateTypeExtensions.Slot(slotType, slot);
+
+            return new string[] { Status, Slot };
         }
     }
 
@@ -143,22 +164,16 @@ public static class Program
         Types.StatusType? statusType = userStatus?.StatusType;
         Types.SlotType? slotType = userStatus?.CurrentRoom?.RoomSlot?.SlotType;
 
+        string[] Status = Helpers.StatusBuilder(slot, userStatus, statusType, slotType);
+
         DateTime lastLogin = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(
             user?.LastLogin ?? 0
         );
 
-        string[] StatusBuilder(Entities.Slot? slot, Entities.UserStatus? userStatus)
-        {
-            string Status = Types.StateTypeExtensions.Status(statusType, userStatus);
-            string Slot = Types.StateTypeExtensions.Slot(slotType, slot);
-
-            return new string[] { Status, Slot };
-        }
-
         var presence = new RichPresence
         {
-            Details = $"{StatusBuilder(slot, userStatus)[0]}",
-            State = $"{StatusBuilder(slot, userStatus)[1]}",
+            Details = $"{Status[0]}",
+            State = $"{Status[1]}",
             Assets = new Assets
             {
                 LargeImageKey = serverUrl + "/gameAssets/" + slot?.IconHash,

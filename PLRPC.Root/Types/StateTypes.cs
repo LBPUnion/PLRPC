@@ -23,7 +23,7 @@ public static class StateTypeExtensions
     {
         return statusType switch
         {
-            StatusType.Offline => "",
+            StatusType.Offline => "Playing LittleBigPlanet",
             StatusType.Online => $"{userStatus?.CurrentVersion.String()}",
             _ => "Unknown State"
         };
@@ -38,7 +38,7 @@ public static class StateTypeExtensions
             SlotType.Moon => "Creating on the Moon",
             SlotType.Developer => "Playing a Story Level",
             SlotType.DLC => "Playing a DLC Level",
-            _ => "Not Connected"
+            _ => "Exploring the Imagisphere (っ◔◡◔)っ ❤"
         };
     }
 
