@@ -14,22 +14,46 @@ public static class Program
     public static string username = null!;
     public static string serverUrl = null!;
 
-    public static async Task Main()
+    public static async Task Main(string[] args)
     {
-        Console.Write("What is the URI of the Lighthouse Instance? (e.g. https://lighthouse.lbpunion.com) ");
-        serverUrl = Console.ReadLine() ?? "";
+        if (args[0] == "--config")
+        {
+            if (!File.Exists(@"./config.json"))
+            {
+                Logging.Message.New(2, "No configuration file exists, creating a base configuration.");
+                Logging.Message.New(2, "Please populate the configuration file and restart the program.");
+                Entities.Configuration? BaseConfiguration = new()
+                {
+                    ServerUrl = "https://lighthouse.lbpunion.com",
+                    Username = ""
+                };
+                File.WriteAllText(@"./config.json", JsonSerializer.Serialize(BaseConfiguration, new JsonSerializerOptions { WriteIndented = true }));
+                return;
+            }
 
-        Console.Write("What is your registered username on this server? (e.g. littlebigmolly) ");
-        username = Console.ReadLine() ?? "";
+            string ConfigurationJson = File.ReadAllText(@"./config.json");
+            Entities.Configuration? Configuration = JsonSerializer.Deserialize<Entities.Configuration>(ConfigurationJson);
+
+            serverUrl = Configuration?.ServerUrl ?? "https://lighthouse.lbpunion.com";
+            username = Configuration?.Username ?? "";
+        }
+        else
+        {
+            Console.Write("What is the URI of the Lighthouse Instance? (e.g. https://lighthouse.lbpunion.com) ");
+            serverUrl = Console.ReadLine() ?? "";
+
+            Console.Write("What is your registered username on this server? (e.g. littlebigmolly) ");
+            username = Console.ReadLine() ?? "";
+        }
 
         if (serverUrl == "" || username == "")
         {
-            Logging.Message.Error("You must provide a valid server URL and/or username to continue.");
+            Logging.Message.New(3, "You must provide a valid server URL and/or username to continue.");
             return;
         }
         else if (!serverUrl.StartsWith("http://") && !serverUrl.StartsWith("https://"))
         {
-            Logging.Message.Error("The server URL must start with http:// or https://.");
+            Logging.Message.New(3, "The server URL must start with http:// or https://.");
             return;
         }
 
@@ -41,12 +65,12 @@ public static class Program
 
         DiscordClient.OnReady += (_, e) =>
         {
-            Logging.Message.Info($"Connected to Discord Account {e.User.Username}#{e.User.Discriminator}.");
+            Logging.Message.New(0, $"Connected to Discord Account {e.User.Username}#{e.User.Discriminator}.");
         };
 
         DiscordClient.OnPresenceUpdate += (_, e) =>
         {
-            Logging.Message.Info($"{e.Presence}: Presence updated.");
+            Logging.Message.New(0, $"{e.Presence}: Presence updated.");
         };
 
         while (true)
@@ -65,7 +89,7 @@ public static class Program
                 return userObject;
             }
 
-            Logging.Message.Info($"Fetching user {username} from the server...");
+            Logging.Message.New(0, $"Fetching user {username} from the server...");
 
             string userJson = await APIHttpClient.GetStringAsync("username/" + username);
 
@@ -82,7 +106,7 @@ public static class Program
         {
             Entities.UserStatus? userStatusObject = null;
 
-            Logging.Message.Info($"Fetching status information for {username} from the server...");
+            Logging.Message.New(0, $"Fetching status information for {username} from the server...");
 
             string userStatusJson = await APIHttpClient.GetStringAsync("user/" + user?.UserId + "/status");
 
@@ -101,7 +125,7 @@ public static class Program
                 userStatus?.CurrentRoom?.RoomSlot),
                 out Entities.Slot? slotObject) && slotObject != null)
             {
-                Logging.Message.Info($"Using cached slot information for slot ID {slotObject.SlotId}");
+                Logging.Message.New(0, $"Using cached slot information for slot ID {slotObject.SlotId}");
                 return slotObject;
             }
 
@@ -115,16 +139,16 @@ public static class Program
                     IconHash = user?.IconHash,
                 };
 
-                Logging.Message.Warn($"{userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? -1} is not a real slot, diverting to static.");
-                Logging.Message.Warn($"This is likely because you are offline or playing a non-user level.");
+                Logging.Message.New(1, $"{userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? -1} is not a real slot, diverting to static.");
+                Logging.Message.New(1, $"This is likely because you are offline or playing a non-user level.");
 
-                Logging.Message.Info($"Caching a new static slot under ID {slotObject.SlotId}");
+                Logging.Message.New(0, $"Caching a new static slot under ID {slotObject.SlotId}");
 
                 SlotCache.Add(slotObject.SlotId, slotObject);
                 return slotObject;
             }
 
-            Logging.Message.Info($"Fetching slot information for {userStatus?.CurrentRoom?.RoomSlot?.SlotId} from the server...");
+            Logging.Message.New(0, $"Fetching slot information for {userStatus?.CurrentRoom?.RoomSlot?.SlotId} from the server...");
 
             string slotJson = await APIHttpClient.GetStringAsync("slot/" + userStatus?.CurrentRoom?.RoomSlot?.SlotId);
 
@@ -133,7 +157,7 @@ public static class Program
             if (slotObject == null)
                 return null;
 
-            Logging.Message.Info($"Caching a new dynamic slot under ID {slotObject.SlotId}");
+            Logging.Message.New(0, $"Caching a new dynamic slot under ID {slotObject.SlotId}");
             SlotCache.Add(userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? 0, slotObject);
             return slotObject;
         }
@@ -191,6 +215,6 @@ public static class Program
         };
 
         DiscordClient.SetPresence(presence);
-        Logging.Message.Info($"{presence}: Sending presence update.");
+        Logging.Message.New(0, $"{presence}: Sending presence update.");
     }
 }
