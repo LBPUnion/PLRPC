@@ -1,11 +1,10 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Build
+name: Build Artifacts
 
 on:
   push:
-    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
@@ -23,9 +22,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish for Windows x64
-      run: dotnet publish -c Release -r win-x64 --self-contained
+      run: dotnet publish -c Release -r win-x64
     - name: Publish for Linux x64
-      run: dotnet publish -c Release -r linux-x64 --self-contained
+      run: dotnet publish -c Release -r linux-x64
     - name: Get GitHub Commit hash
       id: hash
       run: echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
@@ -36,7 +35,7 @@ jobs:
           name: PLRPC Windows x64 [${{ steps.hash.outputs.hash }}]
           path: "/home/runner/work/PLRPC/PLRPC/bin/Release/net7.0/win-x64/publish/"
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 3
       
     - name: Upload Linux x64 build
       uses: actions/upload-artifact@v3.1.1
@@ -44,4 +43,4 @@ jobs:
           name: PLRPC Linux x64 [${{ steps.hash.outputs.hash }}]
           path: "/home/runner/work/PLRPC/PLRPC/bin/Release/net7.0/linux-x64/publish/"
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 3
