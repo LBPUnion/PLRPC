@@ -8,7 +8,7 @@ public static class Program
 {
     public static readonly DiscordRpcClient DiscordClient = new("1060973475151495288");
     public static readonly Dictionary<string, Entities.User?> UserCache = new();
-    public static readonly Dictionary<int, Entities.Slot?> SlotCache = new();
+    public static readonly Dictionary<int, Types.SlotType?, Entities.Slot?> SlotCache = new();
     public static HttpClient APIHttpClient = null!;
     public static HttpClient AssetsHttpClient = null!;
     public static string username = null!;
@@ -96,15 +96,30 @@ public static class Program
 
         public static async Task<Entities.Slot?> GetSlot(Entities.User? user, Entities.UserStatus? userStatus)
         {
-            Entities.Slot? slotObject = null!;
+            if (userStatus?.CurrentRoom?.Slot?.SlotType != Types.SlotType.User)
+            {
+                if (SlotCache.TryGetValue(userStatus?.CurrentRoom?.Slot?.SlotType, out Entities.Slot? slotObject) && slotObject != null)
+                {
+                    return slotObject;
+                }
+            }
+            else
+            {
+                if (SlotCache.TryGetValue(userStatus?.CurrentRoom?.Slot?.SlotId, out Entities.Slot? slotObject) && slotObject != null)
+                {
+                    return slotObject;
+                } 
+            }
 
             // Handle non-existent slots, this could be done better
             if (userStatus?.CurrentRoom?.Slot?.SlotType != Types.SlotType.User)
-                return new Entities.Slot()
+                slotObject = new Entities.Slot()
                     {
                         SlotId = 0,
                         IconHash = user?.IconHash,
                     };
+                SlotCache.Add(0, userStatus?.CurrentRoom?.Slot?.SlotType, slotObject);
+                return slotObject;
 
             Logging.Message.Info($"Fetching slot information for {userStatus?.CurrentRoom?.Slot?.SlotId} from the server...");
 
@@ -115,6 +130,7 @@ public static class Program
             if (slotObject == null)
                 return null;
 
+            SlotCache.Add(userStatus?.CurrentRoom?.Slot?.SlotId, userStatus?.CurrentRoom?.Slot?.SlotType, slotObject);
             return slotObject;
         }
     }
