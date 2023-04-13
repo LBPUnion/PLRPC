@@ -21,6 +21,10 @@ jobs:
         dotnet-version: 7.0.x
     - name: Restore dependencies
       run: dotnet restore
+    - name: Run .NET Linter
+      uses: wearerequired/lint-action@v2
+      with:
+        dotnet_format: true
     - name: Publish for Windows x64
       run: dotnet publish -c Release -r win-x64 --no-self-contained
     - name: Publish for Linux x64
