@@ -97,8 +97,8 @@ public static class Program
         public static async Task<Entities.Slot?> GetSlot(Entities.User? user, Entities.UserStatus? userStatus)
         {
             if (SlotCache.TryGetValue(Types.StateTypeExtensions.Id(
-                userStatus?.CurrentRoom?.Slot?.SlotType,
-                userStatus?.CurrentRoom?.Slot),
+                userStatus?.CurrentRoom?.RoomSlot?.SlotType,
+                userStatus?.CurrentRoom?.RoomSlot),
                 out Entities.Slot? slotObject) && slotObject != null)
             {
                 Logging.Message.Info($"Using cached slot information for {slotObject.SlotName} as {slotObject.SlotId}");
@@ -106,12 +106,12 @@ public static class Program
             }
 
             // Handle non-existent slots, this could be done better
-            if (userStatus?.CurrentRoom?.Slot?.SlotType != Types.SlotType.User)
+            if (userStatus?.CurrentRoom?.RoomSlot?.SlotType != Types.SlotType.User)
             {
                 slotObject = new Entities.Slot()
                 {
-                    SlotName = Types.StateTypeExtensions.Slot(userStatus?.CurrentRoom?.Slot?.SlotType, slotObject),
-                    SlotId = Types.StateTypeExtensions.Id(userStatus?.CurrentRoom?.Slot?.SlotType, userStatus?.CurrentRoom?.Slot),
+                    SlotName = Types.StateTypeExtensions.Slot(userStatus?.CurrentRoom?.RoomSlot?.SlotType, slotObject),
+                    SlotId = Types.StateTypeExtensions.Id(userStatus?.CurrentRoom?.RoomSlot?.SlotType, userStatus?.CurrentRoom?.RoomSlot),
                     IconHash = user?.IconHash,
                 };
 
@@ -121,16 +121,16 @@ public static class Program
                 return slotObject;
             }
 
-            Logging.Message.Info($"Fetching slot information for {userStatus?.CurrentRoom?.Slot?.SlotId} from the server...");
+            Logging.Message.Info($"Fetching slot information for {userStatus?.CurrentRoom?.RoomSlot?.SlotId} from the server...");
 
-            string slotJson = await APIHttpClient.GetStringAsync("slot/" + userStatus?.CurrentRoom?.Slot?.SlotId);
+            string slotJson = await APIHttpClient.GetStringAsync("slot/" + userStatus?.CurrentRoom?.RoomSlot?.SlotId);
 
             slotObject = (Entities.Slot?)
                 JsonSerializer.Deserialize(slotJson, typeof(Entities.Slot));
             if (slotObject == null)
                 return null;
 
-            SlotCache.Add(userStatus?.CurrentRoom?.Slot?.SlotId ?? 0, slotObject);
+            SlotCache.Add(userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? 0, slotObject);
             return slotObject;
         }
     }
@@ -141,7 +141,7 @@ public static class Program
         Entities.UserStatus? userStatus = Tasks.GetStatus(user).Result;
         Entities.Slot? slot = Tasks.GetSlot(user, userStatus).Result;
         Types.StatusType? statusType = userStatus?.StatusType;
-        Types.SlotType? slotType = userStatus?.CurrentRoom?.Slot?.SlotType;
+        Types.SlotType? slotType = userStatus?.CurrentRoom?.RoomSlot?.SlotType;
 
         DateTime lastLogin = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(
             user?.LastLogin ?? 0
