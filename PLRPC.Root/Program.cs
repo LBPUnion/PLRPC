@@ -8,6 +8,7 @@ public static class Program
 {
     public static readonly DiscordRpcClient DiscordClient = new("1060973475151495288");
     public static readonly Dictionary<string, Entities.User?> UserCache = new();
+    public static readonly Dictionary<int, Entities.Slot?> SlotCache = new();
     public static HttpClient APIHttpClient = null!;
     public static HttpClient AssetsHttpClient = null!;
     public static string username = null!;
@@ -15,9 +16,7 @@ public static class Program
 
     public static async Task Main()
     {
-        Console.Write(
-            "What is the URI of the Lighthouse Instance? (e.g. https://lighthouse.lbpunion.com) "
-        );
+        Console.Write("What is the URI of the Lighthouse Instance? (e.g. https://lighthouse.lbpunion.com) ");
         serverUrl = Console.ReadLine() ?? "";
 
         Console.Write("What is your registered username on this server? (e.g. littlebigmolly) ");
@@ -25,9 +24,7 @@ public static class Program
 
         if (serverUrl == "" || username == "")
         {
-            Logging.Message.Error(
-                "You must provide a valid server URL and/or username to continue."
-            );
+            Logging.Message.Error("You must provide a valid server URL and/or username to continue.");
             return;
         }
         else if (!serverUrl.StartsWith("http://") && !serverUrl.StartsWith("https://"))
@@ -44,14 +41,12 @@ public static class Program
 
         DiscordClient.OnReady += (_, e) =>
         {
-            Logging.Message.Info(
-                $"Connected to Discord Account {e.User.Username}#{e.User.Discriminator}."
-            );
+            Logging.Message.Info($"Connected to Discord Account {e.User.Username}#{e.User.Discriminator}.");
         };
 
         DiscordClient.OnPresenceUpdate += (_, e) =>
         {
-            Logging.Message.Info($"Received a new {e.Presence} update.");
+            Logging.Message.Info($"{e.Presence} was updated.");
         };
 
         while (true)
@@ -73,6 +68,7 @@ public static class Program
             Logging.Message.Info($"Fetching user {username} from the server...");
 
             string userJson = await APIHttpClient.GetStringAsync("username/" + username);
+
             userObject = (Entities.User?)
                 JsonSerializer.Deserialize(userJson, typeof(Entities.User));
             if (userObject == null)
@@ -89,6 +85,7 @@ public static class Program
             Logging.Message.Info($"Fetching status information for {username} from the server...");
 
             string userStatusJson = await APIHttpClient.GetStringAsync("user/" + user?.UserId + "/status");
+
             userStatusObject = (Entities.UserStatus?)
                 JsonSerializer.Deserialize(userStatusJson, typeof(Entities.UserStatus));
             if (userStatusObject == null)
@@ -101,7 +98,7 @@ public static class Program
         {
             Entities.Slot? slotObject = null!;
 
-            // Handle non-existent slots
+            // Handle non-existent slots, this could be done better
             if (userStatus?.CurrentRoom?.Slot?.SlotType != Types.SlotType.User)
                 return new Entities.Slot()
                     {
@@ -112,6 +109,7 @@ public static class Program
             Logging.Message.Info($"Fetching slot information for {userStatus?.CurrentRoom?.Slot?.SlotId} from the server...");
 
             string slotJson = await APIHttpClient.GetStringAsync("slot/" + userStatus?.CurrentRoom?.Slot?.SlotId);
+
             slotObject = (Entities.Slot?)
                 JsonSerializer.Deserialize(slotJson, typeof(Entities.Slot));
             if (slotObject == null)
@@ -162,6 +160,6 @@ public static class Program
         };
 
         DiscordClient.SetPresence(presence);
-        Logging.Message.Info($"Updated presence - {presence}.");
+        Logging.Message.Info($"{presence} - Sending presence update.");
     }
 }
