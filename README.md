@@ -8,8 +8,8 @@ PLRPC (short for ProjectLighthouse Rich Presence Client) is a continuation of th
 - [x] Interact with a Discord Client to display retrieved information
 - [x] Configuration file support
 - [x] Make @Slendy cry
-- [] Interactive buttons for user/slot
-- [] Stability (no fires)
+- [ ] Interactive buttons for user/slot
+- [ ] Stability (no fires)
 
 ## Installation Instructions
 
