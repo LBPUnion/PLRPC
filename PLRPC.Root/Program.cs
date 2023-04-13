@@ -34,7 +34,7 @@ public static class Program
             string ConfigurationJson = File.ReadAllText(@"./config.json");
             Entities.Configuration? Configuration = JsonSerializer.Deserialize<Entities.Configuration>(ConfigurationJson);
 
-            serverUrl = Configuration?.ServerUrl ?? "https://lighthouse.lbpunion.com";
+            serverUrl = Configuration?.ServerUrl ?? "";
             username = Configuration?.Username ?? "";
         }
         else
