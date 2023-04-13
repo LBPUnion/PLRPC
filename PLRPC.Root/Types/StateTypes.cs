@@ -23,7 +23,7 @@ public static class StateTypeExtensions
     {
         return statusType switch
         {
-            StatusType.Offline => "Not Connected",
+            StatusType.Offline => $"",
             StatusType.Online => $"{userStatus?.CurrentVersion.String()}",
             _ => "Unknown State"
         };
@@ -38,7 +38,20 @@ public static class StateTypeExtensions
             SlotType.Moon => "Creating on the Moon",
             SlotType.Developer => "Playing a Story Level",
             SlotType.DLC => "Playing a DLC Level",
-            _ => ""
+            _ => "(っ◔◡◔)っ ❤"
+        };
+    }
+
+    public static int Id(this SlotType? slotType, Entities.RoomSlot? slot)
+    {
+        return slotType switch
+        {
+            SlotType.User => slot?.SlotId ?? 0,
+            SlotType.Pod => 1,
+            SlotType.Moon => 2,
+            SlotType.Developer => 3,
+            SlotType.DLC => 4,
+            _ => 5
         };
     }
 }
