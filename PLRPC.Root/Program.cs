@@ -209,7 +209,7 @@ public static class Program
             Party = new Party
             {
                 ID = $"room:{user?.UserId}:{userStatus?.CurrentRoom?.RoomId}",
-                Size = userStatus?.CurrentRoom?.PlayerCount ?? 1,
+                Size = userStatus?.CurrentRoom?.PlayerIds?.Count() ?? 0,
                 Max = 4,
             },
         };
