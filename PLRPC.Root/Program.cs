@@ -8,7 +8,7 @@ public static class Program
 {
     public static readonly DiscordRpcClient DiscordClient = new("1060973475151495288");
     public static readonly Dictionary<string, Entities.User?> UserCache = new();
-    public static readonly Dictionary<int, Types.SlotType?, Entities.Slot?> SlotCache = new();
+    public static readonly Dictionary<int, Entities.Slot?> SlotCache = new();
     public static HttpClient APIHttpClient = null!;
     public static HttpClient AssetsHttpClient = null!;
     public static string username = null!;
@@ -46,7 +46,7 @@ public static class Program
 
         DiscordClient.OnPresenceUpdate += (_, e) =>
         {
-            Logging.Message.Info($"{e.Presence} was updated.");
+            Logging.Message.Info($"{e.Presence}: Presence updated.");
         };
 
         while (true)
@@ -96,30 +96,30 @@ public static class Program
 
         public static async Task<Entities.Slot?> GetSlot(Entities.User? user, Entities.UserStatus? userStatus)
         {
-            if (userStatus?.CurrentRoom?.Slot?.SlotType != Types.SlotType.User)
+            if (SlotCache.TryGetValue(Types.StateTypeExtensions.Id(
+                userStatus?.CurrentRoom?.Slot?.SlotType,
+                userStatus?.CurrentRoom?.Slot),
+                out Entities.Slot? slotObject) && slotObject != null)
             {
-                if (SlotCache.TryGetValue(userStatus?.CurrentRoom?.Slot?.SlotType, out Entities.Slot? slotObject) && slotObject != null)
-                {
-                    return slotObject;
-                }
-            }
-            else
-            {
-                if (SlotCache.TryGetValue(userStatus?.CurrentRoom?.Slot?.SlotId, out Entities.Slot? slotObject) && slotObject != null)
-                {
-                    return slotObject;
-                } 
+                Logging.Message.Info($"Using cached slot information for {slotObject.SlotName} as {slotObject.SlotId}");
+                return slotObject;
             }
 
             // Handle non-existent slots, this could be done better
             if (userStatus?.CurrentRoom?.Slot?.SlotType != Types.SlotType.User)
+            {
                 slotObject = new Entities.Slot()
-                    {
-                        SlotId = 0,
-                        IconHash = user?.IconHash,
-                    };
-                SlotCache.Add(0, userStatus?.CurrentRoom?.Slot?.SlotType, slotObject);
+                {
+                    SlotName = Types.StateTypeExtensions.Slot(userStatus?.CurrentRoom?.Slot?.SlotType, slotObject),
+                    SlotId = Types.StateTypeExtensions.Id(userStatus?.CurrentRoom?.Slot?.SlotType, userStatus?.CurrentRoom?.Slot),
+                    IconHash = user?.IconHash,
+                };
+
+                Logging.Message.Info($"Caching a static slot for {slotObject.SlotName} as {slotObject.SlotId}");
+
+                SlotCache.Add(slotObject.SlotId, slotObject);
                 return slotObject;
+            }
 
             Logging.Message.Info($"Fetching slot information for {userStatus?.CurrentRoom?.Slot?.SlotId} from the server...");
 
@@ -130,7 +130,7 @@ public static class Program
             if (slotObject == null)
                 return null;
 
-            SlotCache.Add(userStatus?.CurrentRoom?.Slot?.SlotId, userStatus?.CurrentRoom?.Slot?.SlotType, slotObject);
+            SlotCache.Add(userStatus?.CurrentRoom?.Slot?.SlotId ?? 0, slotObject);
             return slotObject;
         }
     }
@@ -176,6 +176,6 @@ public static class Program
         };
 
         DiscordClient.SetPresence(presence);
-        Logging.Message.Info($"{presence} - Sending presence update.");
+        Logging.Message.Info($"{presence}: Sending presence update.");
     }
 }
