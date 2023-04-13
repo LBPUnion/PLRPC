@@ -10,13 +10,9 @@ jobs:
     name: Release Built Artifacts
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for Builds
-        uses: lewagon/wait-on-check-action@v1.3.1
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          check-name: 'Build Artifacts'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
+      - name: Wait 30s for Builds to Complete
+        run: sleep 30s
+        shell: bash
       - name: Download Artifacts
         id: download-artifact
         uses: dawidd6/action-download-artifact@v2
