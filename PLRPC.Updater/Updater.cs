@@ -16,10 +16,8 @@ public static class Updater
 
         if (!File.Exists(@"./manifest.json"))
         {
-            Logging.Message.New(2, "No manifest file exists, creating a base manifest.");
-            Logging.Message.New(2, "Please restart the program to check for updates.");
+            Logging.Message.New(2, "No update manifest file exists, creating a base manifest.");
             GenerateManifest();
-            return null;
         }
 
         string releaseManifest = await UpdaterHttpClient.GetStringAsync("https://api.github.com/repos/LBPUnion/PLRPC/releases/latest");

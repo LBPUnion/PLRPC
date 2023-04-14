@@ -25,6 +25,10 @@ public static class Program
             Logging.Message.New(1, $"{updateResult.TagName}: {updateResult.Url}");
             Logging.Message.New(1, $"***************************************");
         }
+        else
+        {
+            Logging.Message.New(1, $"There are no new updates available.");
+        }
 
         if (args.Length > 0)
         {
