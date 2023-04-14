@@ -16,26 +16,35 @@ public static class Program
 
     public static async Task Main(string[] args)
     {
-        if (args[0] == "--config")
+        if (args.Length > 0)
         {
-            if (!File.Exists(@"./config.json"))
+            if (args[0] == "--config")
             {
-                Logging.Message.New(2, "No configuration file exists, creating a base configuration.");
-                Logging.Message.New(2, "Please populate the configuration file and restart the program.");
-                Entities.Configuration? BaseConfiguration = new()
+                if (!File.Exists(@"./config.json"))
                 {
-                    ServerUrl = "https://lighthouse.lbpunion.com",
-                    Username = ""
-                };
-                File.WriteAllText(@"./config.json", JsonSerializer.Serialize(BaseConfiguration, new JsonSerializerOptions { WriteIndented = true }));
+                    Logging.Message.New(2, "No configuration file exists, creating a base configuration.");
+                    Logging.Message.New(2, "Please populate the configuration file and restart the program.");
+                    Entities.Configuration? BaseConfiguration = new()
+                    {
+                        ServerUrl = "https://lighthouse.lbpunion.com",
+                        Username = ""
+                    };
+                    File.WriteAllText(@"./config.json", JsonSerializer.Serialize(BaseConfiguration, new JsonSerializerOptions { WriteIndented = true }));
+                    return;
+                }
+
+                string ConfigurationJson = File.ReadAllText(@"./config.json");
+                Entities.Configuration? Configuration = JsonSerializer.Deserialize<Entities.Configuration>(ConfigurationJson);
+
+                serverUrl = Configuration?.ServerUrl ?? "";
+                username = Configuration?.Username ?? "";
+            }
+            else
+            {
+                Logging.Message.New(3, "You have passed an invalid flag. You may use one of the following:");
+                Logging.Message.New(3, "  --config (to use a configuration file)");
                 return;
             }
-
-            string ConfigurationJson = File.ReadAllText(@"./config.json");
-            Entities.Configuration? Configuration = JsonSerializer.Deserialize<Entities.Configuration>(ConfigurationJson);
-
-            serverUrl = Configuration?.ServerUrl ?? "";
-            username = Configuration?.Username ?? "";
         }
         else
         {
