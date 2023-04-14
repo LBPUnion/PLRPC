@@ -16,6 +16,20 @@ public static class Program
 
     public static async Task Main(string[] args)
     {
+
+        Updater.Release? updateResult = await Updater.Updater.CheckUpdate();
+        if (updateResult != null)
+        {
+            Logging.Message.New(1, $"***************************************");
+            Logging.Message.New(1, $"A new version of PLRPC is available!");
+            Logging.Message.New(1, $"{updateResult.TagName}: {updateResult.Url}");
+            Logging.Message.New(1, $"***************************************");
+        }
+        else
+        {
+            Logging.Message.New(1, $"There are no new updates available.");
+        }
+
         if (args.Length > 0)
         {
             if (args[0] == "--config")
