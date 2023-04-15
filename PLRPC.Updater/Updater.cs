@@ -48,7 +48,7 @@ public static class Updater
 
         string currentManifest = await UpdaterHttpClient.GetStringAsync("https://api.github.com/repos/LBPUnion/PLRPC/releases/latest");
 
-        Release? currentRelease = JsonSerializer.Deserialize<Release?>(currentManifest);
+        Release? currentRelease = JsonSerializer.Deserialize<Release>(currentManifest);
 
         if (currentRelease == null)
         {

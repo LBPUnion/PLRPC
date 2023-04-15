@@ -108,7 +108,7 @@ public static class Program
 
             string userJson = await APIHttpClient.GetStringAsync("username/" + username);
 
-            userObject = JsonSerializer.Deserialize<Entities.User?>(userJson);
+            userObject = JsonSerializer.Deserialize<Entities.User>(userJson);
 
             if (userObject == null)
             {
@@ -125,7 +125,7 @@ public static class Program
 
             string userStatusJson = await APIHttpClient.GetStringAsync("user/" + user?.UserId + "/status");
 
-            Entities.UserStatus? userStatusObject = JsonSerializer.Deserialize<Entities.UserStatus?>(userStatusJson);
+            Entities.UserStatus? userStatusObject = JsonSerializer.Deserialize<Entities.UserStatus>(userStatusJson);
 
             return userStatusObject ?? null;
         }
@@ -164,7 +164,7 @@ public static class Program
 
             string slotJson = await APIHttpClient.GetStringAsync("slot/" + userStatus?.CurrentRoom?.RoomSlot?.SlotId);
 
-            slotObject = JsonSerializer.Deserialize<Entities.Slot?>(slotJson);
+            slotObject = JsonSerializer.Deserialize<Entities.Slot>(slotJson);
 
             Logging.Message.New(0, $"Caching a new dynamic slot under ID {slotObject?.SlotId}");
             SlotCache.Add(userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? 0, slotObject);
