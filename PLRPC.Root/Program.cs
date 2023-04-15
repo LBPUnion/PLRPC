@@ -149,7 +149,7 @@ public static class Program
                 {
                     SlotName = Extensions.StateTypesExtensions.Slot(userStatus?.CurrentRoom?.RoomSlot?.SlotType, slotObject),
                     SlotId = Extensions.StateTypesExtensions.Id(userStatus?.CurrentRoom?.RoomSlot?.SlotType, userStatus?.CurrentRoom?.RoomSlot),
-                    IconHash = user?.IconHash,
+                    IconHash = user?.MehHash,
                 };
 
                 Logging.Message.New(1, $"{userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? -1} is not a real slot, diverting to static.");
