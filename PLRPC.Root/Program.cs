@@ -17,6 +17,7 @@ public static class Program
     public static async Task Main(string[] args)
     {
 
+        #if !DEBUG
         Updater.Release? updateResult = await Updater.Updater.CheckUpdate();
         if (updateResult != null)
         {
@@ -29,6 +30,7 @@ public static class Program
         {
             Logging.Message.New(1, $"There are no new updates available.");
         }
+        #endif
 
         if (args.Length > 0)
         {
@@ -129,7 +131,9 @@ public static class Program
             userObject = (Entities.User?)
                 JsonSerializer.Deserialize(userJson, typeof(Entities.User));
             if (userObject == null)
+            {
                 return null;
+            }
 
             UserCache.Add(username, userObject);
             return userObject;
@@ -146,7 +150,9 @@ public static class Program
             userStatusObject = (Entities.UserStatus?)
                 JsonSerializer.Deserialize(userStatusJson, typeof(Entities.UserStatus));
             if (userStatusObject == null)
+            {
                 return null;
+            }
 
             return userStatusObject;
         }
@@ -165,7 +171,7 @@ public static class Program
             // Handle non-existent slots, this could be done better
             if (userStatus?.CurrentRoom?.RoomSlot?.SlotType != Types.SlotType.User)
             {
-                slotObject = new Entities.Slot()
+                slotObject = new Entities.Slot
                 {
                     SlotName = Extensions.StateTypesExtensions.Slot(userStatus?.CurrentRoom?.RoomSlot?.SlotType, slotObject),
                     SlotId = Extensions.StateTypesExtensions.Id(userStatus?.CurrentRoom?.RoomSlot?.SlotType, userStatus?.CurrentRoom?.RoomSlot),
@@ -188,7 +194,9 @@ public static class Program
             slotObject = (Entities.Slot?)
                 JsonSerializer.Deserialize(slotJson, typeof(Entities.Slot));
             if (slotObject == null)
+            {
                 return null;
+            }
 
             Logging.Message.New(0, $"Caching a new dynamic slot under ID {slotObject.SlotId}");
             SlotCache.Add(userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? 0, slotObject);
@@ -202,14 +210,14 @@ public static class Program
         (
             Entities.Slot? slot,
             Entities.UserStatus? userStatus,
-            Types.StatusType? statusType = null,
-            Types.SlotType? slotType = null
+            Types.StatusType? statusType,
+            Types.SlotType? slotType
         )
         {
             string Status = Extensions.StateTypesExtensions.Status(statusType, userStatus);
             string Slot = Extensions.StateTypesExtensions.Slot(slotType, slot);
 
-            return new string[] { Status, Slot };
+            return new [] { Status, Slot };
         }
     }
 
