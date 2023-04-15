@@ -98,7 +98,21 @@ public static class Program
 
         while (true)
         {
-            UpdatePresence(username);
+            try
+            {
+                UpdatePresence(username);
+            }
+            catch (Exception exception)
+            {
+                DiscordClient.Dispose();
+                Logging.Message.New(3, $"*** PLRPC has experienced an error and will now exit. ***");
+                Logging.Message.New(3, $"This is most likely *not your fault*. Try restarting the client.");
+                Logging.Message.New(3, $"If this error persists, please create a new GitHub issue.");
+                Logging.Message.New(3, $"");
+                Logging.Message.New(3, $"{exception.Message}");
+                Thread.Sleep(10000);
+                Environment.Exit(1);
+            }
             await Task.Delay(30000);
         }
     }
