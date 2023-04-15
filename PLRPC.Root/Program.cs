@@ -143,7 +143,7 @@ public static class Program
 
         public static async Task<Entities.Slot?> GetSlot(Entities.User? user, Entities.UserStatus? userStatus)
         {
-            if (SlotCache.TryGetValue(Types.StateTypeExtensions.Id(
+            if (SlotCache.TryGetValue(Extensions.StateTypesExtensions.Id(
                 userStatus?.CurrentRoom?.RoomSlot?.SlotType,
                 userStatus?.CurrentRoom?.RoomSlot),
                 out Entities.Slot? slotObject) && slotObject != null)
@@ -157,8 +157,8 @@ public static class Program
             {
                 slotObject = new Entities.Slot()
                 {
-                    SlotName = Types.StateTypeExtensions.Slot(userStatus?.CurrentRoom?.RoomSlot?.SlotType, slotObject),
-                    SlotId = Types.StateTypeExtensions.Id(userStatus?.CurrentRoom?.RoomSlot?.SlotType, userStatus?.CurrentRoom?.RoomSlot),
+                    SlotName = Extensions.StateTypesExtensions.Slot(userStatus?.CurrentRoom?.RoomSlot?.SlotType, slotObject),
+                    SlotId = Extensions.StateTypesExtensions.Id(userStatus?.CurrentRoom?.RoomSlot?.SlotType, userStatus?.CurrentRoom?.RoomSlot),
                     IconHash = user?.IconHash,
                 };
 
@@ -196,8 +196,8 @@ public static class Program
             Types.SlotType? slotType = null
         )
         {
-            string Status = Types.StateTypeExtensions.Status(statusType, userStatus);
-            string Slot = Types.StateTypeExtensions.Slot(slotType, slot);
+            string Status = Extensions.StateTypesExtensions.Status(statusType, userStatus);
+            string Slot = Extensions.StateTypesExtensions.Slot(slotType, slot);
 
             return new string[] { Status, Slot };
         }
