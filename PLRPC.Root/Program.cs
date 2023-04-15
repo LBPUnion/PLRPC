@@ -10,13 +10,11 @@ public static class Program
     public static readonly Dictionary<string, Entities.User?> UserCache = new();
     public static readonly Dictionary<int, Entities.Slot?> SlotCache = new();
     public static HttpClient APIHttpClient = null!;
-    public static HttpClient AssetsHttpClient = null!;
     public static string username = null!;
     public static string serverUrl = null!;
 
     public static async Task Main(string[] args)
     {
-
         #if !DEBUG
         Updater.Release? updateResult = await Updater.Updater.CheckUpdate();
         if (updateResult != null)
@@ -36,7 +34,7 @@ public static class Program
         {
             if (args[0] == "--config")
             {
-                if (!File.Exists(@"./config.json"))
+                if (!File.Exists("./config.json"))
                 {
                     Logging.Message.New(2, "No configuration file exists, creating a base configuration.");
                     Logging.Message.New(2, "Please populate the configuration file and restart the program.");
@@ -45,11 +43,11 @@ public static class Program
                         ServerUrl = "https://lighthouse.lbpunion.com",
                         Username = ""
                     };
-                    File.WriteAllText(@"./config.json", JsonSerializer.Serialize(BaseConfiguration, new JsonSerializerOptions { WriteIndented = true }));
+                    File.WriteAllText("./config.json", JsonSerializer.Serialize(BaseConfiguration, new JsonSerializerOptions { WriteIndented = true }));
                     return;
                 }
 
-                string ConfigurationJson = File.ReadAllText(@"./config.json");
+                string ConfigurationJson = File.ReadAllText("./config.json");
                 Entities.Configuration? Configuration = JsonSerializer.Deserialize<Entities.Configuration>(ConfigurationJson);
 
                 serverUrl = Configuration?.ServerUrl ?? "";
@@ -71,32 +69,14 @@ public static class Program
             username = Console.ReadLine() ?? "";
         }
 
-        if (serverUrl == "" || username == "")
-        {
-            Logging.Message.New(3, "You must provide a valid server URL and/or username to continue.");
-            return;
-        }
-        else if (!serverUrl.StartsWith("http://") && !serverUrl.StartsWith("https://"))
-        {
-            Logging.Message.New(3, "The server URL must start with http:// or https://.");
-            return;
-        }
-
         APIHttpClient = new HttpClient { BaseAddress = new Uri(serverUrl + "/api/v1/"), };
-        AssetsHttpClient = new HttpClient { BaseAddress = new Uri(serverUrl + "/gameAssets/"), };
 
         DiscordClient.Initialize();
         DiscordClient.Logger = new ConsoleLogger { Level = LogLevel.Warning };
 
-        DiscordClient.OnReady += (_, e) =>
-        {
-            Logging.Message.New(0, $"Connected to Discord Account {e.User.Username}#{e.User.Discriminator}.");
-        };
+        DiscordClient.OnReady += (_, e) => Logging.Message.New(0, $"Connected to Discord Account {e.User.Username}#{e.User.Discriminator}.");
 
-        DiscordClient.OnPresenceUpdate += (_, e) =>
-        {
-            Logging.Message.New(0, $"{e.Presence}: Presence updated.");
-        };
+        DiscordClient.OnPresenceUpdate += (_, e) => Logging.Message.New(0, $"{e.Presence}: Presence updated.");
 
         while (true)
         {
@@ -141,20 +121,14 @@ public static class Program
 
         public static async Task<Entities.UserStatus?> GetStatus(Entities.User? user)
         {
-            Entities.UserStatus? userStatusObject = null;
-
             Logging.Message.New(0, $"Fetching status information for {username} from the server...");
 
             string userStatusJson = await APIHttpClient.GetStringAsync("user/" + user?.UserId + "/status");
 
-            userStatusObject = (Entities.UserStatus?)
+            Entities.UserStatus? userStatusObject = (Entities.UserStatus?)
                 JsonSerializer.Deserialize(userStatusJson, typeof(Entities.UserStatus));
-            if (userStatusObject == null)
-            {
-                return null;
-            }
 
-            return userStatusObject;
+            return userStatusObject ?? null;
         }
 
         public static async Task<Entities.Slot?> GetSlot(Entities.User? user, Entities.UserStatus? userStatus)
@@ -179,7 +153,7 @@ public static class Program
                 };
 
                 Logging.Message.New(1, $"{userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? -1} is not a real slot, diverting to static.");
-                Logging.Message.New(1, $"This is likely because you are offline or playing a non-user level.");
+                Logging.Message.New(1, "This is likely because you are offline or playing a non-user level.");
 
                 Logging.Message.New(0, $"Caching a new static slot under ID {slotObject.SlotId}");
 
@@ -193,14 +167,11 @@ public static class Program
 
             slotObject = (Entities.Slot?)
                 JsonSerializer.Deserialize(slotJson, typeof(Entities.Slot));
-            if (slotObject == null)
-            {
-                return null;
-            }
 
-            Logging.Message.New(0, $"Caching a new dynamic slot under ID {slotObject.SlotId}");
+            Logging.Message.New(0, $"Caching a new dynamic slot under ID {slotObject?.SlotId}");
             SlotCache.Add(userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? 0, slotObject);
-            return slotObject;
+
+            return slotObject ?? null;
         }
     }
 
@@ -250,7 +221,7 @@ public static class Program
             Party = new Party
             {
                 ID = $"room:{user?.UserId}:{userStatus?.CurrentRoom?.RoomId}",
-                Size = userStatus?.CurrentRoom?.PlayerIds?.Count() ?? 0,
+                Size = userStatus?.CurrentRoom?.PlayerIds?.Length ?? 0,
                 Max = 4,
             },
         };
