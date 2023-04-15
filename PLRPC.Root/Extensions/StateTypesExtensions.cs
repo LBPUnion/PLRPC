@@ -4,7 +4,7 @@ namespace LBPUnion.PLRPC.Extensions;
 
 public static class StateTypesExtensions
 {
-    public static string Status(this StatusType? statusType, Entities.UserStatus? userStatus)
+    public static string UserStatus(this StatusType? statusType, Entities.UserStatus? userStatus)
     {
         return statusType switch
         {
@@ -14,7 +14,7 @@ public static class StateTypesExtensions
         };
     }
 
-    public static string Slot(this SlotType? slotType, Entities.Slot? slot)
+    public static string SlotName(this SlotType? slotType, Entities.Slot? slot)
     {
         return slotType switch
         {
@@ -27,7 +27,7 @@ public static class StateTypesExtensions
         };
     }
 
-    public static int Id(this SlotType? slotType, Entities.RoomSlot? slot)
+    public static int StaticId(this SlotType? slotType, Entities.RoomSlot? slot)
     {
         return slotType switch
         {
