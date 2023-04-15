@@ -17,7 +17,7 @@ public static class Updater
         if (!File.Exists(@"./manifest.json"))
         {
             Logging.Message.New(2, "No update manifest file exists, creating a base manifest.");
-            GenerateManifest();
+            await GenerateManifest();
         }
 
         string releaseManifest = await UpdaterHttpClient.GetStringAsync("https://api.github.com/repos/LBPUnion/PLRPC/releases/latest");
@@ -29,17 +29,24 @@ public static class Updater
                 JsonSerializer.Deserialize(programManifest, typeof(Manifest));
 
         if (releaseObject == null)
+        {
             return null;
+        }
+
         if (programObject == null)
+        {
             return null;
+        }
 
         if (releaseObject.TagName == programObject.TagName)
+        {
             return null;
+        }
 
         return releaseObject;
     }
 
-    public static async void GenerateManifest()
+    public static async Task GenerateManifest()
     {
         UpdaterHttpClient = new HttpClient();
         UpdaterHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("PLRPC-Http-Updater/1.0");
@@ -50,7 +57,9 @@ public static class Updater
                 JsonSerializer.Deserialize(currentManifest, typeof(Release));
 
         if (currentRelease == null)
+        {
             return;
+        }
 
         Manifest? BaseManifest = new()
         {
