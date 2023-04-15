@@ -8,7 +8,7 @@ public static class StateTypesExtensions
     {
         return statusType switch
         {
-            StatusType.Offline => $"",
+            StatusType.Offline => "",
             StatusType.Online => $"{userStatus?.CurrentVersion.String()}",
             _ => "Unknown State"
         };
