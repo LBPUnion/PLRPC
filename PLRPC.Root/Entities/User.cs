@@ -16,8 +16,8 @@ public class User
     [JsonPropertyName("booHash")]
     public string? BooHash { get; set; }
 
-    [JsonPropertyName("iconHash")]
-    public string? IconHash { get; set; }
+    [JsonPropertyName("mehHash")]
+    public string? MehHash { get; set; }
 
     [JsonPropertyName("lastLogin")]
     public Int64 LastLogin { get; set; }
