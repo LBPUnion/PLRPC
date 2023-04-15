@@ -20,10 +20,9 @@ public static class Updater
         string releaseManifest = await UpdaterHttpClient.GetStringAsync("https://api.github.com/repos/LBPUnion/PLRPC/releases/latest");
         string programManifest = File.ReadAllText("./manifest.json");
 
-        Release? releaseObject = (Release?)
-            JsonSerializer.Deserialize(releaseManifest, typeof(Release));
-        Manifest? programObject = (Manifest?)
-            JsonSerializer.Deserialize(programManifest, typeof(Manifest));
+        Release? releaseObject = JsonSerializer.Deserialize<Release?>(releaseManifest);
+        Manifest? programObject = JsonSerializer.Deserialize<Manifest?>(programManifest);
+
         if (releaseObject == null)
         {
             return null;
@@ -49,8 +48,7 @@ public static class Updater
 
         string currentManifest = await UpdaterHttpClient.GetStringAsync("https://api.github.com/repos/LBPUnion/PLRPC/releases/latest");
 
-        Release? currentRelease = (Release?)
-                JsonSerializer.Deserialize(currentManifest, typeof(Release));
+        Release? currentRelease = JsonSerializer.Deserialize<Release?>(currentManifest);
 
         if (currentRelease == null)
         {

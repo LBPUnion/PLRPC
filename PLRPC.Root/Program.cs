@@ -43,11 +43,11 @@ public static class Program
                         ServerUrl = "https://lighthouse.lbpunion.com",
                         Username = ""
                     };
-                    File.WriteAllText("./config.json", JsonSerializer.Serialize(BaseConfiguration, new JsonSerializerOptions { WriteIndented = true }));
+                    await File.WriteAllTextAsync("./config.json", JsonSerializer.Serialize(BaseConfiguration, new JsonSerializerOptions { WriteIndented = true }));
                     return;
                 }
 
-                string ConfigurationJson = File.ReadAllText("./config.json");
+                string ConfigurationJson = await File.ReadAllTextAsync("./config.json");
                 Entities.Configuration? Configuration = JsonSerializer.Deserialize<Entities.Configuration>(ConfigurationJson);
 
                 serverUrl = Configuration?.ServerUrl ?? "";
@@ -108,8 +108,8 @@ public static class Program
 
             string userJson = await APIHttpClient.GetStringAsync("username/" + username);
 
-            userObject = (Entities.User?)
-                JsonSerializer.Deserialize(userJson, typeof(Entities.User));
+            userObject = JsonSerializer.Deserialize<Entities.User?>(userJson);
+
             if (userObject == null)
             {
                 return null;
@@ -125,8 +125,7 @@ public static class Program
 
             string userStatusJson = await APIHttpClient.GetStringAsync("user/" + user?.UserId + "/status");
 
-            Entities.UserStatus? userStatusObject = (Entities.UserStatus?)
-                JsonSerializer.Deserialize(userStatusJson, typeof(Entities.UserStatus));
+            Entities.UserStatus? userStatusObject = JsonSerializer.Deserialize<Entities.UserStatus?>(userStatusJson);
 
             return userStatusObject ?? null;
         }
@@ -165,8 +164,7 @@ public static class Program
 
             string slotJson = await APIHttpClient.GetStringAsync("slot/" + userStatus?.CurrentRoom?.RoomSlot?.SlotId);
 
-            slotObject = (Entities.Slot?)
-                JsonSerializer.Deserialize(slotJson, typeof(Entities.Slot));
+            slotObject = JsonSerializer.Deserialize<Entities.Slot?>(slotJson);
 
             Logging.Message.New(0, $"Caching a new dynamic slot under ID {slotObject?.SlotId}");
             SlotCache.Add(userStatus?.CurrentRoom?.RoomSlot?.SlotId ?? 0, slotObject);
