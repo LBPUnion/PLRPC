@@ -59,6 +59,7 @@ public static class Updater
         {
             TagName = currentRelease.TagName
         };
-        File.WriteAllText("./manifest.json", JsonSerializer.Serialize(BaseManifest, new JsonSerializerOptions { WriteIndented = true }));
+
+        await File.WriteAllTextAsync("./manifest.json", JsonSerializer.Serialize(BaseManifest, new JsonSerializerOptions { WriteIndented = true }));
     }
 }
