@@ -17,6 +17,7 @@ public static class Program
     public static async Task Main(string[] args)
     {
 
+        #if !DEBUG
         Updater.Release? updateResult = await Updater.Updater.CheckUpdate();
         if (updateResult != null)
         {
@@ -29,6 +30,7 @@ public static class Program
         {
             Logging.Message.New(1, $"There are no new updates available.");
         }
+        #endif
 
         if (args.Length > 0)
         {
