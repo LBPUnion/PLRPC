@@ -105,11 +105,7 @@ public static class Program
             catch (Exception exception)
             {
                 DiscordClient.Dispose();
-                Logging.Message.New(3, $"*** PLRPC has experienced an error and will now exit. ***");
-                Logging.Message.New(3, $"This is most likely *not your fault*. Try restarting the client.");
-                Logging.Message.New(3, $"If this error persists, please create a new GitHub issue.");
-                Logging.Message.New(3, $"");
-                Logging.Message.New(3, $"{exception.Message}");
+                Logging.Message.Exception(exception.Message);
                 Thread.Sleep(10000);
                 Environment.Exit(1);
             }

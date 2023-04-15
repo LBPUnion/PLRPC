@@ -14,4 +14,15 @@ public static class Message
         };
         Console.WriteLine(Log);
     }
+
+    public static void Exception(string exception)
+    {
+        Logging.Message.New(3, $"");
+        Logging.Message.New(3, $"*** PLRPC has experienced an error and will now exit. ***");
+        Logging.Message.New(3, $"This is most likely *not your fault*. Try restarting the client and check your configuration.");
+        Logging.Message.New(3, $"If this error persists, please create a new GitHub issue using the Bug Report template.");
+        Logging.Message.New(3, $"");
+        Logging.Message.New(3, $"{exception}");
+        Logging.Message.New(3, $"");
+    }
 }
