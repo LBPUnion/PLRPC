@@ -21,9 +21,9 @@ public static class Updater
         string programManifest = File.ReadAllText("./manifest.json");
 
         Release? releaseObject = (Release?)
-        JsonSerializer.Deserialize(releaseManifest, typeof(Release));
+            JsonSerializer.Deserialize(releaseManifest, typeof(Release));
         Manifest? programObject = (Manifest?)
-        JsonSerializer.Deserialize(programManifest, typeof(Manifest));
+            JsonSerializer.Deserialize(programManifest, typeof(Manifest));
         if (releaseObject == null)
         {
             return null;
