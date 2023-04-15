@@ -8,26 +8,22 @@ public static class Updater
 
     public static async Task<Release?> CheckUpdate()
     {
-        Release? releaseObject = null;
-        Manifest? programObject = null;
-
         UpdaterHttpClient = new HttpClient();
         UpdaterHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("PLRPC-Http-Updater/1.0");
 
-        if (!File.Exists(@"./manifest.json"))
+        if (!File.Exists("./manifest.json"))
         {
             Logging.Message.New(2, "No update manifest file exists, creating a base manifest.");
             await GenerateManifest();
         }
 
         string releaseManifest = await UpdaterHttpClient.GetStringAsync("https://api.github.com/repos/LBPUnion/PLRPC/releases/latest");
-        string programManifest = File.ReadAllText(@"./manifest.json");
+        string programManifest = File.ReadAllText("./manifest.json");
 
-        releaseObject = (Release?)
-                JsonSerializer.Deserialize(releaseManifest, typeof(Release));
-        programObject = (Manifest?)
-                JsonSerializer.Deserialize(programManifest, typeof(Manifest));
-
+        Release? releaseObject = (Release?)
+        JsonSerializer.Deserialize(releaseManifest, typeof(Release));
+        Manifest? programObject = (Manifest?)
+        JsonSerializer.Deserialize(programManifest, typeof(Manifest));
         if (releaseObject == null)
         {
             return null;
@@ -65,6 +61,6 @@ public static class Updater
         {
             TagName = currentRelease.TagName
         };
-        File.WriteAllText(@"./manifest.json", JsonSerializer.Serialize(BaseManifest, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText("./manifest.json", JsonSerializer.Serialize(BaseManifest, new JsonSerializerOptions { WriteIndented = true }));
     }
 }
