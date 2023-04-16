@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
 
-namespace LBPUnion.PLRPC.Updater;
+namespace LBPUnion.PLRPC.Types.Updater;
 
 public class Manifest
 {
     [JsonPropertyName("tag_name")]
-    public string TagName { get; set; } = null!;
+    public string? TagName { get; init; }
 }
