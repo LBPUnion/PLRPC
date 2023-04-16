@@ -29,12 +29,12 @@ public class ApiRepositoryImpl : IApiRepository
 
         val = entry.Item1;
         return true;
-    } 
+    }
 
     public async Task<User?> GetUser(string username)
     {
         if (this.GetFromCache(this.userCache, username, out User? cachedUser)) return cachedUser;
-        
+
         string userJson = await this.httpClient.GetStringAsync($"username/{username}");
         User? user = JsonSerializer.Deserialize<User>(userJson);
         if (user == null) return null;

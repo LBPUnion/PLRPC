@@ -68,7 +68,7 @@ public class LighthouseClient
         {
             slot = new Slot
             {
-                IconHash = "default_icon",
+                IconHash = "e6bb64f5f280ce07fdcf4c63e25fa8296c73ec29",
             };
         }
 
@@ -99,9 +99,9 @@ public class LighthouseClient
             State = userStatus,
             Assets = new Assets
             {
-                LargeImageKey = this.serverUrl + "/gameAssets" + slot.IconHash,
+                LargeImageKey = this.serverUrl + "/gameAssets/" + slot.IconHash,
                 LargeImageText = slot.Name,
-                SmallImageKey = this.serverUrl + "/gameAssets" + user.YayHash,
+                SmallImageKey = this.serverUrl + "/gameAssets/" + user.YayHash,
                 SmallImageText = user.Username,
             },
             Timestamps = new Timestamps

@@ -7,7 +7,7 @@ namespace LBPUnion.PLRPC;
 public class Updater
 {
     private readonly HttpClient updaterHttpClient;
-    
+
     public Updater(HttpClient updaterClient)
     {
         this.updaterHttpClient = updaterClient;

@@ -11,7 +11,6 @@ namespace LBPUnion.PLRPC;
 
 public static class Program
 {
-
     public static async Task Main(string[] args)
     {
         #if !DEBUG
@@ -116,5 +115,4 @@ public static class Program
 
         await lighthouseClient.StartUpdateLoop();
     }
-
 }
