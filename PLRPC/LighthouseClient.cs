@@ -75,6 +75,11 @@ public class LighthouseClient
                 SlotType.DLC => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
                 _ => "e6bb64f5f280ce07fdcf4c63e25fa8296c73ec29"
             };
+            
+            slot = new Slot
+            {
+                IconHash = iconHash,
+            };
         }
 
         int playersInRoom = status.CurrentRoom.PlayerIds.Length;
