@@ -64,6 +64,34 @@ public class LighthouseClient
                 return;
             }
         }
+        else if (slotType is SlotType.Pod)
+        {
+            slot = new Slot
+            {
+                IconHash = "9c412649a07a8cb678a2a25214ed981001dd08ca",
+            };
+        }
+        else if (slotType is SlotType.Moon)
+        {
+            slot = new Slot
+            {
+                IconHash = "a891bbcf9ad3518b80c210813cce8ed292ed4c62",
+            };
+        }
+        else if (slotType is SlotType.Developer)
+        {
+            slot = new Slot
+            {
+                IconHash = "2976e45d66b183f6d3242eaf01236d231766295f",
+            };
+        }
+        else if (slotType is SlotType.DLC)
+        {
+            slot = new Slot
+            {
+                IconHash = "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
+            };
+        }
         else
         {
             slot = new Slot
