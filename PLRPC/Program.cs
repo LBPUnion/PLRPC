@@ -57,7 +57,7 @@ public static class Program
 
                 if (configuration?.ServerUrl == null || configuration.Username == null)
                 {
-                    Logger.Error("Config is invalid, try regenerating your config file by deleting config.json and restarting the program");
+                    Logger.Error("Configuration is invalid. Delete config.json and restart the program.");
                     return;
                 }
 
@@ -83,13 +83,13 @@ public static class Program
         Regex usernamePattern = new("^[a-zA-Z0-9_.-]{3,16}$");
         if (!usernamePattern.IsMatch(username))
         {
-            Logger.Error("The username specified is in an invalid format");
+            Logger.Error("The username specified is in an invalid format. Please try again.");
             return;
         }
 
         if (!Uri.TryCreate(serverUrl, UriKind.Absolute, out _))
         {
-            Logger.Error("The url specified is in an invalid format");
+            Logger.Error("The URL specified is in an invalid format. Please try again.");
             return;
         }
 
