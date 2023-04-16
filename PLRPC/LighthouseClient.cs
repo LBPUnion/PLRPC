@@ -42,14 +42,14 @@ public class LighthouseClient
         User? user = await this.apiRepository.GetUser(this.username);
         if (user == null)
         {
-            Logger.Warn("Failed to get user");
+            Logger.Warn("Failed to get user from the server.");
             return;
         }
 
         UserStatus? status = await this.apiRepository.GetStatus(user.UserId);
         if (status?.CurrentRoom?.Slot?.SlotId == null || status.CurrentRoom.PlayerIds == null)
         {
-            Logger.Warn("Failed to get user status");
+            Logger.Warn("Failed to get user status from the server.");
             return;
         }
 
@@ -60,7 +60,7 @@ public class LighthouseClient
             slot = await this.apiRepository.GetSlot(status.CurrentRoom.Slot.SlotId);
             if (slot == null)
             {
-                Logger.Warn("Failed to get user's current level");
+                Logger.Warn("Failed to get user's current level from the server.");
                 return;
             }
         }
