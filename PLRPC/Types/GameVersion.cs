@@ -1,8 +1,7 @@
 namespace LBPUnion.PLRPC.Types;
 
-public enum CurrentVersion
+public enum GameVersion
 {
-    Offline = -1,
     LittleBigPlanet1 = 0,
     LittleBigPlanet2 = 1,
     LittleBigPlanet3 = 2,

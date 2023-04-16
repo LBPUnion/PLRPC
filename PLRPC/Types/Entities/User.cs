@@ -1,7 +1,9 @@
 using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
-namespace LBPUnion.PLRPC.Entities;
+namespace LBPUnion.PLRPC.Types.Entities;
 
+[JsonObject]
 public class User
 {
     [JsonPropertyName("userId")]
@@ -20,5 +22,5 @@ public class User
     public string? MehHash { get; set; }
 
     [JsonPropertyName("lastLogin")]
-    public Int64 LastLogin { get; set; }
+    public long LastLogin { get; set; }
 }

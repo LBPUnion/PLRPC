@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace LBPUnion.PLRPC.Entities;
+namespace LBPUnion.PLRPC.Types;
 
-public class Configuration
+public class PlrpcConfiguration
 {
     [JsonPropertyName("serverUrl")]
     public string? ServerUrl { get; set; }
