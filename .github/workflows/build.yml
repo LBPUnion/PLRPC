@@ -34,7 +34,7 @@ jobs:
       uses: actions/upload-artifact@v3.1.1
       with:
           name: PLRPC Windows x64 [${{ steps.hash.outputs.hash }}]
-          path: "/home/runner/work/PLRPC/PLRPC/bin/Release/net7.0/win-x64/publish/"
+          path: "/home/runner/work/PLRPC/PLRPC/PLRPC/bin/Release/net7.0/win-x64/publish/"
           if-no-files-found: error
           retention-days: 3
       
@@ -42,6 +42,6 @@ jobs:
       uses: actions/upload-artifact@v3.1.1
       with:
           name: PLRPC Linux x64 [${{ steps.hash.outputs.hash }}]
-          path: "/home/runner/work/PLRPC/PLRPC/bin/Release/net7.0/linux-x64/publish/"
+          path: "/home/runner/work/PLRPC/PLRPC/PLRPC/bin/Release/net7.0/linux-x64/publish/"
           if-no-files-found: error
           retention-days: 3
