@@ -28,4 +28,5 @@ public enum SlotType
     Unknown2 = 4,
     Pod = 5,
     DLC = 8,
+    Adventure = 11,
 }
