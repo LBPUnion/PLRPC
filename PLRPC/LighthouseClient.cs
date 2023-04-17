@@ -72,8 +72,8 @@ public class LighthouseClient
                 SlotType.Pod => "9c412649a07a8cb678a2a25214ed981001dd08ca",
                 SlotType.Moon => "a891bbcf9ad3518b80c210813cce8ed292ed4c62",
                 SlotType.Developer => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
-                SlotType.Adventure => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
-                SlotType.DLC => "2976e45d66b183f6d3242eaf01236d231766295f",
+                SlotType.DeveloperAdventure => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
+                SlotType.DLCLevel => "2976e45d66b183f6d3242eaf01236d231766295f",
                 _ => "e6bb64f5f280ce07fdcf4c63e25fa8296c73ec29",
             };
 
@@ -93,8 +93,8 @@ public class LighthouseClient
             SlotType.Pod => "Dwelling in the Pod",
             SlotType.Moon => "Creating on the Moon",
             SlotType.Developer => "Playing a Story Level",
-            SlotType.Adventure => "Playing an Adventure Level",
-            SlotType.DLC => "Playing a DLC Level",
+            SlotType.DeveloperAdventure => "Playing an Adventure Level",
+            SlotType.DLCLevel => "Playing a DLC Level",
             _ => "(っ◔◡◔)っ ❤",
         };
 
