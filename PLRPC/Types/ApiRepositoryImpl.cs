@@ -35,7 +35,7 @@ public class ApiRepositoryImpl : IApiRepository
     {
         if (this.GetFromCache(this.userCache, username, out User? cachedUser)) return cachedUser;
 
-        string userJson = await this.httpClient.GetStringAsync($"/api/v1/username/{username}");
+        string userJson = await this.httpClient.GetStringAsync($"username/{username}");
         User? user = JsonSerializer.Deserialize<User>(userJson);
         if (user == null) return null;
 
@@ -47,7 +47,7 @@ public class ApiRepositoryImpl : IApiRepository
     {
         if (this.GetFromCache(this.userStatusCache, userId, out UserStatus? cachedUserStatus)) return cachedUserStatus;
 
-        string userStatusJson = await this.httpClient.GetStringAsync($"/api/v1/user/{userId}/status");
+        string userStatusJson = await this.httpClient.GetStringAsync($"user/{userId}/status");
         UserStatus? userStatus = JsonSerializer.Deserialize<UserStatus>(userStatusJson);
         if (userStatus == null) return null;
 
@@ -59,7 +59,7 @@ public class ApiRepositoryImpl : IApiRepository
     {
         if (this.GetFromCache(this.slotCache, slotId, out Slot? cachedSlot)) return cachedSlot;
 
-        string slotJson = await this.httpClient.GetStringAsync($"/api/v1/slot/{slotId}");
+        string slotJson = await this.httpClient.GetStringAsync($"slot/{slotId}");
 
         Slot? slot = JsonSerializer.Deserialize<Slot>(slotJson);
         if (slot == null) return null;
