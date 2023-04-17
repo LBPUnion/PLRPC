@@ -21,23 +21,23 @@ public class Updater
             await this.GenerateManifest();
         }
 
-        string releaseManifest = await this.updaterHttpClient.GetStringAsync("https://api.github.com/repos/LBPUnion/PLRPC/releases/latest");
+        string releaseManifest =
+            await this.updaterHttpClient.GetStringAsync("https://api.github.com/repos/LBPUnion/PLRPC/releases/latest");
         string programManifest = await File.ReadAllTextAsync("./manifest.json");
 
         Release? releaseObject = JsonSerializer.Deserialize<Release?>(releaseManifest);
         Manifest? programObject = JsonSerializer.Deserialize<Manifest?>(programManifest);
 
         if (releaseObject == null || programObject == null || releaseObject.TagName == programObject.TagName)
-        {
             return null;
-        }
 
         return releaseObject;
     }
 
     private async Task GenerateManifest()
     {
-        string currentManifest = await this.updaterHttpClient.GetStringAsync("https://api.github.com/repos/LBPUnion/PLRPC/releases/latest");
+        string currentManifest =
+            await this.updaterHttpClient.GetStringAsync("https://api.github.com/repos/LBPUnion/PLRPC/releases/latest");
 
         Release? currentRelease = JsonSerializer.Deserialize<Release>(currentManifest);
 
@@ -48,6 +48,11 @@ public class Updater
             TagName = currentRelease.TagName,
         };
 
-        await File.WriteAllTextAsync("./manifest.json", JsonSerializer.Serialize(baseManifest, new JsonSerializerOptions { WriteIndented = true, }));
+        await File.WriteAllTextAsync("./manifest.json",
+            JsonSerializer.Serialize(baseManifest,
+                new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                }));
     }
 }

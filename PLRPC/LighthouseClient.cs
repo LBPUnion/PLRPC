@@ -10,11 +10,11 @@ namespace LBPUnion.PLRPC;
 
 public class LighthouseClient
 {
-    private readonly DiscordRpcClient discordClient;
     private readonly IApiRepository apiRepository;
-    private readonly string username;
-    private readonly string serverUrl;
+    private readonly DiscordRpcClient discordClient;
     private readonly SemaphoreSlim readySemaphore = new(0, 1);
+    private readonly string serverUrl;
+    private readonly string username;
 
     public LighthouseClient(string username, string serverUrl, IApiRepository apiRepository, DiscordRpcClient rpcClient)
     {
@@ -73,9 +73,9 @@ public class LighthouseClient
                 SlotType.Moon => "a891bbcf9ad3518b80c210813cce8ed292ed4c62",
                 SlotType.Developer => "2976e45d66b183f6d3242eaf01236d231766295f",
                 SlotType.DLC => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
-                _ => "e6bb64f5f280ce07fdcf4c63e25fa8296c73ec29"
+                _ => "e6bb64f5f280ce07fdcf4c63e25fa8296c73ec29",
             };
-            
+
             slot = new Slot
             {
                 IconHash = iconHash,

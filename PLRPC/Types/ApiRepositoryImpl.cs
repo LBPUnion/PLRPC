@@ -5,12 +5,12 @@ namespace LBPUnion.PLRPC.Types;
 
 public class ApiRepositoryImpl : IApiRepository
 {
-    private readonly Dictionary<string, (User, long)> userCache = new();
-    private readonly Dictionary<int, (UserStatus, long)> userStatusCache = new();
-    private readonly Dictionary<int, (Slot, long)> slotCache = new();
+    private readonly int cacheExpirationTimeMs;
 
     private readonly HttpClient httpClient;
-    private readonly int cacheExpirationTimeMs;
+    private readonly Dictionary<int, (Slot, long)> slotCache = new();
+    private readonly Dictionary<string, (User, long)> userCache = new();
+    private readonly Dictionary<int, (UserStatus, long)> userStatusCache = new();
 
     public ApiRepositoryImpl(HttpClient httpClient, int cacheExpirationTimeMs)
     {
@@ -19,17 +19,6 @@ public class ApiRepositoryImpl : IApiRepository
     }
 
     private static long TimestampMillis => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
-    private bool GetFromCache<T1, T2>(IReadOnlyDictionary<T1, (T2, long)> cache, T1 key, out T2? val) where T1 : notnull
-    {
-        val = default;
-        if (!cache.TryGetValue(key, out (T2, long) entry)) return false;
-
-        if (entry.Item2 + this.cacheExpirationTimeMs > TimestampMillis) return false;
-
-        val = entry.Item1;
-        return true;
-    }
 
     public async Task<User?> GetUser(string username)
     {
@@ -66,5 +55,16 @@ public class ApiRepositoryImpl : IApiRepository
 
         this.slotCache.TryAdd(slotId, (slot, TimestampMillis));
         return slot;
+    }
+
+    private bool GetFromCache<T1, T2>(IReadOnlyDictionary<T1, (T2, long)> cache, T1 key, out T2? val) where T1 : notnull
+    {
+        val = default;
+        if (!cache.TryGetValue(key, out (T2, long) entry)) return false;
+
+        if (entry.Item2 + this.cacheExpirationTimeMs > TimestampMillis) return false;
+
+        val = entry.Item1;
+        return true;
     }
 }

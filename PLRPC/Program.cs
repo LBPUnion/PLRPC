@@ -47,7 +47,12 @@ public static class Program
                         ServerUrl = "https://lighthouse.lbpunion.com",
                         Username = "",
                     };
-                    await File.WriteAllTextAsync("./config.json", JsonSerializer.Serialize(defaultConfig, new JsonSerializerOptions { WriteIndented = true, }));
+                    await File.WriteAllTextAsync("./config.json",
+                        JsonSerializer.Serialize(defaultConfig,
+                            new JsonSerializerOptions
+                            {
+                                WriteIndented = true,
+                            }));
                     return;
                 }
 
