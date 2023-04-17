@@ -23,9 +23,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish for Windows x64
-      run: dotnet publish -c Release -r win-x64 --no-self-contained
+      run: dotnet publish -c Release -r win-x64 --self-contained
     - name: Publish for Linux x64
-      run: dotnet publish -c Release -r linux-x64 --no-self-contained
+      run: dotnet publish -c Release -r linux-x64 --sself-contained
     - name: Get GitHub Commit hash
       id: hash
       run: echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
