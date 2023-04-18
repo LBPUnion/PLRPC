@@ -126,7 +126,7 @@ public class LighthouseClient
                 Size = playersInRoom,
                 Max = 4,
             },
-            Buttons = new Button[]
+            Buttons = new []
             {
                 new Button() { Label = "View User's Profile", Url = $"{this.serverUrl}/user/{userId}", },
             },
