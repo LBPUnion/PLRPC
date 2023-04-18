@@ -126,6 +126,10 @@ public class LighthouseClient
                 Size = playersInRoom,
                 Max = 4,
             },
+            Buttons = new Button[]
+            {
+                new Button() { Label = "View User's Profile", Url = $"{this.serverUrl}/user/{userId}", },
+            },
         };
         this.discordClient.SetPresence(newPresence);
         Logger.Info($"{newPresence}: Sending presence update.");
