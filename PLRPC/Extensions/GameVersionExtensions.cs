@@ -12,7 +12,7 @@ public static class GameVersionExtensions
             GameVersion.LittleBigPlanet2 => "Playing LittleBigPlanet 2",
             GameVersion.LittleBigPlanet3 => "Playing LittleBigPlanet 3",
             GameVersion.LittleBigPlanetVita => "Playing LittleBigPlanet PS Vita",
-            _ => ""
+            _ => "",
         };
     }
 }

@@ -10,11 +10,11 @@ namespace LBPUnion.PLRPC;
 
 public class LighthouseClient
 {
-    private readonly DiscordRpcClient discordClient;
     private readonly IApiRepository apiRepository;
-    private readonly string username;
-    private readonly string serverUrl;
+    private readonly DiscordRpcClient discordClient;
     private readonly SemaphoreSlim readySemaphore = new(0, 1);
+    private readonly string serverUrl;
+    private readonly string username;
 
     public LighthouseClient(string username, string serverUrl, IApiRepository apiRepository, DiscordRpcClient rpcClient)
     {
@@ -71,11 +71,12 @@ public class LighthouseClient
             {
                 SlotType.Pod => "9c412649a07a8cb678a2a25214ed981001dd08ca",
                 SlotType.Moon => "a891bbcf9ad3518b80c210813cce8ed292ed4c62",
-                SlotType.Developer => "2976e45d66b183f6d3242eaf01236d231766295f",
-                SlotType.DLC => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
-                _ => "e6bb64f5f280ce07fdcf4c63e25fa8296c73ec29"
+                SlotType.Developer => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
+                SlotType.DeveloperAdventure => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
+                SlotType.DLCLevel => "2976e45d66b183f6d3242eaf01236d231766295f",
+                _ => "e6bb64f5f280ce07fdcf4c63e25fa8296c73ec29",
             };
-            
+
             slot = new Slot
             {
                 IconHash = iconHash,
@@ -92,7 +93,8 @@ public class LighthouseClient
             SlotType.Pod => "Dwelling in the Pod",
             SlotType.Moon => "Creating on the Moon",
             SlotType.Developer => "Playing a Story Level",
-            SlotType.DLC => "Playing a DLC Level",
+            SlotType.DeveloperAdventure => "Playing an Adventure Level",
+            SlotType.DLCLevel => "Playing a DLC Level",
             _ => "(っ◔◡◔)っ ❤",
         };
 
@@ -124,6 +126,10 @@ public class LighthouseClient
                 Size = playersInRoom,
                 Max = 4,
             },
+            Buttons = new []
+            {
+                new Button() { Label = "View User's Profile", Url = $"{this.serverUrl}/user/{userId}", },
+            },
         };
         this.discordClient.SetPresence(newPresence);
         Logger.Info($"{newPresence}: Sending presence update.");
@@ -144,10 +150,9 @@ public class LighthouseClient
                 this.discordClient.Dispose();
                 Logger.LogException(exception);
                 Thread.Sleep(10000);
-                Environment.Exit(1);
+                return;
             }
-
             await Task.Delay(30000);
         }
     }
-}
+}                         
