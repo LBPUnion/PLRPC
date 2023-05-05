@@ -9,7 +9,7 @@ using LBPUnion.PLRPC.Types.Updater;
 
 namespace LBPUnion.PLRPC;
 
-public static class Program
+public static partial class Program
 {
     public static async Task Main(string[] args)
     {
@@ -65,8 +65,8 @@ public static class Program
                     return;
                 }
 
-                serverUrl = configuration?.ServerUrl ?? "";
-                username = configuration?.Username ?? "";
+                serverUrl = configuration.ServerUrl ?? "";
+                username = configuration.Username ?? "";
             }
             else
             {
@@ -84,7 +84,7 @@ public static class Program
             username = Console.ReadLine() ?? "";
         }
 
-        Regex usernamePattern = new("^[a-zA-Z0-9_.-]{3,16}$");
+        Regex usernamePattern = UsernameRegex();
         if (!usernamePattern.IsMatch(username))
         {
             Logger.Error("The username specified is in an invalid format. Please try again.");
@@ -120,4 +120,7 @@ public static class Program
 
         await lighthouseClient.StartUpdateLoop();
     }
+
+    [GeneratedRegex("^[a-zA-Z0-9_.-]{3,16}$")]
+    private static partial Regex UsernameRegex();
 }

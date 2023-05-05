@@ -128,7 +128,7 @@ public class LighthouseClient
             },
             Buttons = new []
             {
-                new Button() { Label = "View User's Profile", Url = $"{this.serverUrl}/user/{userId}", },
+                new Button { Label = "View User's Profile", Url = $"{this.serverUrl}/user/{userId}", },
             },
         };
         this.discordClient.SetPresence(newPresence);
