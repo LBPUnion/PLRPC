@@ -23,4 +23,7 @@ public class User
 
     [JsonPropertyName("lastLogin")]
     public long LastLogin { get; set; }
+
+    [JsonPropertyName("permissionLevel")]
+    public PermissionLevel? PermissionLevel { get; set; }
 }

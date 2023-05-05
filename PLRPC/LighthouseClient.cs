@@ -40,7 +40,7 @@ public class LighthouseClient
     private async void UpdatePresence()
     {
         User? user = await this.apiRepository.GetUser(this.username);
-        if (user == null)
+        if (user == null || user.PermissionLevel == PermissionLevel.Banned)
         {
             Logger.Warn("Failed to get user from the server.");
             return;
@@ -114,7 +114,7 @@ public class LighthouseClient
                 LargeImageKey = this.serverUrl + "/gameAssets/" + slot.IconHash,
                 LargeImageText = slot.Name,
                 SmallImageKey = this.serverUrl + "/gameAssets/" + user.YayHash,
-                SmallImageText = user.Username,
+                SmallImageText = user.Username + user.PermissionLevel.ToPrettyString(),
             },
             Timestamps = new Timestamps
             {
