@@ -9,7 +9,6 @@ public static class Logger
         Console.WriteLine($"<PLRPC> {DateTime.Now} {level.ToString().ToUpper()} {message}");
     }
 
-    public static void Notice(string message) => Log(LogLevel.Notice, message);
     public static void Info(string message) => Log(LogLevel.Info, message);
     public static void Warn(string message) => Log(LogLevel.Warn, message);
     public static void Error(string message) => Log(LogLevel.Error, message);
