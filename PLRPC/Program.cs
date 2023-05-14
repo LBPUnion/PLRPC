@@ -1,11 +1,10 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using DiscordRPC;
 using LBPUnion.PLRPC.Logging;
 using LBPUnion.PLRPC.Types;
-#if !DEBUG
 using LBPUnion.PLRPC.Types.Updater;
-#endif
 
 namespace LBPUnion.PLRPC;
 
@@ -14,21 +13,7 @@ public static partial class Program
     public static async Task Main(string[] args)
     {
         #if !DEBUG
-        HttpClient updateClient = new();
-        updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("PLRPC-Http-Updater/1.0");
-        Updater updater = new(updateClient);
-        Release? updateResult = await updater.CheckForUpdate();
-        if (updateResult != null)
-        {
-            Logger.Notice("***************************************");
-            Logger.Notice("A new version of PLRPC is available!");
-            Logger.Notice($"{updateResult.TagName}: {updateResult.Url}");
-            Logger.Notice("***************************************");
-        }
-        else
-        {
-            Logger.Notice("There are no new updates available.");
-        }
+            await ReleaseUpdateCheck();
         #endif
 
         string serverUrl;
@@ -84,8 +69,7 @@ public static partial class Program
             username = Console.ReadLine() ?? "";
         }
 
-        Regex usernamePattern = UsernameRegex();
-        if (!usernamePattern.IsMatch(username))
+        if (UsernameRegex().IsMatch(username))
         {
             Logger.Error("The username specified is in an invalid format. Please try again.");
             return;
@@ -108,17 +92,35 @@ public static partial class Program
             },
         };
 
-        DiscordRpcClient discordRpcClient = new("1060973475151495288");
-
         const int cacheExpirationTime = 60 * 60 * 1000; // 1 hour
 
         ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
-
+        DiscordRpcClient discordRpcClient = new("1060973475151495288");
         LighthouseClient lighthouseClient = new(username, serverUrl, apiRepository, discordRpcClient);
 
         Logger.Info("Initializing client...");
 
         await lighthouseClient.StartUpdateLoop();
+    }
+
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
+    private static async Task ReleaseUpdateCheck()
+    {
+        HttpClient updateClient = new();
+        updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("PLRPC-Http-Updater/1.0");
+        Updater updater = new(updateClient);
+        Release? updateResult = await updater.CheckForUpdate();
+        if (updateResult != null)
+        {
+            Logger.Notice("***************************************");
+            Logger.Notice("A new version of PLRPC is available!");
+            Logger.Notice($"{updateResult.TagName}: {updateResult.Url}");
+            Logger.Notice("***************************************");
+        }
+        else
+        {
+            Logger.Notice("There are no new updates available.");
+        }
     }
 
     [GeneratedRegex("^[a-zA-Z0-9_.-]{3,16}$")]
