@@ -14,7 +14,7 @@ public static class PermissionLevelExtensions
             PermissionLevel.Default => "", // default PermissionLevel doesn't really have a pretty name
             PermissionLevel.Moderator => " (Moderator)",
             PermissionLevel.Administrator => " (Administrator)",
-            _ => " (Unknown)",
+            _ => "",
         };
     }
 }
