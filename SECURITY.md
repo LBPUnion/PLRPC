@@ -4,15 +4,18 @@
 
 Below is a table depicting all currently supported PLRPC builds.
 
-> **Note**
-> Any version marked with a :warning: icon is *not supported* and may not be available in the future.
+> **Note** Any version marked with a :warning: icon is *deprecated* and may not have the latest security and feature patches.
+
+> **Note** Any version marked with a :x: icon is *not supported* and may not be available in the future.
 
 > **Warning**
 > Individual commit artifacts are to be considered pre-release.
 
 | Version | Supported                 |
 | ------- | ------------------------- |
-| v0.1.x  | ✅        *(pre-release)* |
+| v0.1.x  | :x: *(not supported)*     |
+| v1.0.x  | :warning: *(deprecated)*  |
+| v1.1.x  | ✅                        |
 
 ## Reporting a Vulnerability
 
