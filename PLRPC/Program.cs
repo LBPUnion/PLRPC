@@ -69,7 +69,7 @@ public static partial class Program
             username = Console.ReadLine() ?? "";
         }
 
-        if (UsernameRegex().IsMatch(username))
+        if (!UsernameRegex().IsMatch(username))
         {
             Logger.Error("The username specified is in an invalid format. Please try again.");
             return;
