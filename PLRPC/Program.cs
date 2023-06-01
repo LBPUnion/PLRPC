@@ -18,34 +18,37 @@ public static class Program
             await InitializeUpdateCheck();
         #endif
 
-        await Parser.Default.ParseArguments<CommandLineArguments>(args)
-            .WithParsedAsync(async arguments =>
-            {
-                if (arguments.UseConfig)
-                {
-                    PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
-                    if (configuration is
-                        {
-                            ServerUrl: not null,
-                            Username: not null,
-                        })
-                        await InitializeLighthouseClient(configuration.ServerUrl, configuration.Username);
-                }
-                else if (arguments is
-                         {
-                             ServerUrl: not null,
-                             Username: not null,
-                         })
-                {
-                    if (!ValidationHelper.IsValidUrl(arguments.ServerUrl)) return;
-                    if (!ValidationHelper.IsValidUsername(arguments.Username)) return;
+        await Parser.Default.ParseArguments<CommandLineArguments>(args).WithParsedAsync(ParseArguments);
+    }
 
-                    await InitializeLighthouseClient(arguments.ServerUrl, arguments.Username);
-                }
+    private static async Task ParseArguments(CommandLineArguments arguments)
+    {
+        if (arguments.UseConfig)
+        {
+            PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
+            if (configuration is
+                {
+                    ServerUrl: not null,
+                    Username: not null,
+                })
+                await InitializeLighthouseClient(configuration.ServerUrl, configuration.Username);
+        }
+        else if (arguments is
+                 {
+                     ServerUrl: not null,
+                     Username: not null,
+                 })
+        {
+            if (!ValidationHelper.IsValidUrl(arguments.ServerUrl)) return;
+            if (!ValidationHelper.IsValidUsername(arguments.Username)) return;
 
-                // We want to instruct the user to view the help if they don't pass any arguments.
-                Logger.Error("No valid arguments passed. Please view --help for more information.");
-            });
+            await InitializeLighthouseClient(arguments.ServerUrl, arguments.Username);
+        }
+        else
+        {
+            // We want to instruct the user to view the help if they don't pass any valid arguments.
+            Logger.Error("No valid arguments passed. Please view --help for more information.");
+        }
     }
 
     [SuppressMessage("ReSharper", "UnusedMember.Local")]

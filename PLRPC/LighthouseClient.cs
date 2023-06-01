@@ -37,7 +37,7 @@ public class LighthouseClient
         this.discordClient.OnPresenceUpdate += (_, e) => Logger.Info($"{e.Presence}: Presence updated.");
     }
 
-    private async void UpdatePresence()
+    private async Task UpdatePresence()
     {
         User? user = await this.apiRepository.GetUser(this.username);
         if (user == null || user.PermissionLevel == PermissionLevel.Banned)
@@ -147,7 +147,7 @@ public class LighthouseClient
         {
             try
             {
-                this.UpdatePresence();
+                await this.UpdatePresence();
             }
             catch (Exception exception)
             {
