@@ -87,7 +87,7 @@ public static partial class Program
             DefaultRequestHeaders =
             {
                 {
-                    "User-Agent", "PLRPC-Http-Updater/1.0"
+                    "User-Agent", "LBPUnion/1.0 (PLRPC; github-release) ApiClient/2.0"
                 },
             },
         };
@@ -107,7 +107,7 @@ public static partial class Program
     private static async Task ReleaseUpdateCheck()
     {
         HttpClient updateClient = new();
-        updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("PLRPC-Http-Updater/1.0");
+        updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("LBPUnion/1.0 (PLRPC; github-release) UpdateClient/1.1");
         Updater updater = new(updateClient);
         Release? updateResult = await updater.CheckForUpdate();
         if (updateResult != null)
