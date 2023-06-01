@@ -19,7 +19,6 @@ public static partial class ValidationHelper
 
         Logger.Error("The username specified is invalid. Please try again.");
         return false;
-
     }
 
     [GeneratedRegex("^[a-zA-Z0-9_.-]{3,16}$")]
