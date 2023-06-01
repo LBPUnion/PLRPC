@@ -1,88 +1,48 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using System.Text.RegularExpressions;
+using CommandLine;
 using DiscordRPC;
+using LBPUnion.PLRPC.Helpers;
 using LBPUnion.PLRPC.Logging;
 using LBPUnion.PLRPC.Types;
 using LBPUnion.PLRPC.Types.Updater;
 
 namespace LBPUnion.PLRPC;
 
-public static partial class Program
+public static class Program
 {
-    // TODO: Optimize this, cognitive complexity > 100%
+    [SuppressMessage("ReSharper", "CognitiveComplexity")]
     public static async Task Main(string[] args)
     {
         #if !DEBUG
             await ReleaseUpdateCheck();
         #endif
 
-        string serverUrl;
-        string username;
-
-        if (args.Length > 0)
-        {
-            if (args[0] == "--config")
+        await Parser.Default.ParseArguments<CommandLineArguments>(args)
+            .WithParsedAsync(async arguments =>
             {
-                if (!File.Exists("./config.json"))
+                if (arguments.UseConfig)
                 {
-                    Logger.Warn("No configuration file exists, creating a base configuration.");
-                    Logger.Warn("Please populate the configuration file and restart the program.");
-                    PlrpcConfiguration defaultConfig = new()
-                    {
-                        ServerUrl = "https://lighthouse.lbpunion.com",
-                        Username = "",
-                    };
-                    await File.WriteAllTextAsync("./config.json",
-                        JsonSerializer.Serialize(defaultConfig,
-                            new JsonSerializerOptions
-                            {
-                                WriteIndented = true,
-                            }));
-                    return;
+                    PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
+                    if (configuration is
+                        {
+                            ServerUrl: not null,
+                            Username: not null,
+                        })
+                        await InitializeLighthouseClient(configuration.ServerUrl, configuration.Username);
                 }
-
-                string configurationJson = await File.ReadAllTextAsync("./config.json");
-                PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson);
-
-                if (configuration?.ServerUrl == null || configuration.Username == null)
+                else if (arguments is
+                         {
+                             ServerUrl: not null,
+                             Username: not null,
+                         })
                 {
-                    Logger.Error("Configuration is invalid. Delete config.json and restart the program.");
-                    return;
+                    if (!ValidationHelper.IsValidUrl(arguments.ServerUrl)) return;
+                    if (!ValidationHelper.IsValidUsername(arguments.Username)) return;
+
+                    await InitializeLighthouseClient(arguments.ServerUrl, arguments.Username);
                 }
-
-                serverUrl = configuration.ServerUrl ?? "";
-                username = configuration.Username ?? "";
-            }
-            else
-            {
-                Logger.Error("You have passed an invalid flag. You may use one of the following:");
-                Logger.Error("  --config (to use a configuration file)");
-                return;
-            }
-        }
-        else
-        {
-            Console.Write("What is the URI of the Lighthouse Instance? (e.g. https://lighthouse.lbpunion.com) ");
-            serverUrl = Console.ReadLine() ?? "";
-
-            Console.Write("What is your registered username on this server? (e.g. littlebigmolly) ");
-            username = Console.ReadLine() ?? "";
-        }
-
-        if (!UsernameRegex().IsMatch(username))
-        {
-            Logger.Error("The username specified is in an invalid format. Please try again.");
-            return;
-        }
-
-        if (!Uri.TryCreate(serverUrl, UriKind.Absolute, out _))
-        {
-            Logger.Error("The URL specified is in an invalid format. Please try again.");
-            return;
-        }
-
-        await InitializeLighthouseClient(serverUrl, username);
+            });
     }
 
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
@@ -103,6 +63,43 @@ public static partial class Program
         {
             Logger.Notice("There are no new updates available.");
         }
+    }
+
+    private static async Task<PlrpcConfiguration?> LoadFromConfiguration()
+    {
+        if (!File.Exists("./config.json"))
+        {
+            Logger.Warn("No configuration file exists, creating a base configuration.");
+            Logger.Warn("Please populate the configuration file and restart the program.");
+            PlrpcConfiguration defaultConfig = new()
+            {
+                ServerUrl = "https://lighthouse.lbpunion.com",
+                Username = "",
+            };
+            await File.WriteAllTextAsync("./config.json",
+                JsonSerializer.Serialize(defaultConfig,
+                    new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                    }));
+            return null;
+        }
+
+        string configurationJson = await File.ReadAllTextAsync("./config.json");
+        PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson);
+
+        if (configuration is
+            {
+                ServerUrl: not null,
+                Username: not null,
+            })
+            return new PlrpcConfiguration
+            {
+                ServerUrl = configuration.ServerUrl,
+                Username = configuration.Username,
+            };
+        Logger.Error("Configuration is invalid. Delete config.json and restart the program.");
+        return null;
     }
 
     private static async Task InitializeLighthouseClient(string serverUrl, string username)
@@ -129,6 +126,16 @@ public static partial class Program
         await lighthouseClient.StartUpdateLoop();
     }
 
-    [GeneratedRegex("^[a-zA-Z0-9_.-]{3,16}$")]
-    private static partial Regex UsernameRegex();
+    [Serializable]
+    public class CommandLineArguments
+    {
+        [Option('c', "config", Required = false, HelpText = "Use a configuration file.")]
+        public bool UseConfig { get; set; }
+
+        [Option('s', "server", Required = false, HelpText = "The URL of the server to connect to.")]
+        public string? ServerUrl { get; set; }
+
+        [Option('u', "username", Required = false, HelpText = "Your username on the server.")]
+        public string? Username { get; set; }
+    }
 }
