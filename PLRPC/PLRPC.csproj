@@ -7,6 +7,10 @@
         <Nullable>enable</Nullable>
         <AssemblyName>LBPUnion.PLRPC</AssemblyName>
         <RootNamespace>LBPUnion.PLRPC</RootNamespace>
+        <AssemblyTitle>PLRPC</AssemblyTitle>
+        <Version>1.3.0</Version>
+        <Copyright>MIT License Copyright (c) 2023 LBP Union</Copyright>
+        <Company>LBP Union</Company>
     </PropertyGroup>
 
     <ItemGroup>

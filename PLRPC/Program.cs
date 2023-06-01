@@ -15,7 +15,7 @@ public static class Program
     public static async Task Main(string[] args)
     {
         #if !DEBUG
-            await ReleaseUpdateCheck();
+            await InitializeUpdateCheck();
         #endif
 
         await Parser.Default.ParseArguments<CommandLineArguments>(args)
@@ -42,6 +42,9 @@ public static class Program
 
                     await InitializeLighthouseClient(arguments.ServerUrl, arguments.Username);
                 }
+
+                // We want to instruct the user to view the help if they don't pass any arguments.
+                Logger.Error("No valid arguments passed. Please view --help for more information.");
             });
     }
 
