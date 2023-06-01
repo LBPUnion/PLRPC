@@ -126,9 +126,13 @@ public class LighthouseClient
                 Size = playersInRoom,
                 Max = 4,
             },
-            Buttons = new []
+            Buttons = new[]
             {
-                new Button { Label = $"View {user.Username}'s Profile", Url = $"{this.serverUrl}/user/{userId}", },
+                new Button
+                {
+                    Label = $"View {user.Username}'s Profile",
+                    Url = $"{this.serverUrl}/user/{userId}",
+                },
             },
         };
         this.discordClient.SetPresence(newPresence);
@@ -151,7 +155,8 @@ public class LighthouseClient
                 Logger.LogException(exception);
                 return;
             }
+
             await Task.Delay(30000);
         }
     }
-}                         
+}
