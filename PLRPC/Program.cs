@@ -10,6 +10,7 @@ namespace LBPUnion.PLRPC;
 
 public static partial class Program
 {
+    // TODO: Optimize this, cognitive complexity > 100%
     public static async Task Main(string[] args)
     {
         #if !DEBUG
@@ -81,6 +82,31 @@ public static partial class Program
             return;
         }
 
+        await InitializeLighthouseClient(serverUrl, username);
+    }
+
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
+    private static async Task InitializeUpdateCheck()
+    {
+        HttpClient updateClient = new();
+        updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("LBPUnion/1.0 (PLRPC; github-release) UpdateClient/1.1");
+        Updater updater = new(updateClient);
+        Release? updateResult = await updater.CheckForUpdate();
+        if (updateResult != null)
+        {
+            Logger.Notice("***************************************");
+            Logger.Notice("A new version of PLRPC is available!");
+            Logger.Notice($"{updateResult.TagName}: {updateResult.Url}");
+            Logger.Notice("***************************************");
+        }
+        else
+        {
+            Logger.Notice("There are no new updates available.");
+        }
+    }
+
+    private static async Task InitializeLighthouseClient(string serverUrl, string username)
+    {
         HttpClient apiClient = new()
         {
             BaseAddress = new Uri(serverUrl + "/api/v1/"),
@@ -101,26 +127,6 @@ public static partial class Program
         Logger.Info("Initializing client...");
 
         await lighthouseClient.StartUpdateLoop();
-    }
-
-    [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    private static async Task ReleaseUpdateCheck()
-    {
-        HttpClient updateClient = new();
-        updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("LBPUnion/1.0 (PLRPC; github-release) UpdateClient/1.1");
-        Updater updater = new(updateClient);
-        Release? updateResult = await updater.CheckForUpdate();
-        if (updateResult != null)
-        {
-            Logger.Notice("***************************************");
-            Logger.Notice("A new version of PLRPC is available!");
-            Logger.Notice($"{updateResult.TagName}: {updateResult.Url}");
-            Logger.Notice("***************************************");
-        }
-        else
-        {
-            Logger.Notice("There are no new updates available.");
-        }
     }
 
     [GeneratedRegex("^[a-zA-Z0-9_.-]{3,16}$")]
