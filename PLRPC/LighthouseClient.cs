@@ -149,7 +149,6 @@ public class LighthouseClient
             {
                 this.discordClient.Dispose();
                 Logger.LogException(exception);
-                Thread.Sleep(10000);
                 return;
             }
             await Task.Delay(30000);
