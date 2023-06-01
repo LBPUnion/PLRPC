@@ -11,7 +11,6 @@ namespace LBPUnion.PLRPC;
 
 public static class Program
 {
-    [SuppressMessage("ReSharper", "CognitiveComplexity")]
     public static async Task Main(string[] args)
     {
         #if !DEBUG
