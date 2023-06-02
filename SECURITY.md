@@ -11,11 +11,12 @@ Below is a table depicting all currently supported PLRPC builds.
 > **Warning**
 > Individual commit artifacts are to be considered pre-release.
 
-| Version | Supported                 |
-| ------- | ------------------------- |
-| v0.1.x  | :x: *(not supported)*     |
-| v1.0.x  | :warning: *(deprecated)*  |
-| v1.1.x  | ✅                        |
+| Version | Supported                  |
+|---------|----------------------------|
+| v0.1.x  | :x: *(not supported)*      |
+| v1.0.x  | :warning: *(deprecated)*   |
+| v1.1.x  | :warning: *(deprecated)*   |
+| v2.0.x  | ✅                          |
 
 ## Reporting a Vulnerability
 
@@ -23,5 +24,5 @@ Please utilize the [Security Advisories](https://github.com/LBPUnion/PLRPC/secur
 page to report a security concern. If your vulnerability is accepted, three things will happen.
 
 1. The affected version and/or remaining build artifacts containing the vulnerability will be removed
-2. Users will be notified publically of the vulnerability and given remediating instructions
+2. Users will be notified publicly of the vulnerability and given remediating instructions
 3. We will begin working on a patch for the vulnerability ASAP.

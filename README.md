@@ -3,7 +3,8 @@
 [![Build Artifacts](https://github.com/LBPUnion/PLRPC/actions/workflows/build.yml/badge.svg)](https://github.com/LBPUnion/PLRPC/actions/workflows/build.yml)
 [![CodeQL Analysis](https://github.com/LBPUnion/PLRPC/actions/workflows/codeql.yml/badge.svg)](https://github.com/LBPUnion/PLRPC/actions/workflows/codeql.yml)
 
-PLRPC (short for ProjectLighthouse Rich Presence Client) is a continuation of the LighthouseRichPresence client under the same premise.
+PLRPC (short for ProjectLighthouse Rich Presence Client) is a continuation of the LighthouseRichPresence client under
+the same premise.
 
 ## Features
 
@@ -12,6 +13,8 @@ PLRPC (short for ProjectLighthouse Rich Presence Client) is a continuation of th
 - [x] Configuration file support
 - [x] Make @Slendy cry
 - [ ] Interactive buttons for user/slot
+    - [x] View User Profile
+    - [ ] View Current Slot
 - [ ] Stability (no fires)
 
 ## Installation Instructions
@@ -23,7 +26,14 @@ PLRPC (short for ProjectLighthouse Rich Presence Client) is a continuation of th
 3. Extract the build to any folder
 4. Run the client
     - **Configuration Mode:** `./path/to/PLRPC --config` (use `--config` each time)
-    - **Interactive Mode:** `./path/to/PLRPC`
+    - **Manual Mode:** `./path/to/PLRPC --server https://lighthouse.instance.url --username instanceusername`
+
+> **Warning** for **Windows Users**:
+>
+> Currently, you are unable to run the .exe file directly. You **must** open a Command Prompt or PowerShell
+> window, navigate to the file path, and execute the binary manually. Refer
+to [Installation Step #4](https://github.com/LBPUnion/PLRPC/blob/master/README.md#installation-instructions)
+> for instructions on how to further configure and run the client.
 
 **Post Install:**
 
