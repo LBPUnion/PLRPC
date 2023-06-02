@@ -16,14 +16,7 @@ public static class Logger
 
     public static void LogException(Exception exception)
     {
-        string errorMsg = @$"
-
-        *** PLRPC has experienced a severe error and will now exit. ***
-        This is most likely *not your fault*. Try restarting the client and check your configuration.
-        If this error persists, please create a new GitHub issue using the Bug Report template.
-        
-        {exception.Message}
-        ";
-        Error(errorMsg);
+        Error("A severe error has occurred. PLRPC will now exit.");
+        Error($"↳ {exception.GetType().Name}: {exception.Message}");
     }
 }

@@ -56,7 +56,7 @@ public class LighthouseClient
         SlotType slotType = status.CurrentRoom.Slot.SlotType;
         Slot? slot;
 
-        if (slotType is SlotType.User)
+        if (slotType == SlotType.User)
         {
             slot = await this.apiRepository.GetSlot(status.CurrentRoom.Slot.SlotId);
             if (slot == null)
