@@ -1,86 +1,114 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using System.Text.RegularExpressions;
+using CommandLine;
 using DiscordRPC;
+using LBPUnion.PLRPC.Helpers;
 using LBPUnion.PLRPC.Logging;
 using LBPUnion.PLRPC.Types;
 using LBPUnion.PLRPC.Types.Updater;
 
 namespace LBPUnion.PLRPC;
 
-public static partial class Program
+public static class Program
 {
     public static async Task Main(string[] args)
     {
         #if !DEBUG
-            await ReleaseUpdateCheck();
+            await InitializeUpdateCheck();
         #endif
 
-        string serverUrl;
-        string username;
+        await Parser.Default.ParseArguments<CommandLineArguments>(args).WithParsedAsync(ParseArguments);
+    }
 
-        if (args.Length > 0)
+    private static async Task ParseArguments(CommandLineArguments arguments)
+    {
+        if (arguments.UseConfig)
         {
-            if (args[0] == "--config")
-            {
-                if (!File.Exists("./config.json"))
+            PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
+            if (configuration is
                 {
-                    Logger.Warn("No configuration file exists, creating a base configuration.");
-                    Logger.Warn("Please populate the configuration file and restart the program.");
-                    PlrpcConfiguration defaultConfig = new()
-                    {
-                        ServerUrl = "https://lighthouse.lbpunion.com",
-                        Username = "",
-                    };
-                    await File.WriteAllTextAsync("./config.json",
-                        JsonSerializer.Serialize(defaultConfig,
-                            new JsonSerializerOptions
-                            {
-                                WriteIndented = true,
-                            }));
-                    return;
-                }
+                    ServerUrl: not null,
+                    Username: not null,
+                })
+                await InitializeLighthouseClient(configuration.ServerUrl, configuration.Username);
+        }
+        else if (arguments is
+                 {
+                     ServerUrl: not null,
+                     Username: not null,
+                 })
+        {
+            if (!ValidationHelper.IsValidUrl(arguments.ServerUrl)) return;
+            if (!ValidationHelper.IsValidUsername(arguments.Username)) return;
 
-                string configurationJson = await File.ReadAllTextAsync("./config.json");
-                PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson);
-
-                if (configuration?.ServerUrl == null || configuration.Username == null)
-                {
-                    Logger.Error("Configuration is invalid. Delete config.json and restart the program.");
-                    return;
-                }
-
-                serverUrl = configuration.ServerUrl ?? "";
-                username = configuration.Username ?? "";
-            }
-            else
-            {
-                Logger.Error("You have passed an invalid flag. You may use one of the following:");
-                Logger.Error("  --config (to use a configuration file)");
-                return;
-            }
+            await InitializeLighthouseClient(arguments.ServerUrl, arguments.Username);
         }
         else
         {
-            Console.Write("What is the URI of the Lighthouse Instance? (e.g. https://lighthouse.lbpunion.com) ");
-            serverUrl = Console.ReadLine() ?? "";
-
-            Console.Write("What is your registered username on this server? (e.g. littlebigmolly) ");
-            username = Console.ReadLine() ?? "";
+            // We want to instruct the user to view the help if they don't pass any valid arguments.
+            Logger.Error("No valid arguments passed. Please view --help for more information.");
         }
+    }
 
-        if (!UsernameRegex().IsMatch(username))
+    private static async Task<PlrpcConfiguration?> LoadFromConfiguration()
+    {
+        if (!File.Exists("./config.json"))
         {
-            Logger.Error("The username specified is in an invalid format. Please try again.");
-            return;
+            Logger.Warn("No configuration file exists, creating a base configuration.");
+            Logger.Warn("Please populate the configuration file and restart the program.");
+            PlrpcConfiguration defaultConfig = new()
+            {
+                ServerUrl = "https://lighthouse.lbpunion.com",
+                Username = "",
+            };
+            await File.WriteAllTextAsync("./config.json",
+                JsonSerializer.Serialize(defaultConfig,
+                    new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                    }));
+            return null;
         }
 
-        if (!Uri.TryCreate(serverUrl, UriKind.Absolute, out _))
+        string configurationJson = await File.ReadAllTextAsync("./config.json");
+        PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson);
+
+        if (configuration is
+            {
+                ServerUrl: not null,
+                Username: not null,
+            })
+            return new PlrpcConfiguration
+            {
+                ServerUrl = configuration.ServerUrl,
+                Username = configuration.Username,
+            };
+        Logger.Error("Configuration is invalid. Delete config.json and restart the program.");
+        return null;
+    }
+
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
+    private static async Task InitializeUpdateCheck()
+    {
+        HttpClient updateClient = new();
+        updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("LBPUnion/1.0 (PLRPC; github-release) UpdateClient/1.1");
+        Updater updater = new(updateClient);
+        Release? updateResult = await updater.CheckForUpdate();
+        if (updateResult != null)
         {
-            Logger.Error("The URL specified is in an invalid format. Please try again.");
-            return;
+            Logger.Notice("***************************************");
+            Logger.Notice("A new version of PLRPC is available!");
+            Logger.Notice($"{updateResult.TagName}: {updateResult.Url}");
+            Logger.Notice("***************************************");
         }
+        else
+        {
+            Logger.Notice("There are no new updates available.");
+        }
+    }
 
+    private static async Task InitializeLighthouseClient(string serverUrl, string username)
+    {
         HttpClient apiClient = new()
         {
             BaseAddress = new Uri(serverUrl + "/api/v1/"),
@@ -103,26 +131,16 @@ public static partial class Program
         await lighthouseClient.StartUpdateLoop();
     }
 
-    [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    private static async Task ReleaseUpdateCheck()
+    [Serializable]
+    public class CommandLineArguments
     {
-        HttpClient updateClient = new();
-        updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("LBPUnion/1.0 (PLRPC; github-release) UpdateClient/1.1");
-        Updater updater = new(updateClient);
-        Release? updateResult = await updater.CheckForUpdate();
-        if (updateResult != null)
-        {
-            Logger.Notice("***************************************");
-            Logger.Notice("A new version of PLRPC is available!");
-            Logger.Notice($"{updateResult.TagName}: {updateResult.Url}");
-            Logger.Notice("***************************************");
-        }
-        else
-        {
-            Logger.Notice("There are no new updates available.");
-        }
-    }
+        [Option('c', "config", Required = false, HelpText = "Use a configuration file.")]
+        public bool UseConfig { get; set; }
 
-    [GeneratedRegex("^[a-zA-Z0-9_.-]{3,16}$")]
-    private static partial Regex UsernameRegex();
+        [Option('s', "server", Required = false, HelpText = "The URL of the server to connect to.")]
+        public string? ServerUrl { get; set; }
+
+        [Option('u', "username", Required = false, HelpText = "Your username on the server.")]
+        public string? Username { get; set; }
+    }
 }

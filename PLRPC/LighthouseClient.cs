@@ -37,7 +37,7 @@ public class LighthouseClient
         this.discordClient.OnPresenceUpdate += (_, e) => Logger.Info($"{e.Presence}: Presence updated.");
     }
 
-    private async void UpdatePresence()
+    private async Task UpdatePresence()
     {
         User? user = await this.apiRepository.GetUser(this.username);
         if (user == null || user.PermissionLevel == PermissionLevel.Banned)
@@ -126,9 +126,13 @@ public class LighthouseClient
                 Size = playersInRoom,
                 Max = 4,
             },
-            Buttons = new []
+            Buttons = new[]
             {
-                new Button { Label = $"View {user.Username}'s Profile", Url = $"{this.serverUrl}/user/{userId}", },
+                new Button
+                {
+                    Label = $"View {user.Username}'s Profile",
+                    Url = $"{this.serverUrl}/user/{userId}",
+                },
             },
         };
         this.discordClient.SetPresence(newPresence);
@@ -143,7 +147,7 @@ public class LighthouseClient
         {
             try
             {
-                this.UpdatePresence();
+                await this.UpdatePresence();
             }
             catch (Exception exception)
             {
@@ -151,7 +155,8 @@ public class LighthouseClient
                 Logger.LogException(exception);
                 return;
             }
+
             await Task.Delay(30000);
         }
     }
-}                         
+}
