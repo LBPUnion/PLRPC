@@ -48,7 +48,7 @@ public static class Program
             if (!ValidationHelper.IsValidUrl(arguments.ServerUrl)) return;
             if (!ValidationHelper.IsValidUsername(arguments.Username)) return;
 
-            await InitializeLighthouseClient(arguments.ServerUrl, arguments.Username);
+            await InitializeLighthouseClient(arguments.ServerUrl.TrimEnd('/'), arguments.Username);
         }
         else
         {
