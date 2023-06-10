@@ -2,6 +2,7 @@
 using System.Text.Json;
 using CommandLine;
 using DiscordRPC;
+using JetBrains.Annotations;
 using LBPUnion.PLRPC.Helpers;
 using LBPUnion.PLRPC.Logging;
 using LBPUnion.PLRPC.Types;
@@ -141,7 +142,7 @@ public static class Program
         await lighthouseClient.StartUpdateLoop();
     }
 
-    [Serializable]
+    [UsedImplicitly]
     public class CommandLineArguments
     {
         [Option('c', "config", Required = false, HelpText = "Use a configuration file.")]
