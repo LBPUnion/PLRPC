@@ -55,6 +55,8 @@ public static class Program
         {
             // We want to instruct the user to view the help if they don't pass any valid arguments.
             Logger.Error("No valid arguments passed. Please view --help for more information.");
+            Logger.Error("You could also be running PLRPC in a way that doesn't support passing arguments.");
+            Thread.Sleep(-1);
         }
     }
 
