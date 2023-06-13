@@ -16,7 +16,7 @@ public static class Program
     {
         AllowTrailingCommas = true,
         WriteIndented = true,
-        ReadCommentHandling = JsonCommentHandling.Skip
+        ReadCommentHandling = JsonCommentHandling.Skip,
     };
 
     public static async Task Main(string[] args)
@@ -56,7 +56,7 @@ public static class Program
             // We want to instruct the user to view the help if they don't pass any valid arguments.
             Logger.Error("No valid arguments passed. Please view --help for more information.");
             Logger.Error("You could also be running PLRPC in a way that doesn't support passing arguments.");
-            Thread.Sleep(-1);
+            Thread.Sleep(Timeout.Infinite);
         }
     }
 
@@ -147,13 +147,20 @@ public static class Program
     [UsedImplicitly]
     public class CommandLineArguments
     {
+        public CommandLineArguments(bool useConfig, string? serverUrl, string? username)
+        {
+            this.UseConfig = useConfig;
+            this.ServerUrl = serverUrl;
+            this.Username = username;
+        }
+
         [Option('c', "config", Required = false, HelpText = "Use a configuration file.")]
-        public bool UseConfig { get; set; }
+        public bool UseConfig { get; }
 
         [Option('s', "server", Required = false, HelpText = "The URL of the server to connect to.")]
-        public string? ServerUrl { get; set; }
+        public string? ServerUrl { get; }
 
         [Option('u', "username", Required = false, HelpText = "Your username on the server.")]
-        public string? Username { get; set; }
+        public string? Username { get; }
     }
 }
