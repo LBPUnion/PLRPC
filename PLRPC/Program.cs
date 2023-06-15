@@ -33,18 +33,10 @@ public static class Program
         if (arguments.UseConfig)
         {
             PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
-            if (configuration is
-                {
-                    ServerUrl: not null,
-                    Username: not null,
-                })
+            if (configuration is { ServerUrl: not null, Username: not null })
                 await InitializeLighthouseClient(configuration.ServerUrl, configuration.Username);
         }
-        else if (arguments is
-                 {
-                     ServerUrl: not null,
-                     Username: not null,
-                 })
+        else if (arguments is { ServerUrl: not null, Username: not null })
         {
             if (!ValidationHelper.IsValidUrl(arguments.ServerUrl)) return;
             if (!ValidationHelper.IsValidUsername(arguments.Username)) return;
@@ -82,10 +74,7 @@ public static class Program
             PlrpcConfiguration? configuration =
                 JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson, lenientJsonOptions);
 
-            if (configuration is {
-                    ServerUrl: not null,
-                    Username: not null,
-                })
+            if (configuration is { ServerUrl: not null, Username: not null })
                 return new PlrpcConfiguration
                 {
                     ServerUrl = configuration.ServerUrl,

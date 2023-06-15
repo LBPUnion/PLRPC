@@ -23,7 +23,7 @@ public enum SlotType
 {
     Developer = 0,
     User = 1,
-    Moon = 2, 
+    Moon = 2,
     // MoonGroup = 3,
     // DeveloperGroup = 4,
     Pod = 5,
@@ -32,7 +32,7 @@ public enum SlotType
     DLCLevel = 8,
     // DLCPack = 9,
     // Playlist = 10,
-    DeveloperAdventure = 11, 
+    DeveloperAdventure = 11,
     // DeveloperAdventurePlanet = 12,
     // DeveloperAdventureArea = 13,
     // AdventurePlanetPublished = 14,
