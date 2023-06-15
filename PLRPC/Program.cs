@@ -46,10 +46,10 @@ public static class Program
                 await InitializeLighthouseClient(arguments.ServerUrl.TrimEnd('/'), arguments.Username);
                 break;
             default:
-                // We want to instruct the user to view the help if they pass invalid (or no) arguments.
-                Logger.Error("Invalid argument(s) were passed. Please view --help for more information.");
-                Logger.Error("You could also be running PLRPC in a way that doesn't support passing arguments.");
-                Thread.Sleep(Timeout.Infinite);
+                Logger.Error(arguments is { ServerUrl: null, Username: null, UseConfig: false }
+                    ? "No arguments were passed to the client. Ensure you're running PLRPC through CLI."
+                    : "Invalid argument(s) were passed to the client, please check them and try running again.");
+                Console.ReadLine();
                 break;
         }
     }
