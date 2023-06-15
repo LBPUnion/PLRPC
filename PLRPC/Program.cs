@@ -132,7 +132,7 @@ public static class Program
 
         await lighthouseClient.StartUpdateLoop();
     }
-                                                                         
+
     [UsedImplicitly]
     public class CommandLineArguments
     {
