@@ -30,25 +30,27 @@ public static class Program
 
     private static async Task ParseArguments(CommandLineArguments arguments)
     {
-        if (arguments.UseConfig)
+        switch (arguments)
         {
-            PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
-            if (configuration is { ServerUrl: not null, Username: not null })
-                await InitializeLighthouseClient(configuration.ServerUrl, configuration.Username);
-        }
-        else if (arguments is { ServerUrl: not null, Username: not null })
-        {
-            if (!ValidationHelper.IsValidUrl(arguments.ServerUrl)) return;
-            if (!ValidationHelper.IsValidUsername(arguments.Username)) return;
-
-            await InitializeLighthouseClient(arguments.ServerUrl.TrimEnd('/'), arguments.Username);
-        }
-        else
-        {
-            // We want to instruct the user to view the help if they don't pass any valid arguments.
-            Logger.Error("No valid arguments passed. Please view --help for more information.");
-            Logger.Error("You could also be running PLRPC in a way that doesn't support passing arguments.");
-            Thread.Sleep(Timeout.Infinite);
+            case { UseConfig: true }:
+            {
+                PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
+                if (configuration is { ServerUrl: not null, Username: not null })
+                    await InitializeLighthouseClient(configuration.ServerUrl, configuration.Username);
+                break;
+            }
+            case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUrl(arguments.ServerUrl):
+            case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUsername(arguments.Username):
+                return;
+            case { ServerUrl: not null, Username: not null }:
+                await InitializeLighthouseClient(arguments.ServerUrl.TrimEnd('/'), arguments.Username);
+                break;
+            default:
+                // We want to instruct the user to view the help if they pass invalid (or no) arguments.
+                Logger.Error("Invalid argument(s) were passed. Please view --help for more information.");
+                Logger.Error("You could also be running PLRPC in a way that doesn't support passing arguments.");
+                Thread.Sleep(Timeout.Infinite);
+                break;
         }
     }
 
