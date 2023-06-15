@@ -125,7 +125,7 @@ public static class Program
         const int cacheExpirationTime = 60 * 60 * 1000; // 1 hour
 
         ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
-        DiscordRpcClient discordRpcClient = new(applicationId); // default to ProjectLighthouse
+        DiscordRpcClient discordRpcClient = new(applicationId);
         LighthouseClient lighthouseClient = new(username, serverUrl, apiRepository, discordRpcClient);
 
         Logger.Info("Initializing client...");
