@@ -52,7 +52,7 @@ public static class Program
                     arguments.ApplicationId);
                 break;
             default:
-                Logger.Error(arguments is { ServerUrl: null, Username: null, ApplicationId: null, UseConfig: false }
+                Logger.Error(arguments is { ServerUrl: null, Username: null, UseConfig: false }
                     ? "No arguments were passed to the client. Ensure you're running PLRPC through CLI."
                     : "Invalid argument(s) were passed to the client, please check them and try running again.");
                 Console.ReadLine();
