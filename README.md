@@ -38,3 +38,9 @@ to [Installation Step #4](https://github.com/LBPUnion/PLRPC/blob/master/README.m
 **Post Install:**
 
 Please create an Issue if you encounter any bugs or weird errors.
+
+## Helpful Information
+
+* You can use the `--applicationid` command line argument, or change the `applicationId` entry in your configuration,
+  to override the default Discord Application ID. This can be useful if your Lighthouse instance or other service is
+  compatible with the PLRPC protocol and you want to display your own application name.
