@@ -35,18 +35,24 @@ public static class Program
             case { UseConfig: true }:
             {
                 PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
-                if (configuration is { ServerUrl: not null, Username: not null })
-                    await InitializeLighthouseClient(configuration.ServerUrl, configuration.Username);
+                if (configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null })
+                    await InitializeLighthouseClient(
+                        configuration.ServerUrl.TrimEnd('/'),
+                        configuration.Username,
+                        configuration.ApplicationId);
                 break;
             }
             case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUrl(arguments.ServerUrl):
             case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUsername(arguments.Username):
                 return;
-            case { ServerUrl: not null, Username: not null }:
-                await InitializeLighthouseClient(arguments.ServerUrl.TrimEnd('/'), arguments.Username);
+            case { ServerUrl: not null, Username: not null, ApplicationId: not null }:
+                await InitializeLighthouseClient(
+                    arguments.ServerUrl.TrimEnd('/'), 
+                    arguments.Username, 
+                    arguments.ApplicationId);
                 break;
             default:
-                Logger.Error(arguments is { ServerUrl: null, Username: null, UseConfig: false }
+                Logger.Error(arguments is { ServerUrl: null, Username: null, ApplicationId: null, UseConfig: false }
                     ? "No arguments were passed to the client. Ensure you're running PLRPC through CLI."
                     : "Invalid argument(s) were passed to the client, please check them and try running again.");
                 Console.ReadLine();
@@ -60,11 +66,7 @@ public static class Program
         {
             Logger.Warn("No configuration file exists, creating a base configuration.");
             Logger.Warn("Please populate the configuration file and restart the program.");
-            PlrpcConfiguration defaultConfig = new()
-            {
-                ServerUrl = "https://lighthouse.lbpunion.com",
-                Username = "",
-            };
+            PlrpcConfiguration defaultConfig = new();
             await File.WriteAllTextAsync("./config.json", JsonSerializer.Serialize(defaultConfig, lenientJsonOptions));
             return null;
         }
@@ -76,12 +78,8 @@ public static class Program
             PlrpcConfiguration? configuration =
                 JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson, lenientJsonOptions);
 
-            if (configuration is { ServerUrl: not null, Username: not null })
-                return new PlrpcConfiguration
-                {
-                    ServerUrl = configuration.ServerUrl,
-                    Username = configuration.Username,
-                };
+            if (configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null })
+                return configuration;
             throw new JsonException("Deserialized configuration contains one or more null values.");
         }
         catch (Exception exception)
@@ -111,7 +109,7 @@ public static class Program
         }
     }
 
-    private static async Task InitializeLighthouseClient(string serverUrl, string username)
+    private static async Task InitializeLighthouseClient(string serverUrl, string username, string? applicationId)
     {
         HttpClient apiClient = new()
         {
@@ -127,22 +125,23 @@ public static class Program
         const int cacheExpirationTime = 60 * 60 * 1000; // 1 hour
 
         ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
-        DiscordRpcClient discordRpcClient = new("1060973475151495288");
+        DiscordRpcClient discordRpcClient = new(applicationId); // default to ProjectLighthouse
         LighthouseClient lighthouseClient = new(username, serverUrl, apiRepository, discordRpcClient);
 
         Logger.Info("Initializing client...");
 
         await lighthouseClient.StartUpdateLoop();
     }
-
+                                                                         
     [UsedImplicitly]
     public class CommandLineArguments
     {
-        public CommandLineArguments(bool useConfig, string? serverUrl, string? username)
+        public CommandLineArguments(bool useConfig, string? serverUrl, string? username, string? applicationId)
         {
             this.UseConfig = useConfig;
             this.ServerUrl = serverUrl;
             this.Username = username;
+            this.ApplicationId = applicationId ?? "1060973475151495288"; // default to ProjectLighthouse app ID
         }
 
         [Option('c', "config", Required = false, HelpText = "Use a configuration file.")]
@@ -153,5 +152,8 @@ public static class Program
 
         [Option('u', "username", Required = false, HelpText = "Your username on the server.")]
         public string? Username { get; }
+
+        [Option('a', "applicationid", Required = false, HelpText = "The Discord application ID to use.")]
+        public string? ApplicationId { get; }
     }
 }
