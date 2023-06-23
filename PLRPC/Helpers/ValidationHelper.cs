@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using LBPUnion.PLRPC.Logging;
+using Serilog;
 
 namespace LBPUnion.PLRPC.Helpers;
 
@@ -9,7 +9,7 @@ public static partial class ValidationHelper
     {
         if (Uri.TryCreate(url, UriKind.Absolute, out _)) return true;
 
-        Logger.Error("The URL specified is in an invalid format. Please try again.");
+        Log.Error("The URL specified is in an invalid format. Please try again");
         return false;
     }
 
@@ -17,7 +17,7 @@ public static partial class ValidationHelper
     {
         if (UsernameRegex().IsMatch(username)) return true;
 
-        Logger.Error("The username specified is invalid. Please try again.");
+        Log.Error("The username specified is invalid. Please try again");
         return false;
     }
 

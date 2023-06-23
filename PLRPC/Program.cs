@@ -4,9 +4,9 @@ using CommandLine;
 using DiscordRPC;
 using JetBrains.Annotations;
 using LBPUnion.PLRPC.Helpers;
-using LBPUnion.PLRPC.Logging;
 using LBPUnion.PLRPC.Types;
 using LBPUnion.PLRPC.Types.Updater;
+using Serilog;
 
 namespace LBPUnion.PLRPC;
 
@@ -25,6 +25,8 @@ public static class Program
             await InitializeUpdateCheck();
         #endif
 
+        Log.Logger = new LoggerConfiguration().MinimumLevel.Information().WriteTo.Console().CreateLogger();
+
         await Parser.Default.ParseArguments<CommandLineArguments>(args).WithParsedAsync(ParseArguments);
     }
 
@@ -36,8 +38,7 @@ public static class Program
             {
                 PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
                 if (configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null })
-                    await InitializeLighthouseClient(
-                        configuration.ServerUrl.TrimEnd('/'),
+                    await InitializeLighthouseClient(configuration.ServerUrl.TrimEnd('/'),
                         configuration.Username,
                         configuration.ApplicationId);
                 break;
@@ -46,15 +47,15 @@ public static class Program
             case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUsername(arguments.Username):
                 return;
             case { ServerUrl: not null, Username: not null, ApplicationId: not null }:
-                await InitializeLighthouseClient(
-                    arguments.ServerUrl.TrimEnd('/'), 
-                    arguments.Username, 
+                await InitializeLighthouseClient(arguments.ServerUrl.TrimEnd('/'),
+                    arguments.Username,
                     arguments.ApplicationId);
                 break;
             default:
-                Logger.Error(arguments is { ServerUrl: null, Username: null, UseConfig: false }
-                    ? "No arguments were passed to the client. Ensure you're running PLRPC through CLI."
-                    : "Invalid argument(s) were passed to the client, please check them and try running again.");
+                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
+                Log.Error(arguments is { ServerUrl: null, Username: null, UseConfig: false }
+                    ? "No arguments were passed to the client. Ensure you're running PLRPC through CLI"
+                    : "Invalid argument(s) were passed to the client, please check them and try running again");
                 Console.ReadLine();
                 break;
         }
@@ -64,8 +65,8 @@ public static class Program
     {
         if (!File.Exists("./config.json"))
         {
-            Logger.Warn("No configuration file exists, creating a base configuration.");
-            Logger.Warn("Please populate the configuration file and restart the program.");
+            Log.Warning("No configuration file exists, creating a base configuration");
+            Log.Warning("Please populate the configuration file and restart the program");
             PlrpcConfiguration defaultConfig = new();
             await File.WriteAllTextAsync("./config.json", JsonSerializer.Serialize(defaultConfig, lenientJsonOptions));
             return null;
@@ -80,11 +81,12 @@ public static class Program
 
             if (configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null })
                 return configuration;
-            throw new JsonException("Deserialized configuration contains one or more null values.");
+
+            throw new JsonException("Deserialized configuration contains one or more null values");
         }
         catch (Exception exception)
         {
-            Logger.LogException(exception);
+            Log.Fatal(exception, "Failed to deserialize configuration file");
             return null;
         }
     }
@@ -98,14 +100,14 @@ public static class Program
         Release? updateResult = await updater.CheckForUpdate();
         if (updateResult != null)
         {
-            Logger.Notice("***************************************");
-            Logger.Notice("A new version of PLRPC is available!");
-            Logger.Notice($"{updateResult.TagName}: {updateResult.Url}");
-            Logger.Notice("***************************************");
+            Log.Information("***************************************");
+            Log.Information("A new version of PLRPC is available!");
+            Log.Information("{UpdateTag}: {UpdateUrl}", updateResult.TagName, updateResult.Url);
+            Log.Information("***************************************");
         }
         else
         {
-            Logger.Notice("There are no new updates available.");
+            Log.Information("There are no new updates available");
         }
     }
 
@@ -128,7 +130,7 @@ public static class Program
         DiscordRpcClient discordRpcClient = new(applicationId);
         LighthouseClient lighthouseClient = new(username, serverUrl, apiRepository, discordRpcClient);
 
-        Logger.Info("Initializing client...");
+        Log.Information("Initializing client...");
 
         await lighthouseClient.StartUpdateLoop();
     }
