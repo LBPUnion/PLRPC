@@ -157,7 +157,6 @@ public class LighthouseClient
                 Log.Fatal(exception, "Failed to update presence");
                 return;
             }
-
             await Task.Delay(30000);
         }
     }

@@ -71,8 +71,11 @@ public static class Program
         {
             Log.Warning("No configuration file exists, creating a base configuration");
             Log.Warning("Please populate the configuration file and restart the program");
+
             PlrpcConfiguration defaultConfig = new();
+
             await File.WriteAllTextAsync("./config.json", JsonSerializer.Serialize(defaultConfig, lenientJsonOptions));
+
             return null;
         }
 
@@ -99,9 +102,12 @@ public static class Program
     private static async Task InitializeUpdateCheck()
     {
         HttpClient updateClient = new();
+
         updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("LBPUnion/1.0 (PLRPC; github-release) UpdateClient/1.1");
         Updater updater = new(updateClient);
+
         Release? updateResult = await updater.CheckForUpdate();
+
         if (updateResult != null)
         {
             Log.Information("***************************************");

@@ -25,6 +25,7 @@ public class ApiRepositoryImpl : IApiRepository
         if (this.GetFromCache(this.userCache, username, out User? cachedUser)) return cachedUser;
 
         string userJson = await this.httpClient.GetStringAsync($"username/{username}");
+
         User? user = JsonSerializer.Deserialize<User>(userJson);
         if (user == null) return null;
 
@@ -37,6 +38,7 @@ public class ApiRepositoryImpl : IApiRepository
         if (this.GetFromCache(this.userStatusCache, userId, out UserStatus? cachedUserStatus)) return cachedUserStatus;
 
         string userStatusJson = await this.httpClient.GetStringAsync($"user/{userId}/status");
+
         UserStatus? userStatus = JsonSerializer.Deserialize<UserStatus>(userStatusJson);
         if (userStatus == null) return null;
 
