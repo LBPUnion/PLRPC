@@ -2,15 +2,29 @@
 
     <PropertyGroup>
         <RootNamespace>LBPUnion.PLRPC.GUI</RootNamespace>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net7.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <SelfContained>true</SelfContained>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+    </PropertyGroup>
+
     <ItemGroup>
-        <ProjectReference Include="..\PLRPC.GUI\PLRPC.GUI.csproj"/>
         <PackageReference Include="Eto.Platform.Windows" Version="2.7.5"/>
+        <ProjectReference Include="..\PLRPC.GUI\PLRPC.GUI.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <KnownFrameworkReference Update="Microsoft.WindowsDesktop.App.WindowsForms" IsWindowsOnly="false"/>
+        <KnownFrameworkReference Update="Microsoft.WindowsDesktop.App" IsWindowsOnly="false"/>
+    </ItemGroup>
+    
 </Project>

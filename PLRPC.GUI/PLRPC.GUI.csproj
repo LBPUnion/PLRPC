@@ -1,17 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup Condition=" '$(Configuration)' != 'Windows' ">
+    <PropertyGroup>
+        <SelfContained>true</SelfContained>
         <TargetFramework>net7.0</TargetFramework>
+        <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)' == 'Windows' ">
-        <TargetFramework>net7.0-windows</TargetFramework>
+    <PropertyGroup>
+        <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     </PropertyGroup>
 
     <PropertyGroup>
         <RootNamespace>LBPUnion.PLRPC.GUI</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
+        <SelfContained>true</SelfContained>
     </PropertyGroup>
 
     <ItemGroup>
