@@ -16,6 +16,8 @@ public class MainForm : Form
     {
         this.Title = "PLRPC";
         this.ClientSize = new Size(400, -1);
+        this.Resizable = false;
+
         this.Content = this.tableLayout;
 
         Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
