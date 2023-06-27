@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup Condition=" '$(Configuration)' != 'Windows' ">
+        <TargetFramework>net7.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Windows' ">
+        <TargetFramework>net7.0-windows</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <RootNamespace>LBPUnion.PLRPC.GUI</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Serilog" Version="3.0.1"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0"/>
+        <PackageReference Include="Eto.Forms" Version="2.7.5"/>
+        <ProjectReference Include="..\PLRPC\PLRPC.csproj"/>
+    </ItemGroup>
+
+</Project>

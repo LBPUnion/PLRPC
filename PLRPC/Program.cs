@@ -21,10 +21,10 @@ public static class Program
 
     public static async Task Main(string[] args)
     {
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
+        Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
             .Enrich.With<LogEnrichers>()
-            .WriteTo.Console(outputTemplate: "[{ProcessId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}")
+            .WriteTo.Console(
+                outputTemplate: "[{ProcessId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}")
             .CreateLogger();
 
         #if !DEBUG
@@ -121,7 +121,7 @@ public static class Program
         }
     }
 
-    private static async Task InitializeLighthouseClient(string serverUrl, string username, string? applicationId)
+    public static async Task InitializeLighthouseClient(string serverUrl, string username, string? applicationId)
     {
         HttpClient apiClient = new()
         {
