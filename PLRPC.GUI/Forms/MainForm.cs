@@ -118,11 +118,14 @@ public class MainForm : Form
 
         try
         {
+            // Text changes
             connectButton.Text = MainFormStrings.Connected.String();
 
+            // Button states
             connectButton.Enabled = false;
             unlockDefaultsButton.Enabled = false;
 
+            // Field states
             serverUrl.Enabled = false;
             username.Enabled = false;
             applicationId.Enabled = false;
@@ -145,13 +148,15 @@ public class MainForm : Form
 
     private static void UnlockDefaultsHandler(object sender, EventArgs eventArgs)
     {
+        // Text changes
+        unlockDefaultsButton.Text = MainFormStrings.UnlockedDefaults.String();
+        
+        // Button states
         unlockDefaultsButton.Enabled = false;
 
+        // Field states
         serverUrl.Enabled = true;
         applicationId.Enabled = true;
-
-        unlockDefaultsButton.Text = MainFormStrings.UnlockedDefaults.String();
-        unlockDefaultsButton.BackgroundColor = Colors.Pink;
 
         MessageBox.Show(MainFormStrings.UnlockedDefaultsWarning.String(),
             "Warning",
