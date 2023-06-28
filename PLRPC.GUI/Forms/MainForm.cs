@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Eto.Drawing;
 using Eto.Forms;
+using LBPUnion.PLRPC.GUI.Strings;
 using LBPUnion.PLRPC.Types;
 using Serilog;
 
@@ -31,7 +32,7 @@ public class MainForm : Form
 
     private static readonly GroupBox configurationEntries = new()
     {
-        Text = "Configuration",
+        Text = MainFormStrings.Configuration.String(),
         Content = new TableLayout
         {
             Padding = new Padding(3, 3, 3, 3),
@@ -42,7 +43,7 @@ public class MainForm : Form
                 {
                     new(new Label
                     {
-                        Text = "Username",
+                        Text = MainFormStrings.Username.String(),
                     }),
                     new(username = new TextBox()),
                 }),
@@ -50,7 +51,7 @@ public class MainForm : Form
                 {
                     new(new Label
                     {
-                        Text = "Server URL",
+                        Text = MainFormStrings.ServerUrl.String(),
                     }),
                     new(serverUrl = new TextBox
                     {
@@ -62,7 +63,7 @@ public class MainForm : Form
                 {
                     new(new Label
                     {
-                        Text = "Application ID",
+                        Text = MainFormStrings.ApplicationId.String(),
                     }),
                     new(applicationId = new TextBox
                     {
@@ -76,12 +77,12 @@ public class MainForm : Form
 
     private static readonly Button connectButton = new(InitializeClientHandler)
     {
-        Text = "Connect",
+        Text = MainFormStrings.Connect.String(),
     };
 
     private static readonly Button unlockDefaultsButton = new(UnlockDefaultsHandler)
     {
-        Text = "Unlock Defaults",
+        Text = MainFormStrings.UnlockDefaults.String(),
     };
 
     private readonly TableLayout tableLayout = new()
@@ -111,13 +112,13 @@ public class MainForm : Form
 
         if (arguments.Any(a => string.IsNullOrWhiteSpace(a.Text)))
         {
-            MessageBox.Show("Please fill in all fields and try again.", MessageBoxButtons.OK, MessageBoxType.Error);
+            MessageBox.Show(MainFormStrings.BlankFieldsError.String(), MessageBoxButtons.OK, MessageBoxType.Error);
             return;
         }
 
         try
         {
-            connectButton.Text = "Connected";
+            connectButton.Text = MainFormStrings.Connected.String();
 
             connectButton.Enabled = false;
             unlockDefaultsButton.Enabled = false;
@@ -132,7 +133,7 @@ public class MainForm : Form
         {
             StringBuilder exceptionBuilder = new();
 
-            exceptionBuilder.AppendLine("An error occurred while initializing the PLRPC client.\n");
+            exceptionBuilder.AppendLine($"{MainFormStrings.InitializationError.String()}\n");
             exceptionBuilder.AppendLine($"{exception.Message}\n");
             exceptionBuilder.AppendLine($"{exception.Source}");
 
@@ -144,10 +145,18 @@ public class MainForm : Form
 
     private static void UnlockDefaultsHandler(object sender, EventArgs eventArgs)
     {
+        unlockDefaultsButton.Enabled = false;
+
         serverUrl.Enabled = true;
         applicationId.Enabled = true;
 
-        unlockDefaultsButton.Enabled = false;
+        unlockDefaultsButton.Text = MainFormStrings.UnlockedDefaults.String();
+        unlockDefaultsButton.BackgroundColor = Colors.Pink;
+
+        MessageBox.Show(MainFormStrings.UnlockedDefaultsWarning.String(),
+            "Warning",
+            MessageBoxButtons.OK,
+            MessageBoxType.Warning);
     }
 
     #endregion

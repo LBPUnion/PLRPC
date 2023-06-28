@@ -12,7 +12,7 @@
         <TargetFramework>net7.0-windows</TargetFramework>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     </PropertyGroup>
@@ -26,5 +26,5 @@
         <KnownFrameworkReference Update="Microsoft.WindowsDesktop.App.WindowsForms" IsWindowsOnly="false"/>
         <KnownFrameworkReference Update="Microsoft.WindowsDesktop.App" IsWindowsOnly="false"/>
     </ItemGroup>
-    
+
 </Project>
