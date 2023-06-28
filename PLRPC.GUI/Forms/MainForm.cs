@@ -2,7 +2,6 @@
 using Eto.Drawing;
 using Eto.Forms;
 using LBPUnion.PLRPC.GUI.Strings;
-using LBPUnion.PLRPC.Types;
 using Serilog;
 
 namespace LBPUnion.PLRPC.GUI.Forms;
@@ -21,11 +20,7 @@ public class MainForm : Form
 
         this.Content = this.tableLayout;
 
-        Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
-            .Enrich.With<LogEnrichers>()
-            .WriteTo.Console(
-                outputTemplate: "[{ProcessId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}")
-            .CreateLogger();
+        Log.Logger = Program.LogConfiguration;
     }
 
     #region GUI

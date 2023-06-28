@@ -7,11 +7,20 @@ using LBPUnion.PLRPC.Helpers;
 using LBPUnion.PLRPC.Types;
 using LBPUnion.PLRPC.Types.Updater;
 using Serilog;
+using Serilog.Core;
 
 namespace LBPUnion.PLRPC;
 
 public static class Program
 {
+    #region Logger and JSON configuration
+
+    public static readonly Logger LogConfiguration = new LoggerConfiguration()
+        .MinimumLevel.Information()
+        .Enrich.With<LogEnrichers>()
+        .WriteTo.Console(outputTemplate: "[{ProcessId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}")
+        .CreateLogger();
+    
     private static readonly JsonSerializerOptions lenientJsonOptions = new()
     {
         AllowTrailingCommas = true,
@@ -19,20 +28,24 @@ public static class Program
         ReadCommentHandling = JsonCommentHandling.Skip,
     };
 
+    #endregion
+
+    #region Main method
+
     public static async Task Main(string[] args)
     {
-        Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
-            .Enrich.With<LogEnrichers>()
-            .WriteTo.Console(
-                outputTemplate: "[{ProcessId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}")
-            .CreateLogger();
-
+        Log.Logger = LogConfiguration;
+        
         #if !DEBUG
             await InitializeUpdateCheck();
         #endif
 
         await Parser.Default.ParseArguments<CommandLineArguments>(args).WithParsedAsync(ParseArguments);
     }
+
+    #endregion
+
+    #region Configuration
 
     private static async Task ParseArguments(CommandLineArguments arguments)
     {
@@ -98,6 +111,10 @@ public static class Program
         }
     }
 
+    #endregion
+
+    #region Updater
+
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
     private static async Task InitializeUpdateCheck()
     {
@@ -120,6 +137,10 @@ public static class Program
             Log.Information("There are no new updates available");
         }
     }
+
+    #endregion
+
+    #region LighthouseClient entrypoint
 
     public static async Task InitializeLighthouseClient(string serverUrl, string username, string? applicationId)
     {
@@ -145,6 +166,10 @@ public static class Program
         await lighthouseClient.StartUpdateLoop();
     }
 
+    #endregion
+
+    #region Command line arguments
+
     [UsedImplicitly]
     public class CommandLineArguments
     {
@@ -168,4 +193,6 @@ public static class Program
         [Option('a', "applicationid", Required = false, HelpText = "The Discord application ID to use.")]
         public string? ApplicationId { get; }
     }
+
+    #endregion
 }
