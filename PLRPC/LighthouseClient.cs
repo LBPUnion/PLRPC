@@ -3,6 +3,7 @@ using DiscordRPC.Logging;
 using LBPUnion.PLRPC.Extensions;
 using LBPUnion.PLRPC.Types;
 using LBPUnion.PLRPC.Types.Entities;
+using LBPUnion.PLRPC.Types.Logging;
 using Serilog;
 using User = LBPUnion.PLRPC.Types.Entities.User;
 
@@ -29,14 +30,13 @@ public class LighthouseClient
             Level = LogLevel.Warning,
         };
 
-        this.discordClient.OnReady += (_, e) =>
-        {
-            Log.Information("Connected to Discord Account {Username}", e.User.Username);
+        this.discordClient.OnReady += (_, e) => 
             this.readySemaphore.Release();
-        };
 
         this.discordClient.OnPresenceUpdate += (_, e) =>
-            Log.Information("{@Presence}: Presence updated", e.Presence.GetType());
+            Log.Information("{@Area}: Updated client presence ({Party})", 
+                LogArea.RichPresence, 
+                e.Presence.Party.ID);
     }
 
     private async Task UpdatePresence()
@@ -44,14 +44,14 @@ public class LighthouseClient
         User? user = await this.apiRepository.GetUser(this.username);
         if (user == null || user.PermissionLevel == PermissionLevel.Banned)
         {
-            Log.Warning("Failed to get user from the server");
+            Log.Warning("{@Area}: Failed to get user from the server", LogArea.ApiRepositoryImpl);
             return;
         }
 
         UserStatus? status = await this.apiRepository.GetStatus(user.UserId);
         if (status?.CurrentRoom?.Slot?.SlotId == null || status.CurrentRoom.PlayerIds == null)
         {
-            Log.Warning("Failed to get user status from the server");
+            Log.Warning("{@Area}: Failed to get user status from the server", LogArea.ApiRepositoryImpl);
             return;
         }
 
@@ -63,7 +63,7 @@ public class LighthouseClient
             slot = await this.apiRepository.GetSlot(status.CurrentRoom.Slot.SlotId);
             if (slot == null)
             {
-                Log.Warning("Failed to get user's current level from the server");
+                Log.Warning("{@Area}: Failed to get user's current level from the server", LogArea.ApiRepositoryImpl);
                 return;
             }
         }
@@ -137,24 +137,30 @@ public class LighthouseClient
                 },
             },
         };
+
+        Log.Information("{@Area}: Updating client presence ({Party})",
+            LogArea.RichPresence,
+            newPresence.Party.ID);
+
         this.discordClient.SetPresence(newPresence);
-        Log.Information("{@Presence}: Sending presence update", newPresence.GetType());
     }
 
     public async Task StartUpdateLoop()
     {
         await this.readySemaphore.WaitAsync();
         this.readySemaphore.Dispose();
+
+        Log.Information("{@Area}: Client is ready for presence updates", LogArea.LighthouseClient);
+
         while (true)
         {
             try
             {
                 await this.UpdatePresence();
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 this.discordClient.Dispose();
-                Log.Fatal(exception, "Failed to update presence");
                 return;
             }
             await Task.Delay(30000);

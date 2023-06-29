@@ -5,6 +5,7 @@ using DiscordRPC;
 using JetBrains.Annotations;
 using LBPUnion.PLRPC.Helpers;
 using LBPUnion.PLRPC.Types;
+using LBPUnion.PLRPC.Types.Logging;
 using LBPUnion.PLRPC.Types.Updater;
 using Serilog;
 using Serilog.Core;
@@ -20,7 +21,7 @@ public static class Program
         .Enrich.With<LogEnrichers>()
         .WriteTo.Console(outputTemplate: "[{ProcessId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}")
         .CreateLogger();
-    
+
     private static readonly JsonSerializerOptions lenientJsonOptions = new()
     {
         AllowTrailingCommas = true,
@@ -28,14 +29,14 @@ public static class Program
         ReadCommentHandling = JsonCommentHandling.Skip,
     };
 
-    #endregion
-
+    #endregion 
+    
     #region Main method
 
     public static async Task Main(string[] args)
     {
         Log.Logger = LogConfiguration;
-        
+
         #if !DEBUG
             await InitializeUpdateCheck();
         #endif
@@ -127,14 +128,15 @@ public static class Program
 
         if (updateResult != null)
         {
-            Log.Information("***************************************");
-            Log.Information("A new version of PLRPC is available!");
-            Log.Information("{UpdateTag}: {UpdateUrl}", updateResult.TagName, updateResult.Url);
-            Log.Information("***************************************");
+            Log.Information("{@Area}: A new version of PLRPC is available!", LogArea.Updater);
+            Log.Information("{@Area}: {UpdateTag}: {UpdateUrl}",
+                LogArea.Updater,
+                updateResult.TagName,
+                updateResult.Url);
         }
         else
         {
-            Log.Information("There are no new updates available");
+            Log.Information("{@Area}: There are no new updates available", LogArea.Updater);
         }
     }
 
@@ -144,6 +146,8 @@ public static class Program
 
     public static async Task InitializeLighthouseClient(string serverUrl, string username, string? applicationId)
     {
+        Log.Information("{@Area}: Initializing new client and dependencies", LogArea.LighthouseClient);
+
         HttpClient apiClient = new()
         {
             BaseAddress = new Uri(serverUrl + "/api/v1/"),
@@ -160,8 +164,6 @@ public static class Program
         ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
         DiscordRpcClient discordRpcClient = new(applicationId);
         LighthouseClient lighthouseClient = new(username, serverUrl, apiRepository, discordRpcClient);
-
-        Log.Information("Initializing client...");
 
         await lighthouseClient.StartUpdateLoop();
     }

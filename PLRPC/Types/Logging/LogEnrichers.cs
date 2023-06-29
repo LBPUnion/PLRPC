@@ -1,7 +1,7 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
 
-namespace LBPUnion.PLRPC.Types;
+namespace LBPUnion.PLRPC.Types.Logging;
 
 public class LogEnrichers : ILogEventEnricher
 {

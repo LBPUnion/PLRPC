@@ -145,7 +145,7 @@ public class MainForm : Form
     {
         // Text changes
         unlockDefaultsButton.Text = MainFormStrings.UnlockedDefaults.String();
-        
+
         // Button states
         unlockDefaultsButton.Enabled = false;
 
