@@ -154,8 +154,6 @@ public class LighthouseClient
         await this.readySemaphore.WaitAsync();
         this.readySemaphore.Dispose();
 
-        Log.Information("{@Area}: Client is ready for presence updates", LogArea.LighthouseClient);
-
         while (true)
         {
             try
