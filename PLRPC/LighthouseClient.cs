@@ -25,13 +25,18 @@ public class LighthouseClient
 
         this.discordClient = rpcClient;
         this.discordClient.Initialize();
-        this.discordClient.Logger = new ConsoleLogger
-        {
-            Level = LogLevel.Warning,
-        };
 
-        this.discordClient.OnReady += (_, e) => 
-            this.readySemaphore.Release();
+        this.discordClient.OnReady += (_, _) => this.readySemaphore.Release();
+
+        this.discordClient.OnConnectionEstablished += (_, e) =>
+            Log.Information("{@Area}: Successfully acquired the lock on RPC pipe {Pipe}", 
+                LogArea.LighthouseClient, 
+                e.ConnectedPipe);
+        
+        this.discordClient.OnConnectionFailed += (_, e) =>
+            Log.Warning("{@Area}: Failed to acquire the lock on RPC pipe {Pipe}", 
+                LogArea.LighthouseClient, 
+                e.FailedPipe);
 
         this.discordClient.OnPresenceUpdate += (_, e) =>
             Log.Information("{@Area}: Updated client presence ({Party})", 
@@ -160,6 +165,7 @@ public class LighthouseClient
             }
             catch (Exception)
             {
+                this.discordClient.ClearPresence();
                 this.discordClient.Dispose();
                 return;
             }
