@@ -28,15 +28,15 @@ public class LighthouseClient
         this.discordClient.OnReady += (_, _) => this.readySemaphore.Release();
 
         this.discordClient.OnReady += (_, _) =>
-            Log.Information("{@Area}: Successfully established connection to client",
+            Log.Information("{@Area}: Successfully established ready connection",
                 LogArea.LighthouseClient);
 
         this.discordClient.OnConnectionEstablished += (_, e) =>
-            Log.Information("{@Area}: Successfully acquired the lock on RPC pipe {Pipe}",
+            Log.Information("{@Area}: Successfully acquired the lock on RPC ({Pipe})",
                 LogArea.LighthouseClient, e.ConnectedPipe);
 
         this.discordClient.OnConnectionFailed += (_, e) =>
-            Log.Warning("{@Area}: Failed to acquire the lock on RPC pipe {Pipe}",
+            Log.Warning("{@Area}: Failed to acquire the lock on RPC ({Pipe})",
                 LogArea.LighthouseClient, e.FailedPipe);
 
         this.discordClient.OnPresenceUpdate += (_, e) =>
