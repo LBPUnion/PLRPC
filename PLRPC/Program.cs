@@ -128,15 +128,15 @@ public static class Program
 
         if (updateResult != null)
         {
-            Log.Information("{@Area}: A new version of PLRPC is available!", LogArea.Updater);
+            Log.Information("{@Area}: A new version of PLRPC is available!", 
+                LogArea.Updater);
             Log.Information("{@Area}: {UpdateTag}: {UpdateUrl}",
-                LogArea.Updater,
-                updateResult.TagName,
-                updateResult.Url);
+                LogArea.Updater, updateResult.TagName, updateResult.Url);
         }
         else
         {
-            Log.Information("{@Area}: There are no new updates available", LogArea.Updater);
+            Log.Information("{@Area}: There are no new updates available", 
+                LogArea.Updater);
         }
     }
 
@@ -146,7 +146,8 @@ public static class Program
 
     public static async Task InitializeLighthouseClient(string serverUrl, string username, string? applicationId)
     {
-        Log.Information("{@Area}: Initializing new client and dependencies", LogArea.LighthouseClient);
+        Log.Information("{@Area}: Initializing new client and dependencies", 
+            LogArea.LighthouseClient);
 
         HttpClient apiClient = new()
         {

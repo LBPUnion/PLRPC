@@ -1,5 +1,4 @@
 ﻿using DiscordRPC;
-using DiscordRPC.Logging;
 using LBPUnion.PLRPC.Extensions;
 using LBPUnion.PLRPC.Types;
 using LBPUnion.PLRPC.Types.Entities;
@@ -28,20 +27,21 @@ public class LighthouseClient
 
         this.discordClient.OnReady += (_, _) => this.readySemaphore.Release();
 
+        this.discordClient.OnReady += (_, _) =>
+            Log.Information("{@Area}: Successfully established connection to client",
+                LogArea.LighthouseClient);
+
         this.discordClient.OnConnectionEstablished += (_, e) =>
-            Log.Information("{@Area}: Successfully acquired the lock on RPC pipe {Pipe}", 
-                LogArea.LighthouseClient, 
-                e.ConnectedPipe);
-        
+            Log.Information("{@Area}: Successfully acquired the lock on RPC pipe {Pipe}",
+                LogArea.LighthouseClient, e.ConnectedPipe);
+
         this.discordClient.OnConnectionFailed += (_, e) =>
-            Log.Warning("{@Area}: Failed to acquire the lock on RPC pipe {Pipe}", 
-                LogArea.LighthouseClient, 
-                e.FailedPipe);
+            Log.Warning("{@Area}: Failed to acquire the lock on RPC pipe {Pipe}",
+                LogArea.LighthouseClient, e.FailedPipe);
 
         this.discordClient.OnPresenceUpdate += (_, e) =>
-            Log.Information("{@Area}: Updated client presence ({Party})", 
-                LogArea.RichPresence, 
-                e.Presence.Party.ID);
+            Log.Information("{@Area}: Updated client presence ({Party})",
+                LogArea.RichPresence, e.Presence.Party.ID);
     }
 
     private async Task UpdatePresence()
@@ -143,9 +143,8 @@ public class LighthouseClient
             },
         };
 
-        Log.Information("{@Area}: Updating client presence ({Party})",
-            LogArea.RichPresence,
-            newPresence.Party.ID);
+        Log.Information("{@Area}: Updating client presence ({Party})", 
+            LogArea.RichPresence, newPresence.Party.ID);
 
         this.discordClient.SetPresence(newPresence);
     }
