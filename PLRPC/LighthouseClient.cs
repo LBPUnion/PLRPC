@@ -78,6 +78,7 @@ public class LighthouseClient
             {
                 SlotType.Pod => "9c412649a07a8cb678a2a25214ed981001dd08ca",
                 SlotType.Moon => "a891bbcf9ad3518b80c210813cce8ed292ed4c62",
+                SlotType.RemoteMoon => "a891bbcf9ad3518b80c210813cce8ed292ed4c62",
                 SlotType.Developer => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
                 SlotType.DeveloperAdventure => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
                 SlotType.DlcLevel => "2976e45d66b183f6d3242eaf01236d231766295f",
@@ -99,6 +100,7 @@ public class LighthouseClient
             SlotType.User => $"{slot.Name}",
             SlotType.Pod => "Dwelling in the Pod",
             SlotType.Moon => "Creating on the Moon",
+            SlotType.RemoteMoon => "Creating on a Remote Moon",
             SlotType.Developer => "Playing a Story Level",
             SlotType.DeveloperAdventure => "Playing an Adventure Level",
             SlotType.DlcLevel => "Playing a DLC Level",

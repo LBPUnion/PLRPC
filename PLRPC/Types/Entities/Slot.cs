@@ -28,7 +28,7 @@ public enum SlotType
     // DeveloperGroup = 4,
     Pod = 5,
     // Fake = 6,
-    // RemoteMoon = 7,
+    RemoteMoon = 7,
     DlcLevel = 8,
     // DLCPack = 9,
     // Playlist = 10,
