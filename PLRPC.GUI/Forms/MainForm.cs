@@ -23,8 +23,6 @@ public class MainForm : Form
         Log.Logger = Program.LogConfiguration;
     }
 
-    #region GUI
-
     private static readonly GroupBox configurationEntries = new()
     {
         Text = MainFormStrings.Configuration.String(),
@@ -92,10 +90,6 @@ public class MainForm : Form
         },
     };
 
-    #endregion
-
-    #region Event handlers
-
     private static async void InitializeClientHandler(object sender, EventArgs eventArgs)
     {
         List<TextBox> arguments = new()
@@ -158,6 +152,4 @@ public class MainForm : Form
             MessageBoxButtons.OK,
             MessageBoxType.Warning);
     }
-
-    #endregion
 }
