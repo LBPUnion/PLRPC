@@ -14,7 +14,7 @@ namespace LBPUnion.PLRPC;
 
 public static class Program
 {
-    public static readonly Logger LogConfiguration = new LoggerConfiguration()
+    public static readonly Logger Logger = new LoggerConfiguration()
         .MinimumLevel.Information()
         .Enrich.With<LogEnrichers>()
         .WriteTo.Console(outputTemplate: "[{ProcessId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}")
@@ -29,7 +29,7 @@ public static class Program
 
     public static async Task Main(string[] args)
     {
-        Log.Logger = LogConfiguration;
+        Log.Logger = Logger;
 
         #if !DEBUG
             await InitializeUpdateCheck();

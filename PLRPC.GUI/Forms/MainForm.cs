@@ -20,7 +20,7 @@ public class MainForm : Form
 
         this.Content = this.tableLayout;
 
-        Log.Logger = Program.LogConfiguration;
+        Log.Logger = Program.Logger;
     }
 
     private static readonly GroupBox configurationEntries = new()
