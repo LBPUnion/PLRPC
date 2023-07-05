@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LBPUnion.PLRPC.Types.Logging;
 using LBPUnion.PLRPC.Types.Updater;
 using Serilog;
 
@@ -17,7 +18,8 @@ public class Updater
     {
         if (!File.Exists("./manifest.json"))
         {
-            Log.Warning("No update manifest file exists, creating a base manifest");
+            Log.Warning("{@Area} No update manifest file exists, creating a base manifest",
+                LogArea.Updater);
             await this.GenerateManifest();
         }
 

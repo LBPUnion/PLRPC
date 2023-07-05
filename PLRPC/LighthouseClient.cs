@@ -49,14 +49,16 @@ public class LighthouseClient
         User? user = await this.apiRepository.GetUser(this.username);
         if (user == null || user.PermissionLevel == PermissionLevel.Banned)
         {
-            Log.Warning("{@Area}: Failed to get user from the server", LogArea.ApiRepositoryImpl);
+            Log.Warning("{@Area}: Failed to get user from the server", 
+                LogArea.ApiRepositoryImpl);
             return;
         }
 
         UserStatus? status = await this.apiRepository.GetStatus(user.UserId);
         if (status?.CurrentRoom?.Slot?.SlotId == null || status.CurrentRoom.PlayerIds == null)
         {
-            Log.Warning("{@Area}: Failed to get user status from the server", LogArea.ApiRepositoryImpl);
+            Log.Warning("{@Area}: Failed to get user status from the server", 
+                LogArea.ApiRepositoryImpl);
             return;
         }
 
@@ -68,7 +70,8 @@ public class LighthouseClient
             slot = await this.apiRepository.GetSlot(status.CurrentRoom.Slot.SlotId);
             if (slot == null)
             {
-                Log.Warning("{@Area}: Failed to get user's current level from the server", LogArea.ApiRepositoryImpl);
+                Log.Warning("{@Area}: Failed to get user's current level from the server", 
+                    LogArea.ApiRepositoryImpl);
                 return;
             }
         }

@@ -2,6 +2,7 @@
 using Eto.Drawing;
 using Eto.Forms;
 using LBPUnion.PLRPC.GUI.Strings;
+using LBPUnion.PLRPC.Types.Logging;
 using Serilog;
 
 namespace LBPUnion.PLRPC.GUI.Forms;
@@ -129,7 +130,8 @@ public class MainForm : Form
             exceptionBuilder.AppendLine($"{exception.Message}\n");
             exceptionBuilder.AppendLine($"{exception.Source}");
 
-            Log.Error(exception, "Failed to initialize the client");
+            Log.Error(exception, "{@Area}: Failed to initialize the client",
+                LogArea.LighthouseClient);
 
             MessageBox.Show(exceptionBuilder.ToString(), MessageBoxButtons.OK, MessageBoxType.Error);
         }

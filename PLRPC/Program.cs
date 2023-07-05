@@ -46,24 +46,21 @@ public static class Program
             {
                 PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
                 if (configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null })
-                    await InitializeLighthouseClient(configuration.ServerUrl,
-                        configuration.Username,
-                        configuration.ApplicationId);
+                    await InitializeLighthouseClient(configuration.ServerUrl, configuration.Username, configuration.ApplicationId);
                 break;
             }
             case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUrl(arguments.ServerUrl):
             case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUsername(arguments.Username):
                 return;
             case { ServerUrl: not null, Username: not null, ApplicationId: not null }:
-                await InitializeLighthouseClient(arguments.ServerUrl,
-                    arguments.Username,
-                    arguments.ApplicationId);
+                await InitializeLighthouseClient(arguments.ServerUrl, arguments.Username, arguments.ApplicationId);
                 break;
             default:
                 // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                 Log.Error(arguments is { ServerUrl: null, Username: null, UseConfig: false }
-                    ? "No arguments were passed to the client. Ensure you're running PLRPC through CLI"
-                    : "Invalid argument(s) were passed to the client, please check them and try running again");
+                    ? "{@Area}: No arguments were passed to the client. Ensure you're running PLRPC through CLI"
+                    : "{@Area}: Invalid argument(s) were passed to the client, please check them and try running again",
+                        LogArea.Configuration);
                 Console.ReadLine();
                 break;
         }
@@ -73,8 +70,10 @@ public static class Program
     {
         if (!File.Exists("./config.json"))
         {
-            Log.Warning("No configuration file exists, creating a base configuration");
-            Log.Warning("Please populate the configuration file and restart the program");
+            Log.Warning("{@Area}: No configuration file exists, creating a base configuration",
+                LogArea.Configuration);
+            Log.Warning("{@Area}: Please populate the configuration file and restart the program",
+                LogArea.Configuration);
 
             PlrpcConfiguration defaultConfig = new();
 
@@ -97,7 +96,8 @@ public static class Program
         }
         catch (Exception exception)
         {
-            Log.Fatal(exception, "Failed to deserialize configuration file");
+            Log.Fatal(exception, "{@Area}: Failed to deserialize configuration file",
+                LogArea.Configuration);
             return null;
         }
     }
