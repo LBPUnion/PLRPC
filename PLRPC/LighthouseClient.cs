@@ -11,35 +11,35 @@ namespace LBPUnion.PLRPC;
 public class LighthouseClient
 {
     private readonly IApiRepository apiRepository;
-    private readonly DiscordRpcClient discordClient;
+    private readonly DiscordRpcClient discordRpcClient;
     private readonly SemaphoreSlim readySemaphore = new(0, 1);
     private readonly string serverUrl;
     private readonly string username;
 
-    public LighthouseClient(string username, string serverUrl, IApiRepository apiRepository, DiscordRpcClient rpcClient)
+    public LighthouseClient(string username, string serverUrl, IApiRepository apiRepository, DiscordRpcClient discordRpcClient)
     {
         this.username = username;
         this.serverUrl = serverUrl;
         this.apiRepository = apiRepository;
 
-        this.discordClient = rpcClient;
-        this.discordClient.Initialize();
+        this.discordRpcClient = discordRpcClient;
+        this.discordRpcClient.Initialize();
 
-        this.discordClient.OnReady += (_, _) => this.readySemaphore.Release();
+        this.discordRpcClient.OnReady += (_, _) => this.readySemaphore.Release();
 
-        this.discordClient.OnReady += (_, _) =>
+        this.discordRpcClient.OnReady += (_, _) =>
             Log.Information("{@Area}: Successfully established ready connection",
                 LogArea.LighthouseClient);
 
-        this.discordClient.OnConnectionEstablished += (_, e) =>
+        this.discordRpcClient.OnConnectionEstablished += (_, e) =>
             Log.Information("{@Area}: Successfully acquired the lock on RPC ({Pipe})",
                 LogArea.LighthouseClient, e.ConnectedPipe);
 
-        this.discordClient.OnConnectionFailed += (_, e) =>
+        this.discordRpcClient.OnConnectionFailed += (_, e) =>
             Log.Warning("{@Area}: Failed to acquire the lock on RPC ({Pipe})",
                 LogArea.LighthouseClient, e.FailedPipe);
 
-        this.discordClient.OnPresenceUpdate += (_, e) =>
+        this.discordRpcClient.OnPresenceUpdate += (_, e) =>
             Log.Information("{@Area}: Updated client presence ({Party})",
                 LogArea.RichPresence, e.Presence.Party.ID);
     }
@@ -148,7 +148,7 @@ public class LighthouseClient
         Log.Information("{@Area}: Updating client presence ({Party})", 
             LogArea.RichPresence, newPresence.Party.ID);
 
-        this.discordClient.SetPresence(newPresence);
+        this.discordRpcClient.SetPresence(newPresence);
     }
 
     public async Task StartUpdateLoop()
@@ -164,8 +164,8 @@ public class LighthouseClient
             }
             catch (Exception)
             {
-                this.discordClient.ClearPresence();
-                this.discordClient.Dispose();
+                this.discordRpcClient.ClearPresence();
+                this.discordRpcClient.Dispose();
                 return;
             }
             await Task.Delay(30000);

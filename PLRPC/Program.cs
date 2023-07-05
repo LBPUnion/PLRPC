@@ -46,7 +46,7 @@ public static class Program
             {
                 PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
                 if (configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null })
-                    await InitializeLighthouseClient(configuration.ServerUrl.TrimEnd('/'),
+                    await InitializeLighthouseClient(configuration.ServerUrl,
                         configuration.Username,
                         configuration.ApplicationId);
                 break;
@@ -55,7 +55,7 @@ public static class Program
             case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUsername(arguments.Username):
                 return;
             case { ServerUrl: not null, Username: not null, ApplicationId: not null }:
-                await InitializeLighthouseClient(arguments.ServerUrl.TrimEnd('/'),
+                await InitializeLighthouseClient(arguments.ServerUrl,
                     arguments.Username,
                     arguments.ApplicationId);
                 break;
@@ -131,9 +131,11 @@ public static class Program
         Log.Information("{@Area}: Initializing new client and dependencies", 
             LogArea.LighthouseClient);
 
+        string trimmedServerUrl = serverUrl.TrimEnd('/'); // trailing slashes cause issues with requests
+
         HttpClient apiClient = new()
         {
-            BaseAddress = new Uri(serverUrl + "/api/v1/"),
+            BaseAddress = new Uri(trimmedServerUrl + "/api/v1/"),
             DefaultRequestHeaders =
             {
                 {
@@ -146,7 +148,7 @@ public static class Program
 
         ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
         DiscordRpcClient discordRpcClient = new(applicationId);
-        LighthouseClient lighthouseClient = new(username, serverUrl, apiRepository, discordRpcClient);
+        LighthouseClient lighthouseClient = new(username, trimmedServerUrl, apiRepository, discordRpcClient);
 
         await lighthouseClient.StartUpdateLoop();
     }
