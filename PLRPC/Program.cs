@@ -35,10 +35,13 @@ public static class Program
             await InitializeUpdateCheck();
         #endif
 
-        await Parser.Default.ParseArguments<CommandLineArguments>(args).WithParsedAsync(ParseArguments);
+        await Parser.Default
+            .ParseArguments<CommandLineArguments>(args)
+            .WithParsedAsync(ProcessArguments);
     }
 
-    private static async Task ParseArguments(CommandLineArguments arguments)
+    // TODO: Make command line argument parsing more uniform and clean
+    private static async Task ProcessArguments(CommandLineArguments arguments)
     {
         switch (arguments)
         {
