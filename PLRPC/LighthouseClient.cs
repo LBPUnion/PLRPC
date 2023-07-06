@@ -76,6 +76,7 @@ public class LighthouseClient
                 SlotType.Developer => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
                 SlotType.DeveloperAdventure => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
                 SlotType.DlcLevel => "2976e45d66b183f6d3242eaf01236d231766295f",
+                SlotType.Unknown => "e6bb64f5f280ce07fdcf4c63e25fa8296c73ec29",
                 _ => "e6bb64f5f280ce07fdcf4c63e25fa8296c73ec29",
             };
 
@@ -97,7 +98,8 @@ public class LighthouseClient
             SlotType.Developer => "Playing a Story Level",
             SlotType.DeveloperAdventure => "Playing an Adventure Level",
             SlotType.DlcLevel => "Playing a DLC Level",
-            _ => "(っ◔◡◔)っ ❤",
+            SlotType.Unknown => "Exploring the Imagisphere",
+            _ => "Exploring the Imagisphere",
         };
 
         string userStatus = status.StatusType switch

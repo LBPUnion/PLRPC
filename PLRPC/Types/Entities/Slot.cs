@@ -21,6 +21,7 @@ public class Slot
 
 public enum SlotType
 {
+    Unknown = -1,
     Developer = 0,
     User = 1,
     Moon = 2,

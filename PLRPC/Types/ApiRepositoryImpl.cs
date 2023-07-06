@@ -33,19 +33,6 @@ public class ApiRepositoryImpl : IApiRepository
         return user;
     }
 
-    public async Task<UserStatus?> GetStatus(int userId)
-    {
-        if (this.GetFromCache(this.userStatusCache, userId, out UserStatus? cachedUserStatus)) return cachedUserStatus;
-
-        string userStatusJson = await this.httpClient.GetStringAsync($"user/{userId}/status");
-
-        UserStatus? userStatus = JsonSerializer.Deserialize<UserStatus>(userStatusJson);
-        if (userStatus == null) return null;
-
-        this.userStatusCache.TryAdd(userId, (userStatus, TimestampMillis));
-        return userStatus;
-    }
-
     public async Task<Slot?> GetSlot(int slotId)
     {
         if (this.GetFromCache(this.slotCache, slotId, out Slot? cachedSlot)) return cachedSlot;
@@ -58,6 +45,41 @@ public class ApiRepositoryImpl : IApiRepository
         this.slotCache.TryAdd(slotId, (slot, TimestampMillis));
         return slot;
     }
+
+    public async Task<UserStatus?> GetStatus(int userId)
+    {
+        if (this.GetFromCache(this.userStatusCache, userId, out UserStatus? cachedUserStatus)) return cachedUserStatus;
+
+        string userStatusJson = await this.httpClient.GetStringAsync($"user/{userId}/status");
+
+        UserStatus? userStatus = JsonSerializer.Deserialize<UserStatus>(userStatusJson);
+        if (userStatus == null) return null;
+
+        /*
+         * LBP1 doesn't support rooms, so we have to create a fake one if the user is playing it
+         * This is a bit of a hacksaw solution but it works, will have to revisit later
+         */
+        if (userStatus.CurrentVersion == GameVersion.LittleBigPlanet1)
+        {
+            userStatus.CurrentRoom = new Room
+            {
+                RoomId = 0,
+                PlayerIds = new[]
+                {
+                    userId,
+                },
+                Slot = new RoomSlot
+                {
+                    SlotId = 0,
+                    SlotType = SlotType.Unknown,
+                },
+            };
+        }
+
+        this.userStatusCache.TryAdd(userId, (userStatus, TimestampMillis));
+        return userStatus;
+    }
+
 
     private bool GetFromCache<T1, T2>(IReadOnlyDictionary<T1, (T2, long)> cache, T1 key, out T2? val) where T1 : notnull
     {
