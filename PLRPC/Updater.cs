@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using LBPUnion.PLRPC.Types.Logging;
 using LBPUnion.PLRPC.Types.Updater;
@@ -26,7 +25,8 @@ public class Updater
 
         string releaseManifest =
             await this.updaterHttpClient.GetStringAsync("https://api.github.com/repos/LBPUnion/PLRPC/releases/latest");
-        string programManifest = await File.ReadAllTextAsync("./manifest.json");
+        string programManifest =
+            await File.ReadAllTextAsync("./manifest.json");
 
         Release? releaseObject = JsonSerializer.Deserialize<Release?>(releaseManifest);
         Manifest? programObject = JsonSerializer.Deserialize<Manifest?>(programManifest);
