@@ -5,7 +5,7 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "gui-staging" ]
   pull_request:
     branches: [ "master" ]
 
@@ -45,9 +45,13 @@ jobs:
       run: dotnet restore
 
     - name: Publish for Windows x64
-      run: dotnet publish -c Release -r win-x64 --self-contained
+      run: dotnet publish -c Release -r win-x64 --self-contained PLRPC
     - name: Publish for Linux x64
-      run: dotnet publish -c Release -r linux-x64 --self-contained
+      run: dotnet publish -c Release -r linux-x64 --self-contained PLRPC
+    - name: Publish GUI for Windows x64
+      run: dotnet publish -c Release -r win-x64 --self-contained PLRPC.GUI.Windows
+    - name: Publish GUI for Linux x64
+      run: dotnet publish -c Release -r linux-x64 --self-contained PLRPC.GUI.Linux
           
     - name: Upload Windows x64 build
       uses: actions/upload-artifact@v3.1.1
@@ -63,3 +67,17 @@ jobs:
           path: "/home/runner/work/PLRPC/PLRPC/PLRPC/bin/Release/net7.0/linux-x64/publish/"
           if-no-files-found: error
           retention-days: 3
+    - name: Upload Windows x64 GUI build
+      uses: actions/upload-artifact@v3.1.1
+      with:
+        name: PLRPC GUI Windows x64 [${{ steps.hash.outputs.hash }}]
+        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.GUI.Windows/bin/Release/net7.0-windows/win-x64/publish/"
+        if-no-files-found: error
+        retention-days: 3
+    - name: Upload Linux x64 GUI build
+      uses: actions/upload-artifact@v3.1.1
+      with:
+        name: PLRPC GUI Linux x64 [${{ steps.hash.outputs.hash }}]
+        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.GUI.Linux/bin/Release/net7.0/linux-x64/publish/"
+        if-no-files-found: error
+        retention-days: 3
