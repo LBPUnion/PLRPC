@@ -5,7 +5,7 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ "master", "gui-staging" ]
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
