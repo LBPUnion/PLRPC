@@ -1,7 +1,6 @@
 # PLRPC
 
 [![Build Artifacts](https://github.com/LBPUnion/PLRPC/actions/workflows/build.yml/badge.svg)](https://github.com/LBPUnion/PLRPC/actions/workflows/build.yml)
-[![CodeQL Analysis](https://github.com/LBPUnion/PLRPC/actions/workflows/codeql.yml/badge.svg)](https://github.com/LBPUnion/PLRPC/actions/workflows/codeql.yml)
 
 PLRPC (short for ProjectLighthouse Rich Presence Client) is a continuation of the LighthouseRichPresence client under
 the same premise.
