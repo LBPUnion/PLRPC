@@ -1,4 +1,4 @@
-using LBPUnion.PLRPC.Types;
+using LBPUnion.PLRPC.Types.Enums;
 
 namespace LBPUnion.PLRPC.Extensions;
 

@@ -1,6 +1,6 @@
 ﻿using LBPUnion.PLRPC.Types.Entities;
 
-namespace LBPUnion.PLRPC.Types;
+namespace LBPUnion.PLRPC.Types.Interfaces;
 
 public interface IApiRepository
 {

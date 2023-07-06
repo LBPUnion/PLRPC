@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using LBPUnion.PLRPC.Types.Enums;
 using Newtonsoft.Json;
 
 namespace LBPUnion.PLRPC.Types.Entities;

@@ -1,10 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
 using CommandLine;
 using DiscordRPC;
 using JetBrains.Annotations;
 using LBPUnion.PLRPC.Helpers;
-using LBPUnion.PLRPC.Types;
+using LBPUnion.PLRPC.Types.Configuration;
 using LBPUnion.PLRPC.Types.Logging;
 using LBPUnion.PLRPC.Types.Updater;
 using Serilog;
@@ -19,13 +18,6 @@ public static class Program
         .Enrich.With<LogEnrichers>()
         .WriteTo.Console(outputTemplate: "[{ProcessId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}")
         .CreateLogger();
-
-    private static readonly JsonSerializerOptions lenientJsonOptions = new()
-    {
-        AllowTrailingCommas = true,
-        WriteIndented = true,
-        ReadCommentHandling = JsonCommentHandling.Skip,
-    };
 
     public static async Task Main(string[] args)
     {
@@ -47,7 +39,7 @@ public static class Program
         {
             case { UseConfig: true }:
             {
-                PlrpcConfiguration? configuration = LoadFromConfiguration().Result;
+                PlrpcConfiguration? configuration = Configuration.LoadFromConfiguration().Result;
                 if (configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null })
                     await InitializeLighthouseClient(configuration.ServerUrl, configuration.Username, configuration.ApplicationId);
                 break;
@@ -69,70 +61,31 @@ public static class Program
         }
     }
 
-    private static async Task<PlrpcConfiguration?> LoadFromConfiguration()
-    {
-        if (!File.Exists("./config.json"))
-        {
-            Log.Warning("{@Area}: No configuration file exists, creating a base configuration",
-                LogArea.Configuration);
-            Log.Warning("{@Area}: Please populate the configuration file and restart the program",
-                LogArea.Configuration);
-
-            PlrpcConfiguration defaultConfig = new();
-
-            await File.WriteAllTextAsync("./config.json", JsonSerializer.Serialize(defaultConfig, lenientJsonOptions));
-
-            return null;
-        }
-
-        string configurationJson = await File.ReadAllTextAsync("./config.json");
-
-        try
-        {
-            PlrpcConfiguration? configuration =
-                JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson, lenientJsonOptions);
-
-            if (configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null })
-                return configuration;
-
-            throw new JsonException("Deserialized configuration contains one or more null values");
-        }
-        catch (Exception exception)
-        {
-            Log.Fatal(exception, "{@Area}: Failed to deserialize configuration file",
-                LogArea.Configuration);
-            return null;
-        }
-    }
-
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
     private static async Task InitializeUpdateCheck()
     {
         HttpClient updateClient = new();
-
-        updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("LBPUnion/1.0 (PLRPC; github-release) UpdateClient/1.1");
         Updater updater = new(updateClient);
+
+        // Required by GitHub's API
+        updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("LBPUnion/1.0 (PLRPC; github-release) UpdateClient/1.1");
 
         Release? updateResult = await updater.CheckForUpdate();
 
         if (updateResult != null)
         {
-            Log.Information("{@Area}: A new version of PLRPC is available!", 
-                LogArea.Updater);
-            Log.Information("{@Area}: {UpdateTag}: {UpdateUrl}",
-                LogArea.Updater, updateResult.TagName, updateResult.Url);
+            Log.Information("{@Area}: A new version of PLRPC is available!", LogArea.Updater);
+            Log.Information("{@Area}: {UpdateTag}: {UpdateUrl}", LogArea.Updater, updateResult.TagName, updateResult.Url);
         }
         else
         {
-            Log.Information("{@Area}: There are no new updates available", 
-                LogArea.Updater);
+            Log.Information("{@Area}: There are no new updates available", LogArea.Updater);
         }
     }
 
     public static async Task InitializeLighthouseClient(string serverUrl, string username, string? applicationId)
     {
-        Log.Information("{@Area}: Initializing new client and dependencies", 
-            LogArea.LighthouseClient);
+        Log.Information("{@Area}: Initializing new client and dependencies", LogArea.LighthouseClient);
 
         string trimmedServerUrl = serverUrl.TrimEnd('/'); // trailing slashes cause issues with requests
 

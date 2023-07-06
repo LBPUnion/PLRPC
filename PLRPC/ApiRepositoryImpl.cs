@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
 using LBPUnion.PLRPC.Types.Entities;
+using LBPUnion.PLRPC.Types.Interfaces;
 
-namespace LBPUnion.PLRPC.Types;
+namespace LBPUnion.PLRPC;
 
 public class ApiRepositoryImpl : IApiRepository
 {

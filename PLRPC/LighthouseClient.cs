@@ -1,7 +1,8 @@
 ﻿using DiscordRPC;
 using LBPUnion.PLRPC.Extensions;
-using LBPUnion.PLRPC.Types;
 using LBPUnion.PLRPC.Types.Entities;
+using LBPUnion.PLRPC.Types.Enums;
+using LBPUnion.PLRPC.Types.Interfaces;
 using LBPUnion.PLRPC.Types.Logging;
 using Serilog;
 using User = LBPUnion.PLRPC.Types.Entities.User;
