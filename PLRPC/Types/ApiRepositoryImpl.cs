@@ -5,17 +5,17 @@ namespace LBPUnion.PLRPC.Types;
 
 public class ApiRepositoryImpl : IApiRepository
 {
-    private readonly int cacheExpirationTimeMs;
+    private readonly int cacheExpirationTime;
 
     private readonly HttpClient httpClient;
     private readonly Dictionary<int, (Slot, long)> slotCache = new();
     private readonly Dictionary<string, (User, long)> userCache = new();
     private readonly Dictionary<int, (UserStatus, long)> userStatusCache = new();
 
-    public ApiRepositoryImpl(HttpClient httpClient, int cacheExpirationTimeMs)
+    public ApiRepositoryImpl(HttpClient httpClient, int cacheExpirationTime)
     {
         this.httpClient = httpClient;
-        this.cacheExpirationTimeMs = cacheExpirationTimeMs;
+        this.cacheExpirationTime = cacheExpirationTime;
     }
 
     private static long TimestampMillis => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -67,7 +67,7 @@ public class ApiRepositoryImpl : IApiRepository
         val = default;
         if (!cache.TryGetValue(key, out (T2, long) entry)) return false;
 
-        if (entry.Item2 + this.cacheExpirationTimeMs > TimestampMillis) return false;
+        if (entry.Item2 + this.cacheExpirationTime > TimestampMillis) return false;
 
         val = entry.Item1;
         return true;
