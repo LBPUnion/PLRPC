@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using Eto.Drawing;
 using Eto.Forms;
-using LBPUnion.PLRPC.GUI.Strings;
 using LBPUnion.PLRPC.Types.Logging;
 using Serilog;
 
