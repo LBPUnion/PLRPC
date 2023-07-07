@@ -21,14 +21,20 @@ the same premise.
 **GUI Installation Steps (recommended)**
 
 1. Navigate to the Releases Tab
-2. Download the latest GUI build (or major version if you like somewhat-stability)
+2. Download the latest GUI build for Windows or Linux
 3. Extract the build to any folder
-4. Run the client by double clicking on the `PLRPC.GUI.Windows.exe` executable
+4. Run the client
+   * **Windows:** Run the GUI by double clicking on the `PLRPC.GUI.Windows.exe` executable
+   * **Linux:** Run the GUI by running `./PLRPC.GUI.Linux` in a terminal
 
 **CLI Installation Steps (advanced)**
 
+> **Warning**
+> These steps are only for advanced users who are comfortable with the command line.
+> If you are not comfortable with the command line, please use the GUI instead.
+
 1. Navigate to the Releases Tab
-2. Download the latest CLI build (or major version if you like somewhat-stability)
+2. Download the latest CLI build for Windows or Linux
 3. Extract the build to any folder
 4. Run the client
     - **Configuration Mode:** `./path/to/PLRPC --config` (use `--config` each time)
