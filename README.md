@@ -24,8 +24,9 @@ the same premise.
 2. Download the latest GUI build for Windows or Linux
 3. Extract the build to any folder
 4. Run the client
-   * **Windows:** Run the GUI by double clicking on the `PLRPC.GUI.Windows.exe` executable
-   * **Linux:** Run the GUI by running `./PLRPC.GUI.Linux` in a terminal
+   * **Windows:** Run the GUI by double clicking on the `PLRPC.GUI.Windows` executable
+   * **Linux:** Run the GUI by double clicking on the `PLRPC.GUI.Linux` executable
+     * You may need to mark the program as executable first, or run it from the command line
 
 **CLI Installation Steps (advanced)**
 
