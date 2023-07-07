@@ -26,7 +26,7 @@ public class MainForm : Form
 
     private static readonly GroupBox configurationEntries = new()
     {
-        Text = MainFormStrings.Configuration.String(),
+        Text = Strings.MainForm.Configuration,
         Content = new TableLayout
         {
             Padding = new Padding(3, 3, 3, 3),
@@ -37,7 +37,7 @@ public class MainForm : Form
                 {
                     new(new Label
                     {
-                        Text = MainFormStrings.Username.String(),
+                        Text = Strings.MainForm.Username,
                     }),
                     new(username = new TextBox()),
                 }),
@@ -45,7 +45,7 @@ public class MainForm : Form
                 {
                     new(new Label
                     {
-                        Text = MainFormStrings.ServerUrl.String(),
+                        Text = Strings.MainForm.ServerUrl,
                     }),
                     new(serverUrl = new TextBox
                     {
@@ -57,7 +57,7 @@ public class MainForm : Form
                 {
                     new(new Label
                     {
-                        Text = MainFormStrings.ApplicationId.String(),
+                        Text = Strings.MainForm.ApplicationId,
                     }),
                     new(applicationId = new TextBox
                     {
@@ -71,12 +71,12 @@ public class MainForm : Form
 
     private static readonly Button connectButton = new(InitializeClientHandler)
     {
-        Text = MainFormStrings.Connect.String(),
+        Text = Strings.MainForm.Connect,
     };
 
     private static readonly Button unlockDefaultsButton = new(UnlockDefaultsHandler)
     {
-        Text = MainFormStrings.UnlockDefaults.String(),
+        Text = Strings.MainForm.UnlockDefaults,
     };
 
     private readonly TableLayout tableLayout = new()
@@ -102,14 +102,14 @@ public class MainForm : Form
 
         if (arguments.Any(a => string.IsNullOrWhiteSpace(a.Text)))
         {
-            MessageBox.Show(MainFormStrings.BlankFieldsError.String(), MessageBoxButtons.OK, MessageBoxType.Error);
+            MessageBox.Show(Strings.MainForm.BlankFieldsError, MessageBoxButtons.OK, MessageBoxType.Error);
             return;
         }
 
         try
         {
             // Text changes
-            connectButton.Text = MainFormStrings.Connected.String();
+            connectButton.Text = Strings.MainForm.Connected;
 
             // Button states
             connectButton.Enabled = false;
@@ -126,7 +126,7 @@ public class MainForm : Form
         {
             StringBuilder exceptionBuilder = new();
 
-            exceptionBuilder.AppendLine($"{MainFormStrings.InitializationError.String()}\n");
+            exceptionBuilder.AppendLine($"{Strings.MainForm.InitializationError}\n");
             exceptionBuilder.AppendLine($"{exception.Message}\n");
             exceptionBuilder.AppendLine($"{exception.Source}");
 
@@ -140,7 +140,7 @@ public class MainForm : Form
     private static void UnlockDefaultsHandler(object sender, EventArgs eventArgs)
     {
         // Text changes
-        unlockDefaultsButton.Text = MainFormStrings.UnlockedDefaults.String();
+        unlockDefaultsButton.Text = Strings.MainForm.UnlockedDefaults;
 
         // Button states
         unlockDefaultsButton.Enabled = false;
@@ -149,7 +149,7 @@ public class MainForm : Form
         serverUrl.Enabled = true;
         applicationId.Enabled = true;
 
-        MessageBox.Show(MainFormStrings.UnlockedDefaultsWarning.String(),
+        MessageBox.Show(Strings.MainForm.UnlockedDefaultsWarning,
             "Warning",
             MessageBoxButtons.OK,
             MessageBoxType.Warning);
