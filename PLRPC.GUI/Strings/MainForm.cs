@@ -12,5 +12,7 @@ public static class MainForm
     public const string UnlockedDefaults = "Unlocked Defaults";
     public const string BlankFieldsError = "Please fill in all fields and try again.";
     public const string InitializationError = "An error occurred while initializing the PLRPC client.";
+    public const string InvalidUrlError = "The URL specified is in an invalid format. Please try again.";
+    public const string InvalidUsernameError = "The username specified is invalid. Please try again.";
     public const string UnlockedDefaultsWarning = "You have just unlocked defaults. Support will not be provided whilst using modified defaults. Continue at your own risk.";
 }

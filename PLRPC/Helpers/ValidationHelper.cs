@@ -26,6 +26,7 @@ public static partial class ValidationHelper
         return false;
     }
 
+    // Getting an error here? Roslyn issue - don't worry about it :)
     [GeneratedRegex("^[a-zA-Z0-9_.-]{3,16}$")]
     private static partial Regex UsernameRegex();
 }

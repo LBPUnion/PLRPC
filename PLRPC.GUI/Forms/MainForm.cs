@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Eto.Drawing;
 using Eto.Forms;
+using LBPUnion.PLRPC.Helpers;
 using LBPUnion.PLRPC.Types.Logging;
 using Serilog;
 
@@ -99,10 +100,23 @@ public class MainForm : Form
             applicationId,
         };
 
-        if (arguments.Any(a => string.IsNullOrWhiteSpace(a.Text)))
+        switch (arguments)
         {
-            MessageBox.Show(Strings.MainForm.BlankFieldsError, MessageBoxButtons.OK, MessageBoxType.Error);
-            return;
+            case not null when arguments.Any(a => string.IsNullOrWhiteSpace(a.Text)):
+            {
+                MessageBox.Show(Strings.MainForm.BlankFieldsError, MessageBoxButtons.OK, MessageBoxType.Error);
+                return;
+            }
+            case not null when !ValidationHelper.IsValidUsername(username.Text):
+            {
+                MessageBox.Show(Strings.MainForm.InvalidUsernameError, MessageBoxButtons.OK, MessageBoxType.Error);
+                return;
+            }
+            case not null when !ValidationHelper.IsValidUrl(serverUrl.Text):
+            {
+                MessageBox.Show(Strings.MainForm.InvalidUrlError, MessageBoxButtons.OK, MessageBoxType.Error);
+                return;
+            }
         }
 
         try
