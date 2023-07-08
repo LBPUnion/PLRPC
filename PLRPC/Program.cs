@@ -104,7 +104,7 @@ public static class Program
             },
         };
 
-        const int cacheExpirationTime = 60 * 60 * 1000; // 1 hour
+        TimeSpan cacheExpirationTime = TimeSpan.FromHours(1);
 
         ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
         DiscordRpcClient discordRpcClient = new(applicationId);
