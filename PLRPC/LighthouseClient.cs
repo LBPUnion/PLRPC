@@ -1,8 +1,9 @@
 ﻿using DiscordRPC;
-using DiscordRPC.Logging;
 using LBPUnion.PLRPC.Extensions;
-using LBPUnion.PLRPC.Types;
 using LBPUnion.PLRPC.Types.Entities;
+using LBPUnion.PLRPC.Types.Enums;
+using LBPUnion.PLRPC.Types.Interfaces;
+using LBPUnion.PLRPC.Types.Logging;
 using Serilog;
 using User = LBPUnion.PLRPC.Types.Entities.User;
 
@@ -11,32 +12,37 @@ namespace LBPUnion.PLRPC;
 public class LighthouseClient
 {
     private readonly IApiRepository apiRepository;
-    private readonly DiscordRpcClient discordClient;
+    private readonly DiscordRpcClient discordRpcClient;
     private readonly SemaphoreSlim readySemaphore = new(0, 1);
     private readonly string serverUrl;
     private readonly string username;
 
-    public LighthouseClient(string username, string serverUrl, IApiRepository apiRepository, DiscordRpcClient rpcClient)
+    public LighthouseClient(string username, string serverUrl, IApiRepository apiRepository, DiscordRpcClient discordRpcClient)
     {
         this.username = username;
         this.serverUrl = serverUrl;
         this.apiRepository = apiRepository;
 
-        this.discordClient = rpcClient;
-        this.discordClient.Initialize();
-        this.discordClient.Logger = new ConsoleLogger
-        {
-            Level = LogLevel.Warning,
-        };
+        this.discordRpcClient = discordRpcClient;
+        this.discordRpcClient.Initialize();
 
-        this.discordClient.OnReady += (_, e) =>
-        {
-            Log.Information("Connected to Discord Account {Username}", e.User.Username);
-            this.readySemaphore.Release();
-        };
+        this.discordRpcClient.OnReady += (_, _) => this.readySemaphore.Release();
 
-        this.discordClient.OnPresenceUpdate += (_, e) =>
-            Log.Information("{@Presence}: Presence updated", e.Presence.GetType());
+        this.discordRpcClient.OnReady += (_, _) =>
+            Log.Information("{@Area}: Successfully established ready connection",
+                LogArea.LighthouseClient);
+
+        this.discordRpcClient.OnConnectionEstablished += (_, e) =>
+            Log.Information("{@Area}: Successfully acquired the lock on RPC ({Pipe})",
+                LogArea.LighthouseClient, e.ConnectedPipe);
+
+        this.discordRpcClient.OnConnectionFailed += (_, e) =>
+            Log.Warning("{@Area}: Failed to acquire the lock on RPC ({Pipe})",
+                LogArea.LighthouseClient, e.FailedPipe);
+
+        this.discordRpcClient.OnPresenceUpdate += (_, e) =>
+            Log.Information("{@Area}: Updated client presence ({Party})",
+                LogArea.RichPresence, e.Presence.Party.ID);
     }
 
     private async Task UpdatePresence()
@@ -44,14 +50,16 @@ public class LighthouseClient
         User? user = await this.apiRepository.GetUser(this.username);
         if (user == null || user.PermissionLevel == PermissionLevel.Banned)
         {
-            Log.Warning("Failed to get user from the server");
+            Log.Warning("{@Area}: Failed to get user from the server", 
+                LogArea.ApiRepositoryImpl);
             return;
         }
 
         UserStatus? status = await this.apiRepository.GetStatus(user.UserId);
         if (status?.CurrentRoom?.Slot?.SlotId == null || status.CurrentRoom.PlayerIds == null)
         {
-            Log.Warning("Failed to get user status from the server");
+            Log.Warning("{@Area}: Failed to get user status from the server", 
+                LogArea.ApiRepositoryImpl);
             return;
         }
 
@@ -63,7 +71,8 @@ public class LighthouseClient
             slot = await this.apiRepository.GetSlot(status.CurrentRoom.Slot.SlotId);
             if (slot == null)
             {
-                Log.Warning("Failed to get user's current level from the server");
+                Log.Warning("{@Area}: Failed to get user's current level from the server", 
+                    LogArea.ApiRepositoryImpl);
                 return;
             }
         }
@@ -73,6 +82,7 @@ public class LighthouseClient
             {
                 SlotType.Pod => "9c412649a07a8cb678a2a25214ed981001dd08ca",
                 SlotType.Moon => "a891bbcf9ad3518b80c210813cce8ed292ed4c62",
+                SlotType.RemoteMoon => "a891bbcf9ad3518b80c210813cce8ed292ed4c62",
                 SlotType.Developer => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
                 SlotType.DeveloperAdventure => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
                 SlotType.DlcLevel => "2976e45d66b183f6d3242eaf01236d231766295f",
@@ -95,6 +105,7 @@ public class LighthouseClient
             SlotType.User => $"{slot.Name}",
             SlotType.Pod => "Dwelling in the Pod",
             SlotType.Moon => "Creating on the Moon",
+            SlotType.RemoteMoon => "Creating on a Remote Moon",
             SlotType.Developer => "Playing a Story Level",
             SlotType.DeveloperAdventure => "Playing an Adventure Level",
             SlotType.DlcLevel => "Playing a DLC Level",
@@ -139,24 +150,28 @@ public class LighthouseClient
                 },
             },
         };
-        this.discordClient.SetPresence(newPresence);
-        Log.Information("{@Presence}: Sending presence update", newPresence.GetType());
+
+        Log.Information("{@Area}: Updating client presence ({Party})", 
+            LogArea.RichPresence, newPresence.Party.ID);
+
+        this.discordRpcClient.SetPresence(newPresence);
     }
 
     public async Task StartUpdateLoop()
     {
         await this.readySemaphore.WaitAsync();
         this.readySemaphore.Dispose();
+
         while (true)
         {
             try
             {
                 await this.UpdatePresence();
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                this.discordClient.Dispose();
-                Log.Fatal(exception, "Failed to update presence");
+                this.discordRpcClient.ClearPresence();
+                this.discordRpcClient.Dispose();
                 return;
             }
             await Task.Delay(30000);

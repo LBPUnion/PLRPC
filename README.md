@@ -1,7 +1,6 @@
 # PLRPC
 
 [![Build Artifacts](https://github.com/LBPUnion/PLRPC/actions/workflows/build.yml/badge.svg)](https://github.com/LBPUnion/PLRPC/actions/workflows/build.yml)
-[![CodeQL Analysis](https://github.com/LBPUnion/PLRPC/actions/workflows/codeql.yml/badge.svg)](https://github.com/LBPUnion/PLRPC/actions/workflows/codeql.yml)
 
 PLRPC (short for ProjectLighthouse Rich Presence Client) is a continuation of the LighthouseRichPresence client under
 the same premise.
@@ -18,22 +17,29 @@ the same premise.
 - [ ] Stability (no fires)
 
 ## Installation Instructions
-
-**Installation Steps:**
+                                   
+**GUI Installation Steps (recommended)**
 
 1. Navigate to the Releases Tab
-2. Download the latest build (or major version if you like somewhat-stability)
+2. Download the latest GUI build for Windows or Linux
+3. Extract the build to any folder
+4. Run the client
+   * **Windows:** Run the GUI by double clicking on the `PLRPC.GUI.Windows` executable
+   * **Linux:** Run the GUI by double clicking on the `PLRPC.GUI.Linux` executable
+     * You may need to mark the program as executable first, or run it from the command line
+
+**CLI Installation Steps (advanced)**
+
+> **Warning**
+> These steps are only for advanced users who are comfortable with the command line.
+> If you are not comfortable with the command line, please use the GUI instead.
+
+1. Navigate to the Releases Tab
+2. Download the latest CLI build for Windows or Linux
 3. Extract the build to any folder
 4. Run the client
     - **Configuration Mode:** `./path/to/PLRPC --config` (use `--config` each time)
     - **Manual Mode:** `./path/to/PLRPC --server https://lighthouse.instance.url --username instanceusername`
-
-> **Warning** for **Windows Users**:
->
-> Currently, you are unable to run the .exe file directly. You **must** open a Command Prompt or PowerShell
-> window, navigate to the file path, and execute the binary manually. Refer
-to [Installation Step #4](https://github.com/LBPUnion/PLRPC/blob/master/README.md#installation-instructions)
-> for instructions on how to further configure and run the client.
 
 **Post Install:**
 
@@ -41,6 +47,7 @@ Please create an Issue if you encounter any bugs or weird errors.
 
 ## Helpful Information
 
-* You can use the `--applicationid` command line argument, or change the `applicationId` entry in your configuration,
-  to override the default Discord Application ID. This can be useful if your Lighthouse instance or other service is
-  compatible with the PLRPC protocol and you want to display your own application name.
+* You can use the `--applicationid` command line argument, change the `applicationId` entry in your configuration,
+  or if using the GUI, unlock defaults and change the `Application ID` entry in the options to override the default
+  Discord Application ID. This can be useful if your Lighthouse instance or other service is compatible with the PLRPC 
+  protocol and you want to display your own application name.

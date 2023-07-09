@@ -1,21 +1,23 @@
 ﻿using System.Text.Json;
 using LBPUnion.PLRPC.Types.Entities;
+using LBPUnion.PLRPC.Types.Enums;
+using LBPUnion.PLRPC.Types.Interfaces;
 
-namespace LBPUnion.PLRPC.Types;
+namespace LBPUnion.PLRPC;
 
 public class ApiRepositoryImpl : IApiRepository
 {
-    private readonly int cacheExpirationTimeMs;
+    private readonly TimeSpan cacheExpirationTime;
 
     private readonly HttpClient httpClient;
     private readonly Dictionary<int, (Slot, long)> slotCache = new();
     private readonly Dictionary<string, (User, long)> userCache = new();
     private readonly Dictionary<int, (UserStatus, long)> userStatusCache = new();
 
-    public ApiRepositoryImpl(HttpClient httpClient, int cacheExpirationTimeMs)
+    public ApiRepositoryImpl(HttpClient httpClient, TimeSpan cacheExpirationTime)
     {
         this.httpClient = httpClient;
-        this.cacheExpirationTimeMs = cacheExpirationTimeMs;
+        this.cacheExpirationTime = cacheExpirationTime;
     }
 
     private static long TimestampMillis => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -24,9 +26,10 @@ public class ApiRepositoryImpl : IApiRepository
     {
         if (this.GetFromCache(this.userCache, username, out User? cachedUser)) return cachedUser;
 
-        string userJson = await this.httpClient.GetStringAsync($"username/{username}");
+        HttpResponseMessage userReq = await this.httpClient.GetAsync($"username/{username}");
+        if (!userReq.IsSuccessStatusCode) return null;
 
-        User? user = JsonSerializer.Deserialize<User>(userJson);
+        User? user = JsonSerializer.Deserialize<User>(await userReq.Content.ReadAsStringAsync());
         if (user == null) return null;
 
         this.userCache.TryAdd(username, (user, TimestampMillis));
@@ -37,9 +40,10 @@ public class ApiRepositoryImpl : IApiRepository
     {
         if (this.GetFromCache(this.slotCache, slotId, out Slot? cachedSlot)) return cachedSlot;
 
-        string slotJson = await this.httpClient.GetStringAsync($"slot/{slotId}");
+        HttpResponseMessage slotReq = await this.httpClient.GetAsync($"slot/{slotId}");
+        if (!slotReq.IsSuccessStatusCode) return null;
 
-        Slot? slot = JsonSerializer.Deserialize<Slot>(slotJson);
+        Slot? slot = JsonSerializer.Deserialize<Slot>(await slotReq.Content.ReadAsStringAsync());
         if (slot == null) return null;
 
         this.slotCache.TryAdd(slotId, (slot, TimestampMillis));
@@ -50,9 +54,10 @@ public class ApiRepositoryImpl : IApiRepository
     {
         if (this.GetFromCache(this.userStatusCache, userId, out UserStatus? cachedUserStatus)) return cachedUserStatus;
 
-        string userStatusJson = await this.httpClient.GetStringAsync($"user/{userId}/status");
+        HttpResponseMessage userStatusReq = await this.httpClient.GetAsync($"user/{userId}/status");
+        if (!userStatusReq.IsSuccessStatusCode) return null;
 
-        UserStatus? userStatus = JsonSerializer.Deserialize<UserStatus>(userStatusJson);
+        UserStatus? userStatus = JsonSerializer.Deserialize<UserStatus>(await userStatusReq.Content.ReadAsStringAsync());
         if (userStatus == null) return null;
 
         /*
@@ -86,7 +91,7 @@ public class ApiRepositoryImpl : IApiRepository
         val = default;
         if (!cache.TryGetValue(key, out (T2, long) entry)) return false;
 
-        if (entry.Item2 + this.cacheExpirationTimeMs > TimestampMillis) return false;
+        if (entry.Item2 + this.cacheExpirationTime.Milliseconds > TimestampMillis) return false;
 
         val = entry.Item1;
         return true;

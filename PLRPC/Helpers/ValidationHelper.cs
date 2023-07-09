@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using LBPUnion.PLRPC.Types.Logging;
 using Serilog;
 
 namespace LBPUnion.PLRPC.Helpers;
@@ -9,7 +10,9 @@ public static partial class ValidationHelper
     {
         if (Uri.TryCreate(url, UriKind.Absolute, out _)) return true;
 
-        Log.Error("The URL specified is in an invalid format. Please try again");
+        Log.Error("{@Area}: The URL specified is in an invalid format. Please try again", 
+            LogArea.Validation);
+
         return false;
     }
 
@@ -17,10 +20,13 @@ public static partial class ValidationHelper
     {
         if (UsernameRegex().IsMatch(username)) return true;
 
-        Log.Error("The username specified is invalid. Please try again");
+        Log.Error("{@Area}: The username specified is invalid. Please try again", 
+            LogArea.Validation);
+
         return false;
     }
 
+    // Getting an error here? Roslyn issue - don't worry about it :)
     [GeneratedRegex("^[a-zA-Z0-9_.-]{3,16}$")]
     private static partial Regex UsernameRegex();
 }

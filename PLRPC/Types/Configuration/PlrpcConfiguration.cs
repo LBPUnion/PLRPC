@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace LBPUnion.PLRPC.Types;
+namespace LBPUnion.PLRPC.Types.Configuration;
 
 public class PlrpcConfiguration
 {

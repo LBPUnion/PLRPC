@@ -1,4 +1,4 @@
-﻿namespace LBPUnion.PLRPC.Types;
+﻿namespace LBPUnion.PLRPC.Types.Enums;
 
 public enum PermissionLevel
 {

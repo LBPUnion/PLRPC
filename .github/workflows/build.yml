@@ -24,6 +24,11 @@ jobs:
       env:
         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 
+    - name: Run QDNET Scan
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
+
   build:
     name: Build and Upload Artifacts
     runs-on: ubuntu-latest
@@ -36,30 +41,47 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
+    - name: Restore Dependencies
+      run: dotnet restore
 
     - name: Get Commit Hash
       id: hash
       run: echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Publish for Windows x64
-      run: dotnet publish -c Release -r win-x64 --self-contained
-    - name: Publish for Linux x64
-      run: dotnet publish -c Release -r linux-x64 --self-contained
+    - name: Publish CLI for Windows x64
+      run: dotnet publish -c Release -r win-x64 --self-contained PLRPC
+    - name: Publish CLI for Linux x64
+      run: dotnet publish -c Release -r linux-x64 --self-contained PLRPC
+    - name: Publish GUI for Windows x64
+      run: dotnet publish -c Release -r win-x64 --self-contained PLRPC.GUI.Windows
+    - name: Publish GUI for Linux x64
+      run: dotnet publish -c Release -r linux-x64 --self-contained PLRPC.GUI.Linux
           
-    - name: Upload Windows x64 build
+    - name: Upload Windows x64 CLI build
       uses: actions/upload-artifact@v3.1.1
       with:
-          name: PLRPC Windows x64 [${{ steps.hash.outputs.hash }}]
+          name: PLRPC CLI Windows x64 [${{ steps.hash.outputs.hash }}]
           path: "/home/runner/work/PLRPC/PLRPC/PLRPC/bin/Release/net7.0/win-x64/publish/"
           if-no-files-found: error
           retention-days: 3
-    - name: Upload Linux x64 build
+    - name: Upload Linux x64 CLI build
       uses: actions/upload-artifact@v3.1.1
       with:
-          name: PLRPC Linux x64 [${{ steps.hash.outputs.hash }}]
+          name: PLRPC CLI Linux x64 [${{ steps.hash.outputs.hash }}]
           path: "/home/runner/work/PLRPC/PLRPC/PLRPC/bin/Release/net7.0/linux-x64/publish/"
           if-no-files-found: error
           retention-days: 3
+    - name: Upload Windows x64 GUI build
+      uses: actions/upload-artifact@v3.1.1
+      with:
+        name: PLRPC GUI Windows x64 [${{ steps.hash.outputs.hash }}]
+        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.GUI.Windows/bin/Release/net7.0-windows/win-x64/publish/"
+        if-no-files-found: error
+        retention-days: 3
+    - name: Upload Linux x64 GUI build
+      uses: actions/upload-artifact@v3.1.1
+      with:
+        name: PLRPC GUI Linux x64 [${{ steps.hash.outputs.hash }}]
+        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.GUI.Linux/bin/Release/net7.0/linux-x64/publish/"
+        if-no-files-found: error
+        retention-days: 3

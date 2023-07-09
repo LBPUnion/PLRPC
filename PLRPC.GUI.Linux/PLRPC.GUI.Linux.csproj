@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>LBPUnion.PLRPC.GUI</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <SelfContained>true</SelfContained>
+        <TargetFramework>net7.0</TargetFramework>
+        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Eto.Platform.Gtk" Version="2.7.5"/>
+        <ProjectReference Include="..\PLRPC.GUI\PLRPC.GUI.csproj"/>
+    </ItemGroup>
+
+</Project>
