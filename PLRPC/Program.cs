@@ -23,10 +23,6 @@ public static class Program
     {
         Log.Logger = Logger;
 
-        #if !DEBUG
-            await InitializeUpdateCheck();
-        #endif
-
         await Parser.Default
             .ParseArguments<CommandLineArguments>(args)
             .WithParsedAsync(ProcessArguments);
@@ -90,6 +86,10 @@ public static class Program
     {
         Log.Information("{@Area}: Initializing new client and dependencies", 
             LogArea.LighthouseClient);
+
+        #if !DEBUG
+            await InitializeUpdateCheck();
+        #endif
 
         string trimmedServerUrl = serverUrl.TrimEnd('/'); // trailing slashes cause issues with requests
 
