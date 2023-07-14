@@ -66,6 +66,8 @@ public static class Program
         // Required by GitHub's API
         updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("LBPUnion/1.0 (PLRPC; github-release) UpdateClient/1.1");
 
+        Log.Information("{@Area}: Checking for updates", LogArea.Updater);
+
         Release? updateResult = await updater.CheckForUpdate();
 
         if (updateResult != null)

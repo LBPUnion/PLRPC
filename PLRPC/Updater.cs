@@ -9,9 +9,9 @@ public class Updater
 {
     private readonly HttpClient updaterHttpClient;
 
-    public Updater(HttpClient updaterClient)
+    public Updater(HttpClient updaterHttpClient)
     {
-        this.updaterHttpClient = updaterClient;
+        this.updaterHttpClient = updaterHttpClient;
     }
 
     public async Task<Release?> CheckForUpdate()
