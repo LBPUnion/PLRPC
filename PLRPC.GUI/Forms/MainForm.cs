@@ -11,6 +11,15 @@ public class MainForm : Form
     private static readonly TextBox serverUrl;
     private static readonly TextBox applicationId;
 
+    public MainForm()
+    {
+        this.Title = "PLRPC";
+        this.ClientSize = new Size(400, -1);
+        this.Resizable = false;
+
+        this.Content = this.tableLayout;
+    }
+
     private static readonly GroupBox configurationEntries = new()
     {
         Text = Strings.MainForm.Configuration,
@@ -77,15 +86,6 @@ public class MainForm : Form
             new TableRow(unlockDefaultsButton),
         },
     };
-
-    public MainForm()
-    {
-        this.Title = "PLRPC";
-        this.ClientSize = new Size(400, -1);
-        this.Resizable = false;
-
-        this.Content = this.tableLayout;
-    }
 
     private static async void InitializeClientHandler(object sender, EventArgs eventArgs)
     {
