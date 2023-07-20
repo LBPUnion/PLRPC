@@ -85,7 +85,6 @@ public class ApiRepositoryImpl : IApiRepository
         return userStatus;
     }
 
-
     private bool GetFromCache<T1, T2>(IReadOnlyDictionary<T1, (T2, long)> cache, T1 key, out T2? val) where T1 : notnull
     {
         val = default;
