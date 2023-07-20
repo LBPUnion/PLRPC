@@ -2,8 +2,6 @@
 using Eto.Drawing;
 using Eto.Forms;
 using LBPUnion.PLRPC.Helpers;
-using LBPUnion.PLRPC.Types.Logging;
-using Serilog;
 
 namespace LBPUnion.PLRPC.GUI.Forms;
 
@@ -20,8 +18,6 @@ public class MainForm : Form
         this.Resizable = false;
 
         this.Content = this.tableLayout;
-
-        Log.Logger = Program.Logger;
     }
 
     private static readonly GroupBox configurationEntries = new()
@@ -143,9 +139,6 @@ public class MainForm : Form
             exceptionBuilder.AppendLine($"{exception.Message}\n");
             exceptionBuilder.AppendLine($"{exception.Source}");
 
-            Log.Error(exception, "{@Area}: Failed to initialize the client",
-                LogArea.LighthouseClient);
-
             MessageBox.Show(exceptionBuilder.ToString(), MessageBoxButtons.OK, MessageBoxType.Error);
         }
     }
@@ -162,9 +155,6 @@ public class MainForm : Form
         serverUrl.Enabled = true;
         applicationId.Enabled = true;
 
-        MessageBox.Show(Strings.MainForm.UnlockedDefaultsWarning,
-            "Warning",
-            MessageBoxButtons.OK,
-            MessageBoxType.Warning);
+        MessageBox.Show(Strings.MainForm.UnlockedDefaultsWarning, "Warning", MessageBoxButtons.OK, MessageBoxType.Warning);
     }
 }

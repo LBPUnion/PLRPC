@@ -1,31 +1,22 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using CommandLine;
+﻿using CommandLine;
 using DiscordRPC;
 using JetBrains.Annotations;
 using LBPUnion.PLRPC.Helpers;
 using LBPUnion.PLRPC.Types.Configuration;
 using LBPUnion.PLRPC.Types.Logging;
-using LBPUnion.PLRPC.Types.Updater;
-using Serilog;
-using Serilog.Core;
 
 namespace LBPUnion.PLRPC;
 
+// ReSharper disable once UnusedMember.Local
 public static class Program
 {
-    public static readonly Logger Logger = new LoggerConfiguration()
-        .MinimumLevel.Information()
-        .Enrich.With<LogEnrichers>()
-        .WriteTo.Console(outputTemplate: "[{ProcessId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}")
-        .CreateLogger();
+    private static readonly Logger logger = new();
+    private static readonly Updater updater = new(logger);
+    private static readonly Configuration configuration = new(logger);
 
     public static async Task Main(string[] args)
     {
-        Log.Logger = Logger;
-
-        await Parser.Default
-            .ParseArguments<CommandLineArguments>(args)
-            .WithParsedAsync(ProcessArguments);
+        await Parser.Default.ParseArguments<CommandLineArguments>(args).WithParsedAsync(ProcessArguments);
     }
 
     // TODO: Make command line argument parsing more uniform and clean
@@ -35,62 +26,35 @@ public static class Program
         {
             case { UseConfig: true }:
             {
-                PlrpcConfiguration? configuration = Configuration.LoadFromConfiguration().Result;
-                if (configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null })
-                    await InitializeLighthouseClient(configuration.ServerUrl, configuration.Username, configuration.ApplicationId);
+                PlrpcConfiguration? plrpcConfiguration = configuration.LoadFromConfiguration().Result;
+                if (plrpcConfiguration is { ServerUrl: not null, Username: not null, ApplicationId: not null })
+                    await InitializeLighthouseClient(plrpcConfiguration.ServerUrl, plrpcConfiguration.Username,
+                        plrpcConfiguration.ApplicationId);
                 break;
             }
             case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUrl(arguments.ServerUrl):
             case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUsername(arguments.Username):
+                logger.Error("The username or server URL you entered is not valid. Please try again.", LogArea.Validation);
                 return;
             case { ServerUrl: not null, Username: not null, ApplicationId: not null }:
                 await InitializeLighthouseClient(arguments.ServerUrl, arguments.Username, arguments.ApplicationId);
                 break;
             default:
                 // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                Log.Error(arguments is { ServerUrl: null, Username: null, UseConfig: false }
-                    ? "{@Area}: No arguments were passed to the client. Ensure you're running PLRPC through CLI"
-                    : "{@Area}: Invalid argument(s) were passed to the client, please check them and try running again",
-                        LogArea.Configuration);
+                logger.Error(arguments is { ServerUrl: null, Username: null, UseConfig: false }
+                    ? "No arguments were passed to the client. Ensure you're running PLRPC through CLI"
+                    : "Invalid argument(s) were passed to the client, please check them and try running again", LogArea.Configuration);
                 Console.ReadLine();
                 break;
         }
     }
 
-    [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    private static async Task InitializeUpdateCheck()
-    {
-        HttpClient updateClient = new();
-        Updater updater = new(updateClient);
-
-        // Required by GitHub's API
-        updateClient.DefaultRequestHeaders.UserAgent.ParseAdd("LBPUnion/1.0 (PLRPC; github-release) UpdateClient/1.1");
-
-        Log.Information("{@Area}: Checking for updates", LogArea.Updater);
-
-        Release? updateResult = await updater.CheckForUpdate();
-
-        if (updateResult != null)
-        {
-            Log.Information("{@Area}: A new version of PLRPC is available!", 
-                LogArea.Updater);
-            Log.Information("{@Area}: {UpdateTag}: {UpdateUrl}", 
-                LogArea.Updater, updateResult.TagName, updateResult.Url);
-        }
-        else
-        {
-            Log.Information("{@Area}: There are no new updates available", 
-                LogArea.Updater);
-        }
-    }
-
     public static async Task InitializeLighthouseClient(string serverUrl, string username, string? applicationId)
     {
-        Log.Information("{@Area}: Initializing new client and dependencies", 
-            LogArea.LighthouseClient);
+        logger.Information("Initializing new client and dependencies", LogArea.LighthouseClient);
 
         #if !DEBUG
-            await InitializeUpdateCheck();
+            await updater.InitializeUpdateCheck();
         #endif
 
         string trimmedServerUrl = serverUrl.TrimEnd('/'); // trailing slashes cause issues with requests
@@ -110,7 +74,7 @@ public static class Program
 
         ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
         DiscordRpcClient discordRpcClient = new(applicationId);
-        LighthouseClient lighthouseClient = new(username, trimmedServerUrl, apiRepository, discordRpcClient);
+        LighthouseClient lighthouseClient = new(username, trimmedServerUrl, apiRepository, discordRpcClient, logger);
 
         await lighthouseClient.StartUpdateLoop();
     }

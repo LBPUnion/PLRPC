@@ -1,11 +1,10 @@
-﻿using LBPUnion.PLRPC.Types.Configuration;
+﻿using System.Text.Json;
+using LBPUnion.PLRPC.Types.Configuration;
 using LBPUnion.PLRPC.Types.Logging;
-using System.Text.Json;
-using Serilog;
 
 namespace LBPUnion.PLRPC;
 
-public static class Configuration
+public class Configuration
 {
     private static readonly JsonSerializerOptions lenientJsonOptions = new()
     {
@@ -14,12 +13,19 @@ public static class Configuration
         ReadCommentHandling = JsonCommentHandling.Skip,
     };
 
-    public static async Task<PlrpcConfiguration?> LoadFromConfiguration()
+    private readonly Logger logger;
+
+    public Configuration(Logger logger)
+    {
+        this.logger = logger;
+    }
+
+    public async Task<PlrpcConfiguration?> LoadFromConfiguration()
     {
         if (!File.Exists("./config.json"))
         {
-            Log.Warning("{@Area}: No configuration file exists, creating a base configuration", LogArea.Configuration);
-            Log.Warning("{@Area}: Please populate the configuration file and restart the program", LogArea.Configuration);
+            this.logger.Warning("No configuration file exists, creating a base configuration", LogArea.Configuration);
+            this.logger.Warning("Please populate the configuration file and restart the program", LogArea.Configuration);
 
             PlrpcConfiguration defaultConfig = new();
 
@@ -41,8 +47,8 @@ public static class Configuration
         }
         catch (Exception exception)
         {
-            Log.Fatal(exception, "{@Area}: Failed to deserialize configuration file", LogArea.Configuration);
+            this.logger.Fatal("Failed to deserialize configuration file", LogArea.Configuration, exception);
             return null;
         }
-    }    
+    }
 }
