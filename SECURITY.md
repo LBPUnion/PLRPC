@@ -14,11 +14,11 @@ Below is a table depicting all currently supported PLRPC builds.
 | Version | Supported                 |
 |---------|---------------------------|
 | v0.1.x  | :x: *(not supported)*     |
-| v1.0.x  | :warning: *(deprecated)*  |
-| v1.1.x  | :warning: *(deprecated)*  |
-| v2.0.x  | :warning: *(deprecated)*  |
-| v2.1.x  | ✅                         |
-
+| v1.0.x  | :x: *(not supported)*     |
+| v1.1.x  | :x: *(not supported)*     |
+| v2.0.x  | :x: *(not supported)*     |
+| v2.1.x  | :warning: *(deprecated)*  |
+| v3.0.x  | ✅                         |
 
 ## Reporting a Vulnerability
 
