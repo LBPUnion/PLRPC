@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using LBPUnion.PLRPC.Types.Configuration;
 using LBPUnion.PLRPC.Types.Logging;
-using Serilog;
 
 namespace LBPUnion.PLRPC;
 
