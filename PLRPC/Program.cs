@@ -34,7 +34,7 @@ public static class Program
             }
             case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUrl(arguments.ServerUrl):
             case { ServerUrl: not null, Username: not null } when !ValidationHelper.IsValidUsername(arguments.Username):
-                logger.Error("The username or server URL you entered is not valid. Please try again.", LogArea.Configuration);
+                logger.Error("The username or server URL you entered is not valid. Please try again.", LogArea.Validation);
                 return;
             case { ServerUrl: not null, Username: not null, ApplicationId: not null }:
                 await InitializeLighthouseClient(arguments.ServerUrl, arguments.Username, arguments.ApplicationId);
