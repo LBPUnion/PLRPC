@@ -49,9 +49,9 @@ jobs:
       run: echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
     - name: Publish CLI for Windows x64
-      run: dotnet publish -c Release -r win-x64 --self-contained PLRPC
+      run: dotnet publish -c Release -r win-x64 --self-contained PLRPC.CLI
     - name: Publish CLI for Linux x64
-      run: dotnet publish -c Release -r linux-x64 --self-contained PLRPC
+      run: dotnet publish -c Release -r linux-x64 --self-contained PLRPC.CLI
     - name: Publish GUI for Windows x64
       run: dotnet publish -c Release -r win-x64 --self-contained PLRPC.GUI.Windows
     - name: Publish GUI for Linux x64
