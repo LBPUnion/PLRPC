@@ -34,7 +34,7 @@ public class Initializers
         this.logger.Information("Initializing new client and dependencies", LogArea.LighthouseClient);
 
         #if !DEBUG
-            await updater.InitializeUpdateCheck();
+            await this.updater.InitializeUpdateCheck();
         #endif
 
         string trimmedServerUrl = serverUrl.TrimEnd('/'); // trailing slashes cause issues with requests
