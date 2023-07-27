@@ -54,7 +54,7 @@ public class Initializers
 
         ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
         DiscordRpcClient discordRpcClient = new(applicationId);
-        LighthouseClient lighthouseClient = new(username, trimmedServerUrl, apiRepository, discordRpcClient, logger);
+        LighthouseClient lighthouseClient = new(username, trimmedServerUrl, apiRepository, discordRpcClient, this.logger);
 
         await lighthouseClient.StartUpdateLoop();
     }
