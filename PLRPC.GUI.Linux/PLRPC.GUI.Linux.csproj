@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <RootNamespace>LBPUnion.PLRPC.GUI</RootNamespace>
+        <AssemblyName>LBPUnion.PLRPC.GUI.Linux</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
     </PropertyGroup>

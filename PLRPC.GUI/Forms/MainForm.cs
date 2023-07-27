@@ -129,7 +129,7 @@ public class MainForm : Form
             username.Enabled = false;
             applicationId.Enabled = false;
 
-            await Program.InitializeLighthouseClient(serverUrl.Text.Trim('/'), username.Text, applicationId.Text);
+            await new Initializers().InitializeLighthouseClient(serverUrl.Text.Trim('/'), username.Text, applicationId.Text);
         }
         catch (Exception exception)
         {
