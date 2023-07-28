@@ -14,19 +14,15 @@ public class ConfigurationTests
     };
     
     [Fact]
-    public async void CanGenerateConfiguration()
+    public async void CanGenerateAndParseConfiguration()
     {
         PlrpcConfiguration defaultConfig = new();
         await File.WriteAllTextAsync("./config.json", JsonSerializer.Serialize(defaultConfig, lenientJsonOptions));
 
-        bool configExists = File.Exists("./config.json");
+        bool configurationExists = File.Exists("./config.json");
 
-        Assert.True(configExists);
-    }
-
-    [Fact]
-    public async void CanParseConfiguration()
-    {
+        Assert.True(configurationExists);
+        
         string configurationJson = await File.ReadAllTextAsync("./config.json");
         PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson, lenientJsonOptions);
 
