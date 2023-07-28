@@ -1,8 +1,9 @@
 using LBPUnion.PLRPC.Types.Entities;
 using Xunit;
 
-namespace LBPUnion.PLRPC.Tests;
+namespace LBPUnion.PLRPC.Tests.Integration;
 
+[Trait("Category", "Integration")]
 public class ApiTests
 {
     private static readonly HttpClient apiClient = new()

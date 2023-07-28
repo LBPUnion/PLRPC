@@ -2,8 +2,9 @@
 using LBPUnion.PLRPC.Types.Updater;
 using Xunit;
 
-namespace LBPUnion.PLRPC.Tests;
+namespace LBPUnion.PLRPC.Tests.Integration;
 
+[Trait("Category", "Integration")]
 public class UpdaterTests
 {
     [Fact]

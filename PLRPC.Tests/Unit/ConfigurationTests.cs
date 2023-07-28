@@ -2,8 +2,9 @@
 using LBPUnion.PLRPC.Types.Configuration;
 using Xunit;
 
-namespace LBPUnion.PLRPC.Tests;
+namespace LBPUnion.PLRPC.Tests.Unit;
 
+[Trait("Category", "Unit")]
 public class ConfigurationTests
 {
     private static readonly JsonSerializerOptions lenientJsonOptions = new()
