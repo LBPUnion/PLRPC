@@ -7,5 +7,4 @@ public enum LogArea
     LighthouseClient,
     RichPresence,
     Updater,
-    Validation,
 }
