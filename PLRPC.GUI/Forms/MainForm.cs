@@ -7,6 +7,9 @@ namespace LBPUnion.PLRPC.GUI.Forms;
 
 public class MainForm : Form
 {
+    private static readonly Logger logger = new();
+    private static readonly Updater updater = new(logger);
+    
     private static readonly TextBox username;
     private static readonly TextBox serverUrl;
     private static readonly TextBox applicationId;
@@ -129,7 +132,7 @@ public class MainForm : Form
             username.Enabled = false;
             applicationId.Enabled = false;
 
-            await new Initializers().InitializeLighthouseClient(serverUrl.Text.Trim('/'), username.Text, applicationId.Text);
+            await new Initializer(logger, updater).InitializeLighthouseClient(serverUrl.Text.Trim('/'), username.Text, applicationId.Text);
         }
         catch (Exception exception)
         {

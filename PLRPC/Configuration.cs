@@ -36,19 +36,10 @@ public class Configuration
 
         string configurationJson = await File.ReadAllTextAsync("./config.json");
 
-        try
-        {
-            PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson, lenientJsonOptions);
+        PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson, lenientJsonOptions);
 
-            if (configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null })
-                return configuration;
-
-            throw new JsonException("Deserialized configuration contains one or more null values");
-        }
-        catch (Exception exception)
-        {
-            this.logger.Fatal("Failed to deserialize configuration file", LogArea.Configuration, exception);
-            return null;
-        }
+        return configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null }
+            ? configuration
+            : null;
     }
 }

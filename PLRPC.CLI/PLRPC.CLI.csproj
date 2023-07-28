@@ -20,7 +20,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\PLRPC\PLRPC.csproj"/>
+        <ProjectReference Include="..\PLRPC\PLRPC.csproj" />
     </ItemGroup>
 
 </Project>
