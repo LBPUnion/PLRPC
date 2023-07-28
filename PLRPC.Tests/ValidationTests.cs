@@ -16,6 +16,16 @@ public class ValidationTests
     }
 
     [Fact]
+    public void PassValidServerUrl()
+    {
+        const string serverUrl = "https://lighthouse.lbpunion.com";
+
+        bool isValidServerUrl = ValidationHelper.IsValidUrl(serverUrl);
+
+        Assert.True(isValidServerUrl);
+    }
+
+    [Fact]
     public void FailInvalidUsername()
     {
         const string tooLongUsername = "InvalidUsernameThatIsTooLong";
@@ -29,16 +39,6 @@ public class ValidationTests
         Assert.False(isValidLongUsername);
         Assert.False(isValidShortUsername);
         Assert.False(isValidSymbolsUsername);
-    }
-
-    [Fact]
-    public void PassValidServerUrl()
-    {
-        const string serverUrl = "https://lighthouse.lbpunion.com";
-
-        bool isValidServerUrl = ValidationHelper.IsValidUrl(serverUrl);
-
-        Assert.True(isValidServerUrl);
     }
 
     // ReSharper disable once StringLiteralTypo
