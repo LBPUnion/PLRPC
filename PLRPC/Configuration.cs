@@ -35,7 +35,6 @@ public class Configuration
         }
 
         string configurationJson = await File.ReadAllTextAsync("./config.json");
-
         PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson, lenientJsonOptions);
 
         return configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null }
