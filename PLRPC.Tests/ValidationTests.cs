@@ -42,6 +42,7 @@ public class ValidationTests
     }
 
     // ReSharper disable once StringLiteralTypo
+    // TODO: This could be improved later to add more invalid URL types
     [Fact]
     public void FailInvalidServerUrl()
     {
