@@ -18,7 +18,7 @@ public class ApiTests
 
     private static readonly TimeSpan cacheExpirationTime = TimeSpan.FromHours(1);
     private static readonly ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
-    
+
     [Fact]
     public async void CanGetUser()
     {

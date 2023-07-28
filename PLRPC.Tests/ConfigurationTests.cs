@@ -12,7 +12,7 @@ public class ConfigurationTests
         WriteIndented = true,
         ReadCommentHandling = JsonCommentHandling.Skip,
     };
-    
+
     [Fact]
     public async void CanGenerateAndParseConfiguration()
     {
@@ -22,7 +22,7 @@ public class ConfigurationTests
         bool configurationExists = File.Exists("./config.json");
 
         Assert.True(configurationExists);
-        
+
         string configurationJson = await File.ReadAllTextAsync("./config.json");
         PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson, lenientJsonOptions);
 
