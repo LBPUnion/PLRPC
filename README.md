@@ -10,7 +10,6 @@ the same premise.
 - [x] Obtain user, user status, room, and slot information from a Lighthouse server
 - [x] Interact with a Discord Client to display retrieved information
 - [x] Configuration file support
-- [x] Make @Slendy cry
 - [ ] Interactive buttons for user/slot
     - [x] View User Profile
     - [ ] View Current Slot
@@ -24,8 +23,8 @@ the same premise.
 2. Download the latest GUI build for Windows or Linux
 3. Extract the build to any folder
 4. Run the client
-   * **Windows:** Run the GUI by double clicking on the `PLRPC.GUI.Windows` executable
-   * **Linux:** Run the GUI by double clicking on the `PLRPC.GUI.Linux` executable
+   * **Windows:** Run the GUI by double clicking on the `LBPUnion.PLRPC.GUI.Windows` executable
+   * **Linux:** Run the GUI by double clicking on the `LBPUnion.PLRPC.GUI.Linux` executable
      * You may need to mark the program as executable first, or run it from the command line
 
 **CLI Installation Steps (advanced)**
@@ -38,8 +37,8 @@ the same premise.
 2. Download the latest CLI build for Windows or Linux
 3. Extract the build to any folder
 4. Run the client
-    - **Configuration Mode:** `./path/to/PLRPC --config` (use `--config` each time)
-    - **Manual Mode:** `./path/to/PLRPC --server https://lighthouse.instance.url --username instanceusername`
+    - **Configuration Mode:** `./path/to/PLRPC.CLI --config` (use `--config` each time)
+    - **Manual Mode:** `./path/to/PLRPC.CLI --server https://lighthouse.instance.url --username instanceusername`
 
 **Post Install:**
 
@@ -51,3 +50,6 @@ Please create an Issue if you encounter any bugs or weird errors.
   or if using the GUI, unlock defaults and change the `Application ID` entry in the options to override the default
   Discord Application ID. This can be useful if your Lighthouse instance or other service is compatible with the PLRPC 
   protocol and you want to display your own application name.
+* LittleBigPlanet 1 is not fully supported and will not show all of the information LBP2, 3, and Vita will. This is
+  because LBP1 does not support rooms, therefore the client cannot determine user status or slot information. There
+  are plans to implement expanded support for LBP1 in the future as noted by [#30](https://github.com/LBPUnion/PLRPC/issues/30).
