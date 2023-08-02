@@ -14,6 +14,7 @@ public class LighthouseClient
     private readonly DiscordRpcClient discordRpcClient;
     private readonly Logger logger;
     private readonly SemaphoreSlim readySemaphore = new(0, 1);
+
     private readonly string serverUrl;
     private readonly string username;
 
@@ -31,13 +32,13 @@ public class LighthouseClient
         this.discordRpcClient.OnReady += (_, _) => this.readySemaphore.Release();
 
         this.discordRpcClient.OnReady += (_, _) =>
-            this.logger.Information("Successfully established ready connection", LogArea.LighthouseClient);
+            this.logger.Information("Successfully established ready connection", LogArea.RichPresence);
 
         this.discordRpcClient.OnConnectionEstablished += (_, e) =>
-            this.logger.Information($"Successfully acquired the lock on RPC ({e.ConnectedPipe})", LogArea.LighthouseClient);
+            this.logger.Information($"Successfully acquired the lock on RPC ({e.ConnectedPipe})", LogArea.RichPresence);
 
         this.discordRpcClient.OnConnectionFailed += (_, e) =>
-            this.logger.Warning($"Failed to acquire the lock on RPC ({e.FailedPipe})", LogArea.LighthouseClient);
+            this.logger.Warning($"Failed to acquire the lock on RPC ({e.FailedPipe})", LogArea.RichPresence);
 
         this.discordRpcClient.OnPresenceUpdate += (_, e) =>
             this.logger.Information($"Updated client presence ({e.Presence.Party.ID})", LogArea.RichPresence);
