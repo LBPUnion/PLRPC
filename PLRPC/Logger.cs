@@ -14,12 +14,7 @@ public class Logger
         .Enrich.With<LogEnrichers>()
         .WriteTo.Console(outputTemplate: "[{ProcessId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}");
     
-    private readonly ILogger logger;
-
-    public Logger()
-    {
-        this.logger = loggerConfiguration.CreateLogger();
-    }
+    private readonly ILogger logger = loggerConfiguration.CreateLogger();
 
     /*
      * Used for generating a universal logging template
