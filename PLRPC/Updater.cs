@@ -13,30 +13,7 @@ public class Updater
         this.logger = logger;
     }
 
-    // ReSharper disable once UnusedMember.Global
-    public async Task InitializeUpdateCheck()
-    {
-        HttpClient updaterHttpClient = new();
-
-        // Required by GitHub's API
-        updaterHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("LBPUnion/1.0 (PLRPC; github-release) UpdateClient/1.1");
-
-        this.logger.Information("Checking for updates", LogArea.Updater);
-
-        Release? updateResult = await this.CheckForUpdate(updaterHttpClient);
-
-        if (updateResult != null)
-        {
-            this.logger.Information("A new version of PLRPC is available!", LogArea.Updater);
-            this.logger.Information($"{updateResult.TagName}: {updateResult.Url}", LogArea.Updater);
-        }
-        else
-        {
-            this.logger.Information("There are no new updates available", LogArea.Updater);
-        }
-    }
-
-    private async Task<Release?> CheckForUpdate(HttpClient updaterHttpClient)
+    public async Task<Release?> CheckForUpdate(HttpClient updaterHttpClient)
     {
         if (!File.Exists("./manifest.json"))
         {
