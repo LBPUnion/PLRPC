@@ -95,5 +95,4 @@ public static class Program
         [Option('a', "applicationid", Required = false, HelpText = "The Discord application ID to use.")]
         public string? ApplicationId { get; }
     }
-    #nullable disable
 }
