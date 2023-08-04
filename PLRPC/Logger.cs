@@ -11,8 +11,8 @@ public class Logger
 {
     private static readonly LoggerConfiguration loggerConfiguration = new LoggerConfiguration()
         .MinimumLevel.Information()
-        .Enrich.With<LogEnrichers>()
-        .WriteTo.Console(outputTemplate: "[{ProcessId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}");
+        .Enrich.With<LogEnricher>()
+        .WriteTo.Console(outputTemplate: "[{ProcessId} {ThreadId} {Timestamp:HH:mm:ss} {Level:u3}] {Message:l}{NewLine}{Exception}");
     
     private readonly ILogger logger = loggerConfiguration.CreateLogger();
 
@@ -24,8 +24,7 @@ public class Logger
     {
         StringBuilder sb = new();
 
-        sb.Append($"[{logArea}] ");
-        sb.Append(message);
+        sb.Append($"[{logArea.ToString().PadRight(20)}] {message}");
 
         return sb.ToString();
     }
