@@ -53,19 +53,19 @@ public class LighthouseClient
             return;
         }
 
-        UserStatus? status = await this.apiRepository.GetStatus(user.UserId);
-        if (status?.CurrentRoom?.Slot?.SlotId == null || status.CurrentRoom.PlayerIds == null)
+        UserStatus? userStatus = await this.apiRepository.GetStatus(user.UserId);
+        if (userStatus?.CurrentRoom?.Slot?.SlotId == null || userStatus.CurrentRoom.PlayerIds == null)
         {
             this.logger.Warning("Failed to get user status from the server", LogArea.ApiRepositoryImpl);
             return;
         }
 
-        SlotType slotType = status.CurrentRoom.Slot.SlotType;
+        SlotType slotType = userStatus.CurrentRoom.Slot.SlotType;
         Slot? slot;
 
         if (slotType == SlotType.User)
         {
-            slot = await this.apiRepository.GetSlot(status.CurrentRoom.Slot.SlotId);
+            slot = await this.apiRepository.GetSlot(userStatus.CurrentRoom.Slot.SlotId);
             if (slot == null)
             {
                 this.logger.Warning("Failed to get user's current level from the server", LogArea.ApiRepositoryImpl);
@@ -92,8 +92,8 @@ public class LighthouseClient
             };
         }
 
-        int playersInRoom = status.CurrentRoom.PlayerIds.Length;
-        int roomId = status.CurrentRoom.RoomId;
+        int playersInRoom = userStatus.CurrentRoom.PlayerIds.Length;
+        int roomId = userStatus.CurrentRoom.RoomId;
         int userId = user.UserId;
 
         string details = slotType switch
@@ -109,9 +109,9 @@ public class LighthouseClient
             _ => "Exploring the Imagisphere",
         };
 
-        string userStatus = status.StatusType switch
+        string status = userStatus.StatusType switch
         {
-            StatusType.Online => $"{status.CurrentVersion.ToPrettyString()}",
+            StatusType.Online => $"{userStatus.CurrentVersion.ToPrettyString()}",
             StatusType.Offline => "",
             _ => "Unknown State",
         };
@@ -119,7 +119,7 @@ public class LighthouseClient
         RichPresence newPresence = new()
         {
             Details = details,
-            State = userStatus,
+            State = status,
             Assets = new Assets
             {
                 LargeImageKey = this.serverUrl + "/gameAssets/" + slot.IconHash,

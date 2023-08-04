@@ -16,7 +16,7 @@ public class Slot
     public string? IconHash { get; set; }
 
     [JsonPropertyName("type")]
-    public SlotType Type { get; set; }
+    public SlotType SlotType { get; set; }
 }
 
 public enum SlotType

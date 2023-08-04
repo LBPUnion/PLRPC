@@ -40,7 +40,7 @@ public class ApiTests
         Assert.NotNull(slot);
 
         Assert.Equal(8443, slot.SlotId);
-        Assert.Equal(SlotType.User, slot.Type);
+        Assert.Equal(SlotType.User, slot.SlotType);
 
         Assert.Contains("Keystone Tower | LBP Union Ministrial Offices", slot.Name);
     }
