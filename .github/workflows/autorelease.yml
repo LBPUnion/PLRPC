@@ -8,7 +8,7 @@ on:
 
 jobs:
   release:
-    name: Create Release from Artifacts
+    name: Create Release from Tag
     runs-on: ubuntu-latest
     steps:
       - name: Await CI Completion
