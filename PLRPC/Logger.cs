@@ -1,5 +1,7 @@
-﻿using System.Text;
+﻿using System.Drawing;
+using System.Text;
 using LBPUnion.PLRPC.Types.Logging;
+using Pastel;
 using Serilog;
 using Serilog.Events;
 
@@ -24,7 +26,11 @@ public class Logger
     {
         StringBuilder sb = new();
 
-        sb.Append($"[{logArea.ToString().PadRight(20)}] {message}");
+        string formattedLogArea = logArea.ToString().PadRight(20).Pastel(Color.LightBlue);
+        string formattedMessage = message.Pastel(Color.White);
+
+        sb.Append($"[{formattedLogArea}] ".Pastel(Color.DimGray));
+        sb.Append(formattedMessage);
 
         return sb.ToString();
     }
