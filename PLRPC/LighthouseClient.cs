@@ -108,7 +108,7 @@ public class LighthouseClient
             _ => "Exploring the Imagisphere",
         };
 
-        string status = userStatus.StatusType switch
+        string state = userStatus.StatusType switch
         {
             StatusType.Online => $"{userStatus.CurrentVersion.ToPrettyString()}",
             StatusType.Offline => "",
@@ -118,7 +118,7 @@ public class LighthouseClient
         RichPresence newPresence = new()
         {
             Details = details,
-            State = status,
+            State = state,
             Assets = new Assets
             {
                 LargeImageKey = this.serverUrl + "/gameAssets/" + slot.IconHash,
