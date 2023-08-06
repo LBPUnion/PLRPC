@@ -8,11 +8,11 @@ namespace LBPUnion.PLRPC;
 public class ApiRepositoryImpl : IApiRepository
 {
     private readonly TimeSpan cacheExpirationTime;
-
     private readonly HttpClient httpClient;
+
     private readonly Dictionary<int, (Slot, long)> slotCache = new();
     private readonly Dictionary<string, (User, long)> userCache = new();
-    private readonly Dictionary<int, (UserStatus, long)> userStatusCache = new();
+    // private readonly Dictionary<int, (UserStatus, long)> userStatusCache = new();
 
     public ApiRepositoryImpl(HttpClient httpClient, TimeSpan cacheExpirationTime)
     {
@@ -52,7 +52,12 @@ public class ApiRepositoryImpl : IApiRepository
 
     public async Task<UserStatus?> GetStatus(int userId)
     {
-        if (this.GetFromCache(this.userStatusCache, userId, out UserStatus? cachedUserStatus)) return cachedUserStatus;
+        /*
+         * User status cache is disabled for now, causes issue where old status is returned
+         * Will need to revisit later or remove all together.
+         */
+
+        // if (this.GetFromCache(this.userStatusCache, userId, out UserStatus? cachedUserStatus)) return cachedUserStatus;
 
         HttpResponseMessage userStatusReq = await this.httpClient.GetAsync($"user/{userId}/status");
         if (!userStatusReq.IsSuccessStatusCode) return null;
@@ -81,7 +86,7 @@ public class ApiRepositoryImpl : IApiRepository
             };
         }
 
-        this.userStatusCache.TryAdd(userId, (userStatus, TimestampMillis));
+        // this.userStatusCache.TryAdd(userId, (userStatus, TimestampMillis));
         return userStatus;
     }
 
