@@ -1,7 +1,6 @@
 ﻿using DiscordRPC;
 using LBPUnion.PLRPC.Extensions;
 using LBPUnion.PLRPC.Types.Entities;
-using LBPUnion.PLRPC.Types.Enums;
 using LBPUnion.PLRPC.Types.Interfaces;
 using LBPUnion.PLRPC.Types.Logging;
 using User = LBPUnion.PLRPC.Types.Entities.User;
@@ -47,7 +46,7 @@ public class LighthouseClient
     private async Task UpdatePresence()
     {
         User? user = await this.apiRepository.GetUser(this.username);
-        if (user == null || user.PermissionLevel == PermissionLevel.Banned)
+        if (user == null)
         {
             this.logger.Warning("Failed to get user from the server", LogArea.ApiRepositoryImpl);
             return;
