@@ -1,5 +1,6 @@
 ﻿using DiscordRPC;
 using LBPUnion.PLRPC.Extensions;
+using LBPUnion.PLRPC.Helpers;
 using LBPUnion.PLRPC.Types.Entities;
 using LBPUnion.PLRPC.Types.Interfaces;
 using LBPUnion.PLRPC.Types.Logging;
@@ -132,7 +133,7 @@ public class LighthouseClient
             },
             Party = new Party
             {
-                ID = $"room:{userId}:{roomId}",
+                ID = $"PLRPC:{CryptoHelper.Sha1Hash(this.serverUrl)[..7]}:{userId}:{roomId}",
                 Size = playersInRoom,
                 Max = 4,
             },
