@@ -1,9 +1,7 @@
 using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 
 namespace LBPUnion.PLRPC.Types.Entities;
 
-[JsonObject]
 public class Slot
 {
     [JsonPropertyName("slotId")]

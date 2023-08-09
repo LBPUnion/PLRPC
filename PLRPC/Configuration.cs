@@ -12,7 +12,7 @@ public class Configuration
         WriteIndented = true,
         ReadCommentHandling = JsonCommentHandling.Skip,
     };
-    
+
     private readonly Logger logger;
 
     public Configuration(Logger logger)

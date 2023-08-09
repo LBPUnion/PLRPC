@@ -1,9 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 
 namespace LBPUnion.PLRPC.Types.Configuration;
 
-[JsonObject]
 public class RemoteConfiguration
 {
     [JsonPropertyName("applicationId")]
@@ -19,7 +17,6 @@ public class RemoteConfiguration
     public RpcAssets Assets { get; set; } = new();
 }
 
-[JsonObject]
 public class RpcAssets
 {
     public string? PodAsset { get; set; }

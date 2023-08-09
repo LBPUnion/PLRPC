@@ -1,9 +1,7 @@
 using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 
 namespace LBPUnion.PLRPC.Types.Entities;
 
-[JsonObject]
 public class Room
 {
     [JsonPropertyName("roomId")]
@@ -16,7 +14,6 @@ public class Room
     public RoomSlot? Slot { get; set; }
 }
 
-[JsonObject]
 public class RoomSlot
 {
     [JsonPropertyName("slotId")]
