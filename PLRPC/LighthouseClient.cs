@@ -26,11 +26,11 @@ public class LighthouseClient
         this.username = username;
         this.serverUrl = serverUrl;
 
-        this.discordRpcClient = discordRpcClient;
-        this.discordRpcClient.Initialize();
-        
         this.lighthouseApi = lighthouseApi;
         this.remoteConfiguration = remoteConfiguration;
+
+        this.discordRpcClient = discordRpcClient;
+        this.discordRpcClient.Initialize();
 
         this.logger = logger;
 
