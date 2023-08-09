@@ -1,19 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Title>PLRPC</Title>
-        <AssemblyTitle>PLRPC</AssemblyTitle>
-        <Description>PLRPC (shortname for ProjectLighthouse: RIch Presence Client) is an open-source RPC client compatible with any modern PL build.</Description>
-        <PackageProjectUrl>https://github.com/LBPUnion/PLRPC</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/LBPUnion/PLRPC.git</RepositoryUrl>
-        <RepositoryType>Git</RepositoryType>
-        <Version>2.0.0</Version>
-        <Copyright>MIT License Copyright (c) 2023 LBP Union</Copyright>
-        <Company>LBP Union</Company>
+        <RootNamespace>LBPUnion.PLRPC</RootNamespace>
+        <AssemblyName>LBPUnion.PLRPC</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <AssemblyName>LBPUnion.PLRPC</AssemblyName>
-        <RootNamespace>LBPUnion.PLRPC</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup>
