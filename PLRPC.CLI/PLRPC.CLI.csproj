@@ -1,6 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <RootNamespace>LBPUnion.PLRPC.CLI</RootNamespace>
+        <AssemblyName>LBPUnion.PLRPC.CLI</AssemblyName>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+    
+    <PropertyGroup>
         <OutputType>Exe</OutputType>
         <SelfContained>true</SelfContained>
         <TargetFramework>net7.0</TargetFramework>
@@ -9,14 +16,6 @@
 
     <PropertyGroup>
         <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <RootNamespace>LBPUnion.PLRPC.CLI</RootNamespace>
-        <AssemblyName>LBPUnion.PLRPC.CLI</AssemblyName>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <SelfContained>true</SelfContained>
     </PropertyGroup>
 
     <ItemGroup>

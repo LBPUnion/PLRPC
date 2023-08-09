@@ -1,6 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <RootNamespace>LBPUnion.PLRPC.GUI</RootNamespace>
+        <AssemblyName>LBPUnion.PLRPC.GUI</AssemblyName>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+    
+    <PropertyGroup>
         <SelfContained>true</SelfContained>
         <TargetFramework>net7.0</TargetFramework>
         <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
@@ -8,14 +15,6 @@
 
     <PropertyGroup>
         <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <RootNamespace>LBPUnion.PLRPC.GUI</RootNamespace>
-        <AssemblyName>LBPUnion.PLRPC.GUI</AssemblyName>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <SelfContained>true</SelfContained>
     </PropertyGroup>
 
     <ItemGroup>
