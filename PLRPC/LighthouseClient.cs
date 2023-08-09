@@ -13,25 +13,26 @@ public class LighthouseClient
 {
     private readonly string username;
     private readonly string serverUrl;
-
+    
+    private readonly ILighthouseApi lighthouseApi;
     private readonly RemoteConfiguration remoteConfiguration;
-    private readonly IApiRepository apiRepository;
     private readonly DiscordRpcClient discordRpcClient;
     private readonly Logger logger;
+
     private readonly SemaphoreSlim readySemaphore = new(0, 1);
 
-    public LighthouseClient(string username, string serverUrl, RemoteConfiguration remoteConfiguration, IApiRepository apiRepository, DiscordRpcClient discordRpcClient, Logger logger)
+    public LighthouseClient(string username, string serverUrl, ILighthouseApi lighthouseApi, RemoteConfiguration remoteConfiguration, DiscordRpcClient discordRpcClient, Logger logger)
     {
         this.username = username;
         this.serverUrl = serverUrl;
 
-        this.remoteConfiguration = remoteConfiguration;
-        this.apiRepository = apiRepository;
-
-        this.logger = logger;
-
         this.discordRpcClient = discordRpcClient;
         this.discordRpcClient.Initialize();
+        
+        this.lighthouseApi = lighthouseApi;
+        this.remoteConfiguration = remoteConfiguration;
+
+        this.logger = logger;
 
         this.discordRpcClient.OnReady += (_, _) => this.readySemaphore.Release();
 
@@ -50,17 +51,17 @@ public class LighthouseClient
 
     private async Task UpdatePresence()
     {
-        User? user = await this.apiRepository.GetUser(this.username);
+        User? user = await this.lighthouseApi.GetUser(this.username);
         if (user == null)
         {
-            this.logger.Warning("Failed to get user from the server", LogArea.ApiRepositoryImpl);
+            this.logger.Warning("Failed to get user from the server", LogArea.LighthouseApi);
             return;
         }
 
-        UserStatus? userStatus = await this.apiRepository.GetStatus(user.UserId);
+        UserStatus? userStatus = await this.lighthouseApi.GetStatus(user.UserId);
         if (userStatus?.CurrentRoom?.Slot?.SlotId == null || userStatus.CurrentRoom.PlayerIds == null)
         {
-            this.logger.Warning("Failed to get user status from the server", LogArea.ApiRepositoryImpl);
+            this.logger.Warning("Failed to get user status from the server", LogArea.LighthouseApi);
             return;
         }
 
@@ -69,10 +70,10 @@ public class LighthouseClient
 
         if (slotType == SlotType.User)
         {
-            slot = await this.apiRepository.GetSlot(userStatus.CurrentRoom.Slot.SlotId);
+            slot = await this.lighthouseApi.GetSlot(userStatus.CurrentRoom.Slot.SlotId);
             if (slot == null)
             {
-                this.logger.Warning("Failed to get user's current level from the server", LogArea.ApiRepositoryImpl);
+                this.logger.Warning("Failed to get user's current level from the server", LogArea.LighthouseApi);
                 return;
             }
         }
@@ -137,7 +138,7 @@ public class LighthouseClient
             },
             Party = new Party
             {
-                ID = $"PLRPC:{CryptoHelper.Sha1Hash(this.serverUrl)[..7]}:{userId}:{roomId}",
+                ID = $"{this.remoteConfiguration.PartyIdPrefix}:{CryptoHelper.Sha1Hash(this.serverUrl)[..7]}:{userId}:{roomId}",
                 Size = playersInRoom,
                 Max = 4,
             },

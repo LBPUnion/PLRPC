@@ -12,7 +12,7 @@ public class Configuration
         WriteIndented = true,
         ReadCommentHandling = JsonCommentHandling.Skip,
     };
-
+    
     private readonly Logger logger;
 
     public Configuration(Logger logger)
@@ -20,7 +20,29 @@ public class Configuration
         this.logger = logger;
     }
 
-    public async Task<LocalConfiguration?> LoadFromConfiguration()
+    public async Task<RemoteConfiguration?> GetRemoteConfiguration(string serverUrl)
+    {
+        HttpClient configurationClient = new()
+        {
+            BaseAddress = new Uri(serverUrl + "/api/v1/"),
+            DefaultRequestHeaders = { { "User-Agent", "LBPUnion/1.0 (PLRPC; github-release) ConfigurationClient/1.0" } },
+        };
+        
+        HttpResponseMessage remoteConfigReq = await configurationClient.GetAsync("rpc");
+        if (!remoteConfigReq.IsSuccessStatusCode) return null;
+
+        RemoteConfiguration? remoteConfig =
+            JsonSerializer.Deserialize<RemoteConfiguration>(await remoteConfigReq.Content.ReadAsStringAsync());
+
+        configurationClient.Dispose();
+
+        if (remoteConfig != null) return remoteConfig;
+
+        this.logger.Warning("Failed to deserialize remote configuration", LogArea.Configuration);
+        return null;
+    }
+
+    public async Task<LocalConfiguration?> GetLocalConfiguration()
     {
         if (!File.Exists("./config.json"))
         {

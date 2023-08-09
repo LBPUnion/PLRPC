@@ -27,6 +27,8 @@ public class Updater
         Release? releaseObject = JsonSerializer.Deserialize<Release?>(releaseManifest);
         Manifest? programObject = JsonSerializer.Deserialize<Manifest?>(programManifest);
 
+        updaterHttpClient.Dispose();
+        
         if (releaseObject == null || programObject == null || releaseObject.TagName == programObject.TagName)
             return null;
 

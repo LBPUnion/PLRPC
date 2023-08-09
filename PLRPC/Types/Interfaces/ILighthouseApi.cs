@@ -2,7 +2,7 @@
 
 namespace LBPUnion.PLRPC.Types.Interfaces;
 
-public interface IApiRepository
+public interface ILighthouseApi
 {
     public Task<User?> GetUser(string username);
     public Task<Slot?> GetSlot(int slotId);

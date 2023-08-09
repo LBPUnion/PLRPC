@@ -4,9 +4,9 @@ using LBPUnion.PLRPC.Types.Entities;
 using LBPUnion.PLRPC.Types.Enums;
 using LBPUnion.PLRPC.Types.Interfaces;
 
-namespace LBPUnion.PLRPC;
+namespace LBPUnion.PLRPC.Implementations;
 
-public class ApiRepositoryImpl : IApiRepository
+public class LighthouseApiImpl : ILighthouseApi
 {
     private readonly TimeSpan cacheExpirationTime;
     private readonly HttpClient httpClient;
@@ -15,7 +15,7 @@ public class ApiRepositoryImpl : IApiRepository
     private readonly Dictionary<string, (User, long)> userCache = new();
     // private readonly Dictionary<int, (UserStatus, long)> userStatusCache = new();
 
-    public ApiRepositoryImpl(HttpClient httpClient, TimeSpan cacheExpirationTime)
+    public LighthouseApiImpl(HttpClient httpClient, TimeSpan cacheExpirationTime)
     {
         this.httpClient = httpClient;
         this.cacheExpirationTime = cacheExpirationTime;
@@ -89,16 +89,6 @@ public class ApiRepositoryImpl : IApiRepository
 
         // this.userStatusCache.TryAdd(userId, (userStatus, TimestampMillis));
         return userStatus;
-    }
-
-    public async Task<RemoteConfiguration?> GetRemoteConfiguration()
-    {
-        HttpResponseMessage remoteConfigReq = await this.httpClient.GetAsync("rpc");
-        if (!remoteConfigReq.IsSuccessStatusCode) return null;
-
-        RemoteConfiguration? remoteConfig = JsonSerializer.Deserialize<RemoteConfiguration>(await remoteConfigReq.Content.ReadAsStringAsync());
-        
-        return remoteConfig ?? null;
     }
 
     private bool GetFromCache<T1, T2>(IReadOnlyDictionary<T1, (T2, long)> cache, T1 key, out T2? val) where T1 : notnull

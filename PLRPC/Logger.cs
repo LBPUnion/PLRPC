@@ -122,7 +122,7 @@ public abstract class LoggerUtils : Logger
     /// </summary>
     /// <param name="message">String to be logged.</param>
     /// <param name="logArea">Log area to be referenced.</param>
-    /// <returns></returns>
+    /// <returns>String containing formatted log message.</returns>
     public static string BuildMessage(string message, LogArea logArea)
     {
         StringBuilder sb = new();

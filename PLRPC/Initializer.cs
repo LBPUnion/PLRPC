@@ -1,4 +1,5 @@
 ﻿using DiscordRPC;
+using LBPUnion.PLRPC.Implementations;
 using LBPUnion.PLRPC.Types.Configuration;
 using LBPUnion.PLRPC.Types.Logging;
 using LBPUnion.PLRPC.Types.Updater;
@@ -34,9 +35,11 @@ public class Initializer
         };
 
         TimeSpan cacheExpirationTime = TimeSpan.FromHours(1);
-        ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
 
-        RemoteConfiguration? remoteConfiguration = await apiRepository.GetRemoteConfiguration();
+        LighthouseApiImpl lighthouseApi = new(apiClient, cacheExpirationTime);
+        Configuration lighthouseConfig = new(this.logger);
+
+        RemoteConfiguration? remoteConfiguration = await lighthouseConfig.GetRemoteConfiguration(trimmedServerUrl);
         if (remoteConfiguration == null)
         {
             this.logger.Warning("Failed to retrieve remote RPC configuration", LogArea.LighthouseClient);
@@ -44,7 +47,7 @@ public class Initializer
         }
 
         DiscordRpcClient discordRpcClient = new(remoteConfiguration.ApplicationId.ToString());
-        LighthouseClient lighthouseClient = new(username, trimmedServerUrl, remoteConfiguration, apiRepository, discordRpcClient, this.logger);
+        LighthouseClient lighthouseClient = new(username, trimmedServerUrl, lighthouseApi, remoteConfiguration, discordRpcClient, this.logger);
 
         await lighthouseClient.StartUpdateLoop();
     }

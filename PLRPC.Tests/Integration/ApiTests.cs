@@ -1,3 +1,4 @@
+using LBPUnion.PLRPC.Implementations;
 using LBPUnion.PLRPC.Types.Entities;
 using Xunit;
 
@@ -18,12 +19,12 @@ public class ApiTests
     };
 
     private static readonly TimeSpan cacheExpirationTime = TimeSpan.FromHours(1);
-    private static readonly ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
+    private static readonly LighthouseApiImpl lighthouseApi = new(apiClient, cacheExpirationTime);
 
     [Fact]
     public async void CanGetUser()
     {
-        User? user = await apiRepository.GetUser("littlebigmolly");
+        User? user = await lighthouseApi.GetUser("littlebigmolly");
 
         Assert.NotNull(user);
 
@@ -35,7 +36,7 @@ public class ApiTests
     [Fact]
     public async void CanGetSlot()
     {
-        Slot? slot = await apiRepository.GetSlot(8443);
+        Slot? slot = await lighthouseApi.GetSlot(8443);
 
         Assert.NotNull(slot);
 

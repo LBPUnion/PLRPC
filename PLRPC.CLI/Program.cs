@@ -34,7 +34,7 @@ public static class Program
 
     private static async Task RunConfigurationMode()
     {
-        config = await new Configuration(logger).LoadFromConfiguration();
+        config = await new Configuration(logger).GetLocalConfiguration();
 
         if (config == null)
         {
