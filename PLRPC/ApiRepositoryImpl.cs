@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using LBPUnion.PLRPC.Types.Configuration;
 using LBPUnion.PLRPC.Types.Entities;
 using LBPUnion.PLRPC.Types.Enums;
 using LBPUnion.PLRPC.Types.Interfaces;
@@ -88,6 +89,16 @@ public class ApiRepositoryImpl : IApiRepository
 
         // this.userStatusCache.TryAdd(userId, (userStatus, TimestampMillis));
         return userStatus;
+    }
+
+    public async Task<RemoteConfiguration?> GetRemoteConfiguration()
+    {
+        HttpResponseMessage remoteConfigReq = await this.httpClient.GetAsync("rpc");
+        if (!remoteConfigReq.IsSuccessStatusCode) return null;
+
+        RemoteConfiguration? remoteConfig = JsonSerializer.Deserialize<RemoteConfiguration>(await remoteConfigReq.Content.ReadAsStringAsync());
+        
+        return remoteConfig ?? null;
     }
 
     private bool GetFromCache<T1, T2>(IReadOnlyDictionary<T1, (T2, long)> cache, T1 key, out T2? val) where T1 : notnull

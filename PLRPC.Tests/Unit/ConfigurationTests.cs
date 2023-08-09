@@ -17,7 +17,7 @@ public class ConfigurationTests
     [Fact]
     public async void CanGenerateAndParseConfiguration()
     {
-        PlrpcConfiguration defaultConfig = new();
+        LocalConfiguration defaultConfig = new();
         await File.WriteAllTextAsync("./config.json", JsonSerializer.Serialize(defaultConfig, lenientJsonOptions));
 
         bool configurationExists = File.Exists("./config.json");
@@ -25,9 +25,9 @@ public class ConfigurationTests
         Assert.True(configurationExists);
 
         string configurationJson = await File.ReadAllTextAsync("./config.json");
-        PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson, lenientJsonOptions);
+        LocalConfiguration? configuration = JsonSerializer.Deserialize<LocalConfiguration>(configurationJson, lenientJsonOptions);
 
-        bool configurationIsValid = configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null };
+        bool configurationIsValid = configuration is { ServerUrl: not null, Username: not null };
 
         Assert.True(configurationIsValid);
     }

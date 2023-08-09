@@ -1,6 +1,7 @@
 ﻿using DiscordRPC;
 using LBPUnion.PLRPC.Extensions;
 using LBPUnion.PLRPC.Helpers;
+using LBPUnion.PLRPC.Types.Configuration;
 using LBPUnion.PLRPC.Types.Entities;
 using LBPUnion.PLRPC.Types.Interfaces;
 using LBPUnion.PLRPC.Types.Logging;
@@ -10,24 +11,27 @@ namespace LBPUnion.PLRPC;
 
 public class LighthouseClient
 {
+    private readonly string username;
+    private readonly string serverUrl;
+
+    private readonly RemoteConfiguration remoteConfiguration;
     private readonly IApiRepository apiRepository;
     private readonly DiscordRpcClient discordRpcClient;
     private readonly Logger logger;
     private readonly SemaphoreSlim readySemaphore = new(0, 1);
 
-    private readonly string serverUrl;
-    private readonly string username;
-
-    public LighthouseClient(string username, string serverUrl, IApiRepository apiRepository, DiscordRpcClient discordRpcClient, Logger logger)
+    public LighthouseClient(string username, string serverUrl, RemoteConfiguration remoteConfiguration, IApiRepository apiRepository, DiscordRpcClient discordRpcClient, Logger logger)
     {
         this.username = username;
         this.serverUrl = serverUrl;
+
+        this.remoteConfiguration = remoteConfiguration;
         this.apiRepository = apiRepository;
+
+        this.logger = logger;
 
         this.discordRpcClient = discordRpcClient;
         this.discordRpcClient.Initialize();
-
-        this.logger = logger;
 
         this.discordRpcClient.OnReady += (_, _) => this.readySemaphore.Release();
 
@@ -74,16 +78,16 @@ public class LighthouseClient
         }
         else
         {
-            string iconHash = slotType switch
+            string? iconHash = slotType switch
             {
-                SlotType.Pod => "9c412649a07a8cb678a2a25214ed981001dd08ca",
-                SlotType.Moon => "a891bbcf9ad3518b80c210813cce8ed292ed4c62",
-                SlotType.RemoteMoon => "a891bbcf9ad3518b80c210813cce8ed292ed4c62",
-                SlotType.Developer => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
-                SlotType.DeveloperAdventure => "7d3df5ce61ca90a80f600452cd3445b7a775d47e",
-                SlotType.DlcLevel => "2976e45d66b183f6d3242eaf01236d231766295f",
-                SlotType.Unknown => "e6bb64f5f280ce07fdcf4c63e25fa8296c73ec29",
-                _ => "e6bb64f5f280ce07fdcf4c63e25fa8296c73ec29",
+                SlotType.Pod => this.remoteConfiguration.Assets.PodAsset,
+                SlotType.Moon => this.remoteConfiguration.Assets.MoonAsset,
+                SlotType.RemoteMoon => this.remoteConfiguration.Assets.RemoteMoonAsset,
+                SlotType.Developer => this.remoteConfiguration.Assets.DeveloperAsset,
+                SlotType.DeveloperAdventure => this.remoteConfiguration.Assets.DeveloperAdventureAsset,
+                SlotType.DlcLevel => this.remoteConfiguration.Assets.DlcAsset,
+                SlotType.Unknown => this.remoteConfiguration.Assets.FallbackAsset,
+                _ => this.remoteConfiguration.Assets.FallbackAsset,
             };
 
             slot = new Slot
@@ -142,7 +146,7 @@ public class LighthouseClient
                 new Button
                 {
                     Label = $"View {user.Username}'s Profile",
-                    Url = $"{this.serverUrl}/user/{userId}",
+                    Url = $"{this.serverUrl}/user/{(this.remoteConfiguration.UsernameType == UsernameType.Integer ? userId : user.Username)}",
                 },
             },
         };

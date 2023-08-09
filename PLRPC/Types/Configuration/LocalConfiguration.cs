@@ -2,14 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace LBPUnion.PLRPC.Types.Configuration;
 
-public class PlrpcConfiguration
+public class LocalConfiguration
 {
     [JsonPropertyName("serverUrl")]
     public string ServerUrl { get; set; } = "https://lighthouse.lbpunion.com";
 
     [JsonPropertyName("username")]
     public string Username { get; set; } = "";
-
-    [JsonPropertyName("applicationId")]
-    public string ApplicationId { get; set; } = "1060973475151495288";
 }

@@ -20,14 +20,14 @@ public class Configuration
         this.logger = logger;
     }
 
-    public async Task<PlrpcConfiguration?> LoadFromConfiguration()
+    public async Task<LocalConfiguration?> LoadFromConfiguration()
     {
         if (!File.Exists("./config.json"))
         {
             this.logger.Warning("No configuration file exists, creating a base configuration", LogArea.Configuration);
             this.logger.Warning("Please populate the configuration file and restart the program", LogArea.Configuration);
 
-            PlrpcConfiguration defaultConfig = new();
+            LocalConfiguration defaultConfig = new();
 
             await File.WriteAllTextAsync("./config.json", JsonSerializer.Serialize(defaultConfig, lenientJsonOptions));
 
@@ -35,9 +35,9 @@ public class Configuration
         }
 
         string configurationJson = await File.ReadAllTextAsync("./config.json");
-        PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson, lenientJsonOptions);
+        LocalConfiguration? configuration = JsonSerializer.Deserialize<LocalConfiguration>(configurationJson, lenientJsonOptions);
 
-        return configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null }
+        return configuration is { ServerUrl: not null, Username: not null }
             ? configuration
             : null;
     }

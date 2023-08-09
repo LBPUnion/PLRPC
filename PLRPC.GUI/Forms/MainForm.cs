@@ -12,7 +12,6 @@ public class MainForm : Form
     
     private static readonly TextBox username;
     private static readonly TextBox serverUrl;
-    private static readonly TextBox applicationId;
 
     public MainForm()
     {
@@ -52,18 +51,6 @@ public class MainForm : Form
                         Enabled = false,
                     }),
                 }),
-                new TableRow(new List<TableCell>
-                {
-                    new(new Label
-                    {
-                        Text = Strings.MainForm.ApplicationId,
-                    }),
-                    new(applicationId = new TextBox
-                    {
-                        Text = "1060973475151495288",
-                        Enabled = false,
-                    }),
-                }),
             },
         },
     };
@@ -96,7 +83,6 @@ public class MainForm : Form
         {
             serverUrl,
             username,
-            applicationId,
         };
 
         switch (arguments)
@@ -130,9 +116,8 @@ public class MainForm : Form
             // Field states
             serverUrl.Enabled = false;
             username.Enabled = false;
-            applicationId.Enabled = false;
 
-            await new Initializer(logger, updater).InitializeLighthouseClient(serverUrl.Text.Trim('/'), username.Text, applicationId.Text);
+            await new Initializer(logger, updater).InitializeLighthouseClient(serverUrl.Text.Trim('/'), username.Text);
         }
         catch (Exception exception)
         {
@@ -156,7 +141,6 @@ public class MainForm : Form
 
         // Field states
         serverUrl.Enabled = true;
-        applicationId.Enabled = true;
 
         MessageBox.Show(Strings.MainForm.UnlockedDefaultsWarning, "Warning", MessageBoxButtons.OK, MessageBoxType.Warning);
     }
