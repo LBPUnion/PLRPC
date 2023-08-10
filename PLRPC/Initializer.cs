@@ -37,9 +37,9 @@ public class Initializer
         TimeSpan cacheExpirationTime = TimeSpan.FromHours(1);
 
         LighthouseApiImpl lighthouseApi = new(apiClient, cacheExpirationTime);
-        Configuration lighthouseConfig = new(this.logger);
+        Configuration lighthouseConfig = new(apiClient, this.logger);
 
-        RemoteConfiguration? remoteConfiguration = await lighthouseConfig.GetRemoteConfiguration(trimmedServerUrl);
+        RemoteConfiguration? remoteConfiguration = await lighthouseConfig.GetRemoteConfiguration();
         if (remoteConfiguration == null)
         {
             this.logger.Warning("Failed to retrieve remote RPC configuration", LogArea.LighthouseClient);

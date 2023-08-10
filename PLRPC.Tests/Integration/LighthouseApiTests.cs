@@ -5,9 +5,9 @@ using Xunit;
 namespace LBPUnion.PLRPC.Tests.Integration;
 
 [Trait("Category", "Integration")]
-public class ApiTests
+public class LighthouseApiTests
 {
-    private static readonly HttpClient apiClient = new()
+    private static readonly HttpClient unitTestClient = new()
     {
         BaseAddress = new Uri("https://lighthouse.lbpunion.com/api/v1/"),
         DefaultRequestHeaders =
@@ -19,7 +19,7 @@ public class ApiTests
     };
 
     private static readonly TimeSpan cacheExpirationTime = TimeSpan.FromHours(1);
-    private static readonly LighthouseApiImpl lighthouseApi = new(apiClient, cacheExpirationTime);
+    private static readonly LighthouseApiImpl lighthouseApi = new(unitTestClient, cacheExpirationTime);
 
     [Fact]
     public async void CanGetUser()
