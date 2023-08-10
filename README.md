@@ -7,9 +7,9 @@ the same premise.
 
 ## Features
 
+- [x] Retrieve remote configuration from Lighthouse or compatible API
 - [x] Obtain user, user status, room, and slot information from a Lighthouse server
 - [x] Interact with a Discord Client to display retrieved information
-- [x] Configuration file support
 - [ ] Interactive buttons for user/slot
     - [x] View User Profile
     - [ ] View Current Slot
