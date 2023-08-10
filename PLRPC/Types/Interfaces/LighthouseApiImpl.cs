@@ -1,10 +1,8 @@
 ﻿using System.Text.Json;
-using LBPUnion.PLRPC.Types.Configuration;
 using LBPUnion.PLRPC.Types.Entities;
 using LBPUnion.PLRPC.Types.Enums;
-using LBPUnion.PLRPC.Types.Interfaces;
 
-namespace LBPUnion.PLRPC.Implementations;
+namespace LBPUnion.PLRPC.Types.Interfaces;
 
 public class LighthouseApiImpl : ILighthouseApi
 {

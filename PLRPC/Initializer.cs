@@ -1,6 +1,6 @@
 ﻿using DiscordRPC;
-using LBPUnion.PLRPC.Implementations;
 using LBPUnion.PLRPC.Types.Configuration;
+using LBPUnion.PLRPC.Types.Interfaces;
 using LBPUnion.PLRPC.Types.Logging;
 using LBPUnion.PLRPC.Types.Updater;
 

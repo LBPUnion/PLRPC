@@ -1,5 +1,5 @@
-using LBPUnion.PLRPC.Implementations;
 using LBPUnion.PLRPC.Types.Entities;
+using LBPUnion.PLRPC.Types.Interfaces;
 using Xunit;
 
 namespace LBPUnion.PLRPC.Tests.Integration;
