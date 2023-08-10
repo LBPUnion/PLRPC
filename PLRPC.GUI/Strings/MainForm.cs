@@ -5,7 +5,6 @@ public static class MainForm
     public const string Configuration = "Configuration";
     public const string Username = "Username";
     public const string ServerUrl = "Server URL";
-    public const string ApplicationId = "Application ID";
     public const string Connect = "Connect";
     public const string Connected = "Connected";
     public const string UnlockDefaults = "Unlock Defaults";

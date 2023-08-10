@@ -1,7 +1,6 @@
 ﻿using CommandLine;
 using JetBrains.Annotations;
 using LBPUnion.PLRPC.Helpers;
-using LBPUnion.PLRPC.Types.Configuration;
 using LBPUnion.PLRPC.Types.Logging;
 
 namespace LBPUnion.PLRPC.CLI;

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
 namespace LBPUnion.PLRPC.Types.Configuration;
 
@@ -19,13 +20,13 @@ public class RemoteConfiguration
 
 public class RpcAssets
 {
-    public string? PodAsset { get; set; }
-    public string? MoonAsset { get; set; }
-    public string? RemoteMoonAsset { get; set; }
-    public string? DeveloperAsset { get; set; }
-    public string? DeveloperAdventureAsset { get; set; }
-    public string? DlcAsset { get; set; }
-    public string? FallbackAsset { get; set; }
+    public string? PodAsset { get; [UsedImplicitly] set; }
+    public string? MoonAsset { get; [UsedImplicitly] set; }
+    public string? RemoteMoonAsset { get; [UsedImplicitly] set; }
+    public string? DeveloperAsset { get; [UsedImplicitly] set; }
+    public string? DeveloperAdventureAsset { get; [UsedImplicitly] set; }
+    public string? DlcAsset { get; [UsedImplicitly] set; }
+    public string? FallbackAsset { get; [UsedImplicitly] set; }
 }
 
 // ReSharper disable UnusedMember.Global

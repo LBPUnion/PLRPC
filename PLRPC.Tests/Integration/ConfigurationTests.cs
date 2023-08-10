@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using LBPUnion.PLRPC.Types.Configuration;
+﻿using LBPUnion.PLRPC.Types.Configuration;
 using Xunit;
 
 namespace LBPUnion.PLRPC.Tests.Integration;
@@ -20,7 +19,7 @@ public class ConfigurationTests
 
     private static readonly Configuration lighthouseConfig = new(unitTestClient, new Logger());
     
-    [Fact]
+    [Fact(Skip = "Remote configuration is not yet implemented into Lighthouse")]
     public async void CanRetrieveAndParseRemoteConfiguration()
     {
         RemoteConfiguration? remoteConfiguration = await lighthouseConfig.GetRemoteConfiguration();
