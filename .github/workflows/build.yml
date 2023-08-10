@@ -21,11 +21,6 @@ jobs:
       env:
         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 
-    - name: Run QDNET Scan
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
-
   build:
     name: Build and Upload Artifacts
     runs-on: ubuntu-latest
