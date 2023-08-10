@@ -9,7 +9,7 @@ public class RemoteConfiguration
     public long ApplicationId { get; set; } = 1060973475151495288;
 
     [JsonPropertyName("partyIdPrefix")]
-    public string? PartyIdPrefix { get; set; } = "project-lighthouse";
+    public string PartyIdPrefix { get; set; } = "project-lighthouse";
 
     [JsonPropertyName("usernameType")]
     public UsernameType UsernameType { get; set; } = UsernameType.Integer;
