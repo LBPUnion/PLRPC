@@ -5,7 +5,7 @@ using LBPUnion.PLRPC.Helpers;
 
 namespace LBPUnion.PLRPC.GUI.Forms;
 
-public sealed class MainForm : Form
+public class MainForm : Form
 {
     private static readonly Logger logger = new();
     private static readonly Updater updater = new(logger);
