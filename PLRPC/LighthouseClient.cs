@@ -55,14 +55,14 @@ public class LighthouseClient
         User? user = await this.lighthouseApi.GetUser(this.username);
         if (user == null)
         {
-            this.logger.Warning("Failed to get user from the server", LogArea.LighthouseApi);
+            this.logger.Error("Failed to get user from the server", LogArea.LighthouseApi);
             return;
         }
 
         UserStatus? userStatus = await this.lighthouseApi.GetStatus(user.UserId);
         if (userStatus?.CurrentRoom?.Slot?.SlotId == null || userStatus.CurrentRoom.PlayerIds == null)
         {
-            this.logger.Warning("Failed to get user status from the server", LogArea.LighthouseApi);
+            this.logger.Error("Failed to get user status from the server", LogArea.LighthouseApi);
             return;
         }
 
@@ -74,7 +74,7 @@ public class LighthouseClient
             slot = await this.lighthouseApi.GetSlot(userStatus.CurrentRoom.Slot.SlotId);
             if (slot == null)
             {
-                this.logger.Warning("Failed to get user's current level from the server", LogArea.LighthouseApi);
+                this.logger.Error("Failed to get user's current level from the server", LogArea.LighthouseApi);
                 return;
             }
         }
@@ -91,6 +91,7 @@ public class LighthouseClient
                 SlotType.Unknown => this.remoteConfiguration.Assets.FallbackAsset,
                 _ => this.remoteConfiguration.Assets.FallbackAsset,
             };
+            if (iconHash == null) this.logger.Warning($"Asset hash for {slotType.ToString()} is null", LogArea.Configuration);
 
             slot = new Slot
             {

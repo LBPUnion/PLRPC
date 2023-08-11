@@ -42,7 +42,7 @@ public class Initializer
         RemoteConfiguration? remoteConfiguration = await lighthouseConfig.GetRemoteConfiguration();
         if (remoteConfiguration == null)
         {
-            this.logger.Warning("Failed to retrieve remote RPC configuration, is the instance up-to-date?", LogArea.Configuration);
+            this.logger.Error("Failed to retrieve remote RPC configuration, is the instance up-to-date?", LogArea.Configuration);
             return;
         }
 
