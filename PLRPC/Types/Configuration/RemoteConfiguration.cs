@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using LBPUnion.PLRPC.Types.Enums;
 
 namespace LBPUnion.PLRPC.Types.Configuration;
 
@@ -28,11 +29,4 @@ public class RpcAssets
     public string? DeveloperAdventureAsset { get; set; }
     public string? DlcAsset { get; set; }
     public string? FallbackAsset { get; set; }
-}
-
-// ReSharper disable UnusedMember.Global
-public enum UsernameType
-{
-    Integer = 0,
-    Username = 1,
 }

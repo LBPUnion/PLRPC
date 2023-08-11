@@ -1,4 +1,5 @@
 using LBPUnion.PLRPC.Types.Entities;
+using LBPUnion.PLRPC.Types.Enums;
 using LBPUnion.PLRPC.Types.Interfaces;
 using Xunit;
 

@@ -3,6 +3,7 @@ using LBPUnion.PLRPC.Extensions;
 using LBPUnion.PLRPC.Helpers;
 using LBPUnion.PLRPC.Types.Configuration;
 using LBPUnion.PLRPC.Types.Entities;
+using LBPUnion.PLRPC.Types.Enums;
 using LBPUnion.PLRPC.Types.Interfaces;
 using LBPUnion.PLRPC.Types.Logging;
 using User = LBPUnion.PLRPC.Types.Entities.User;
