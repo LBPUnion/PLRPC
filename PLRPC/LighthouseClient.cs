@@ -91,7 +91,7 @@ public class LighthouseClient
                 SlotType.Unknown => this.remoteConfiguration.Assets.FallbackAsset,
                 _ => this.remoteConfiguration.Assets.FallbackAsset,
             };
-            if (iconHash == null) this.logger.Warning($"Asset hash for {slotType.ToString()} is null", LogArea.Configuration);
+            if (iconHash == null) this.logger.Warning($"Remote asset hash for {slotType.ToString()} is null", LogArea.Configuration);
 
             slot = new Slot
             {

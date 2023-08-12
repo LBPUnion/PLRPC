@@ -7,40 +7,42 @@ namespace LBPUnion.PLRPC.Tests.Integration;
 [Trait("Category", "Integration")]
 public class ConfigurationTests
 {
-    private static readonly HttpClient unitTestClient = new()
+    private static readonly Logger unitTestLogger = new();
+    
+    private static readonly HttpClient lighthouseUnitTestClient = new()
     {
-        DefaultRequestHeaders =
-        {
-            {
-                "User-Agent", "LBPUnion/1.0 (PLRPC; unit-test) ApiClient/2.0"
-            },
-        },
+        BaseAddress = new Uri("https://lighthouse.lbpunion.com/api/v1/"),
+        DefaultRequestHeaders = { { "User-Agent", "LBPUnion/1.0 (PLRPC; unit-test) ApiClient/2.0" } },
+    };
+
+    private static readonly HttpClient refreshUnitTestClient = new()
+    {
+        BaseAddress = new Uri("https://refresh.jvyden.xyz/api/v1/"),
+        DefaultRequestHeaders = { { "User-Agent", "LBPUnion/1.0 (PLRPC; unit-test) ApiClient/2.0" } },
     };
     
-    private static readonly Configuration lighthouseConfig = new(unitTestClient, new Logger());
+    private static readonly Configuration lighthouseConfig = new(lighthouseUnitTestClient, unitTestLogger);
+    private static readonly Configuration refreshConfig = new(refreshUnitTestClient, unitTestLogger);
     
-    [Fact(Skip = "Remote configuration is not yet implemented into Lighthouse")]
+    [Fact]
     public async void CanRetrieveAndParseLighthouseConfiguration()
     {
-        unitTestClient.BaseAddress = new Uri("https://lighthouse.lbpunion.com/api/v1/");
-        
         RemoteConfiguration? remoteConfiguration = await lighthouseConfig.GetRemoteConfiguration();
         
         if (remoteConfiguration == null)
         {
             Assert.Fail("Failed to retrieve remote configuration");
         }
-
-        // TODO: Add more conditions here when API is implemented to Beacon
+        
         Assert.Equal("1060973475151495288", remoteConfiguration.ApplicationId);
+        Assert.Equal("beacon", remoteConfiguration.PartyIdPrefix);
+        Assert.Equal(UsernameType.Integer, remoteConfiguration.UsernameType);
     }
 
     [Fact]
     public async void CanRetrieveAndParseRefreshConfiguration()
     {
-        unitTestClient.BaseAddress = new Uri("https://refresh.jvyden.xyz/api/v1/");
-        
-        RemoteConfiguration? remoteConfiguration = await lighthouseConfig.GetRemoteConfiguration();
+        RemoteConfiguration? remoteConfiguration = await refreshConfig.GetRemoteConfiguration();
 
         if (remoteConfiguration == null)
         {
