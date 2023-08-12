@@ -7,7 +7,7 @@ namespace LBPUnion.PLRPC.Types.Configuration;
 public class RemoteConfiguration
 {
     [JsonPropertyName("applicationId")]
-    public long ApplicationId { get; set; } = 1060973475151495288;
+    public string ApplicationId { get; set; } = "1060973475151495288";
 
     [JsonPropertyName("partyIdPrefix")]
     public string PartyIdPrefix { get; set; } = "project-lighthouse";

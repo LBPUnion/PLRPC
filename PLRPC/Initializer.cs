@@ -46,7 +46,7 @@ public class Initializer
             return;
         }
 
-        DiscordRpcClient discordRpcClient = new(remoteConfiguration.ApplicationId.ToString());
+        DiscordRpcClient discordRpcClient = new(remoteConfiguration.ApplicationId);
         LighthouseClient lighthouseClient = new(username, trimmedServerUrl, lighthouseApi, remoteConfiguration, discordRpcClient, this.logger);
 
         await lighthouseClient.StartUpdateLoop();

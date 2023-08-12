@@ -30,6 +30,6 @@ public class ConfigurationTests
         }
 
         // TODO: Add more conditions here when API is implemented to Beacon
-        Assert.Equal(1060973475151495288, remoteConfiguration.ApplicationId);
+        Assert.Equal("1060973475151495288", remoteConfiguration.ApplicationId);
     }
 }
