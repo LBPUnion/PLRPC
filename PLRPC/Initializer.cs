@@ -45,6 +45,7 @@ public class Initializer
             this.logger.Error("Failed to retrieve remote RPC configuration, is the instance up-to-date?", LogArea.Configuration);
             return;
         }
+        this.logger.Information("Successfully retrieved remote RPC configuration", LogArea.Configuration);
 
         DiscordRpcClient discordRpcClient = new(remoteConfiguration.ApplicationId);
         LighthouseClient lighthouseClient = new(username, trimmedServerUrl, lighthouseApi, remoteConfiguration, discordRpcClient, this.logger);
