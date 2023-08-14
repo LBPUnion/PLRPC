@@ -12,7 +12,6 @@ public class MainForm : Form
     
     private static readonly TextBox username;
     private static readonly TextBox serverUrl;
-    private static readonly TextBox applicationId;
 
     public MainForm()
     {
@@ -49,33 +48,15 @@ public class MainForm : Form
                     new(serverUrl = new TextBox
                     {
                         Text = "https://lighthouse.lbpunion.com/",
-                        Enabled = false,
-                    }),
-                }),
-                new TableRow(new List<TableCell>
-                {
-                    new(new Label
-                    {
-                        Text = Strings.MainForm.ApplicationId,
-                    }),
-                    new(applicationId = new TextBox
-                    {
-                        Text = "1060973475151495288",
-                        Enabled = false,
                     }),
                 }),
             },
         },
     };
 
-    private static readonly Button connectButton = new(InitializeClientHandler)
+    private static readonly Button connectButton = new(InitializationHandler)
     {
         Text = Strings.MainForm.Connect,
-    };
-
-    private static readonly Button unlockDefaultsButton = new(UnlockDefaultsHandler)
-    {
-        Text = Strings.MainForm.UnlockDefaults,
     };
 
     private readonly TableLayout tableLayout = new()
@@ -86,17 +67,15 @@ public class MainForm : Form
         {
             new TableRow(configurationEntries),
             new TableRow(connectButton),
-            new TableRow(unlockDefaultsButton),
         },
     };
 
-    private static async void InitializeClientHandler(object sender, EventArgs eventArgs)
+    private static async void InitializationHandler(object sender, EventArgs eventArgs)
     {
         List<TextBox> arguments = new()
         {
             serverUrl,
             username,
-            applicationId,
         };
 
         switch (arguments)
@@ -118,21 +97,19 @@ public class MainForm : Form
             }
         }
 
+        // Text changes
+        connectButton.Text = Strings.MainForm.Connected;
+
+        // Button states
+        connectButton.Enabled = false;
+
+        // Field states
+        serverUrl.Enabled = false;
+        username.Enabled = false;
+
         try
         {
-            // Text changes
-            connectButton.Text = Strings.MainForm.Connected;
-
-            // Button states
-            connectButton.Enabled = false;
-            unlockDefaultsButton.Enabled = false;
-
-            // Field states
-            serverUrl.Enabled = false;
-            username.Enabled = false;
-            applicationId.Enabled = false;
-
-            await new Initializer(logger, updater).InitializeLighthouseClient(serverUrl.Text.Trim('/'), username.Text, applicationId.Text);
+            await new Initializer(logger, updater).InitializeLighthouseClient(serverUrl.Text.Trim('/'), username.Text);
         }
         catch (Exception exception)
         {
@@ -144,20 +121,5 @@ public class MainForm : Form
 
             MessageBox.Show(exceptionBuilder.ToString(), MessageBoxButtons.OK, MessageBoxType.Error);
         }
-    }
-
-    private static void UnlockDefaultsHandler(object sender, EventArgs eventArgs)
-    {
-        // Text changes
-        unlockDefaultsButton.Text = Strings.MainForm.UnlockedDefaults;
-
-        // Button states
-        unlockDefaultsButton.Enabled = false;
-
-        // Field states
-        serverUrl.Enabled = true;
-        applicationId.Enabled = true;
-
-        MessageBox.Show(Strings.MainForm.UnlockedDefaultsWarning, "Warning", MessageBoxButtons.OK, MessageBoxType.Warning);
     }
 }

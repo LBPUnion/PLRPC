@@ -3,6 +3,7 @@ using System.Text;
 using LBPUnion.PLRPC.Types.Logging;
 using Pastel;
 using Serilog;
+using Serilog.Core;
 using Serilog.Events;
 
 namespace LBPUnion.PLRPC;
@@ -11,6 +12,16 @@ namespace LBPUnion.PLRPC;
 // ReSharper disable UnusedMember.Global
 public class Logger
 {
+    private class LogEnricher : ILogEventEnricher
+    {
+        public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+        {
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("ProcessId", Environment.ProcessId.ToString()));
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("ThreadId",
+                Environment.CurrentManagedThreadId.ToString().PadRight(3)));
+        }
+    }
+    
     private static readonly LoggerConfiguration loggerConfiguration = new LoggerConfiguration()
         .MinimumLevel.Information()
         .Enrich.With<LogEnricher>()
@@ -122,7 +133,7 @@ public abstract class LoggerUtils : Logger
     /// </summary>
     /// <param name="message">String to be logged.</param>
     /// <param name="logArea">Log area to be referenced.</param>
-    /// <returns></returns>
+    /// <returns>String containing formatted log message.</returns>
     public static string BuildMessage(string message, LogArea logArea)
     {
         StringBuilder sb = new();

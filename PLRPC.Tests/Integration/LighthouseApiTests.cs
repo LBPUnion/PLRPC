@@ -1,12 +1,14 @@
 using LBPUnion.PLRPC.Types.Entities;
+using LBPUnion.PLRPC.Types.Enums;
+using LBPUnion.PLRPC.Types.Interfaces;
 using Xunit;
 
 namespace LBPUnion.PLRPC.Tests.Integration;
 
 [Trait("Category", "Integration")]
-public class ApiTests
+public class LighthouseApiTests
 {
-    private static readonly HttpClient apiClient = new()
+    private static readonly HttpClient unitTestClient = new()
     {
         BaseAddress = new Uri("https://lighthouse.lbpunion.com/api/v1/"),
         DefaultRequestHeaders =
@@ -18,12 +20,12 @@ public class ApiTests
     };
 
     private static readonly TimeSpan cacheExpirationTime = TimeSpan.FromHours(1);
-    private static readonly ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
+    private static readonly LighthouseApiImpl lighthouseApi = new(unitTestClient, cacheExpirationTime);
 
     [Fact]
     public async void CanGetUser()
     {
-        User? user = await apiRepository.GetUser("littlebigmolly");
+        User? user = await lighthouseApi.GetUser("littlebigmolly");
 
         Assert.NotNull(user);
 
@@ -35,7 +37,7 @@ public class ApiTests
     [Fact]
     public async void CanGetSlot()
     {
-        Slot? slot = await apiRepository.GetSlot(8443);
+        Slot? slot = await lighthouseApi.GetSlot(8443);
 
         Assert.NotNull(slot);
 

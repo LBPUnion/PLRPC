@@ -6,39 +6,26 @@ namespace LBPUnion.PLRPC;
 
 public class Configuration
 {
-    private static readonly JsonSerializerOptions lenientJsonOptions = new()
-    {
-        AllowTrailingCommas = true,
-        WriteIndented = true,
-        ReadCommentHandling = JsonCommentHandling.Skip,
-    };
-
+    private readonly HttpClient httpClient;
     private readonly Logger logger;
 
-    public Configuration(Logger logger)
+    public Configuration(HttpClient httpClient, Logger logger)
     {
+        this.httpClient = httpClient;
         this.logger = logger;
     }
 
-    public async Task<PlrpcConfiguration?> LoadFromConfiguration()
+    public async Task<RemoteConfiguration?> GetRemoteConfiguration()
     {
-        if (!File.Exists("./config.json"))
-        {
-            this.logger.Warning("No configuration file exists, creating a base configuration", LogArea.Configuration);
-            this.logger.Warning("Please populate the configuration file and restart the program", LogArea.Configuration);
+        HttpResponseMessage remoteConfigReq = await this.httpClient.GetAsync("rpc");
+        if (!remoteConfigReq.IsSuccessStatusCode) return null;
 
-            PlrpcConfiguration defaultConfig = new();
+        RemoteConfiguration? remoteConfig =
+            JsonSerializer.Deserialize<RemoteConfiguration>(await remoteConfigReq.Content.ReadAsStringAsync());
 
-            await File.WriteAllTextAsync("./config.json", JsonSerializer.Serialize(defaultConfig, lenientJsonOptions));
+        if (remoteConfig != null) return remoteConfig;
 
-            return null;
-        }
-
-        string configurationJson = await File.ReadAllTextAsync("./config.json");
-        PlrpcConfiguration? configuration = JsonSerializer.Deserialize<PlrpcConfiguration>(configurationJson, lenientJsonOptions);
-
-        return configuration is { ServerUrl: not null, Username: not null, ApplicationId: not null }
-            ? configuration
-            : null;
+        this.logger.Warning("Failed to deserialize remote configuration", LogArea.Configuration);
+        return null;
     }
 }

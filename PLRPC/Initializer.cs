@@ -1,4 +1,6 @@
 ﻿using DiscordRPC;
+using LBPUnion.PLRPC.Types.Configuration;
+using LBPUnion.PLRPC.Types.Interfaces;
 using LBPUnion.PLRPC.Types.Logging;
 using LBPUnion.PLRPC.Types.Updater;
 
@@ -16,7 +18,7 @@ public class Initializer
         this.updater = updater;
     }
 
-    public async Task InitializeLighthouseClient(string serverUrl, string username, string? applicationId)
+    public async Task InitializeLighthouseClient(string serverUrl, string username)
     {
         this.logger.Information("Initializing new client and dependencies", LogArea.LighthouseClient);
 
@@ -29,19 +31,24 @@ public class Initializer
         HttpClient apiClient = new()
         {
             BaseAddress = new Uri(trimmedServerUrl + "/api/v1/"),
-            DefaultRequestHeaders =
-            {
-                {
-                    "User-Agent", "LBPUnion/1.0 (PLRPC; github-release) ApiClient/2.0"
-                },
-            },
+            DefaultRequestHeaders = { { "User-Agent", "LBPUnion/1.0 (PLRPC; github-release) ApiClient/2.0" } },
         };
 
         TimeSpan cacheExpirationTime = TimeSpan.FromHours(1);
 
-        ApiRepositoryImpl apiRepository = new(apiClient, cacheExpirationTime);
-        DiscordRpcClient discordRpcClient = new(applicationId);
-        LighthouseClient lighthouseClient = new(username, trimmedServerUrl, apiRepository, discordRpcClient, this.logger);
+        LighthouseApiImpl lighthouseApi = new(apiClient, cacheExpirationTime);
+        Configuration lighthouseConfig = new(apiClient, this.logger);
+
+        RemoteConfiguration? remoteConfiguration = await lighthouseConfig.GetRemoteConfiguration();
+        if (remoteConfiguration == null)
+        {
+            this.logger.Error("Failed to retrieve remote RPC configuration, is the instance up-to-date?", LogArea.Configuration);
+            return;
+        }
+        this.logger.Information("Successfully retrieved remote RPC configuration", LogArea.Configuration);
+
+        DiscordRpcClient discordRpcClient = new(remoteConfiguration.ApplicationId);
+        LighthouseClient lighthouseClient = new(username, trimmedServerUrl, lighthouseApi, remoteConfiguration, discordRpcClient, this.logger);
 
         await lighthouseClient.StartUpdateLoop();
     }

@@ -1,27 +1,25 @@
 using System.Text.Json.Serialization;
-using Newtonsoft.Json;
+using LBPUnion.PLRPC.Types.Enums;
 
 namespace LBPUnion.PLRPC.Types.Entities;
 
-[JsonObject]
 public class Room
 {
     [JsonPropertyName("roomId")]
-    public int RoomId { get; set; }
+    public int RoomId { get; init; }
 
     [JsonPropertyName("playerIds")]
-    public int[]? PlayerIds { get; set; }
+    public int[]? PlayerIds { get; init; }
 
     [JsonPropertyName("slot")]
-    public RoomSlot? Slot { get; set; }
+    public RoomSlot? Slot { get; init; }
 }
 
-[JsonObject]
 public class RoomSlot
 {
     [JsonPropertyName("slotId")]
-    public int SlotId { get; set; }
+    public int SlotId { get; init; }
 
     [JsonPropertyName("slotType")]
-    public SlotType SlotType { get; set; }
+    public SlotType SlotType { get; init; }
 }

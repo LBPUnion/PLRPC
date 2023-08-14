@@ -2,8 +2,8 @@
 
 public enum LogArea
 {
-    ApiRepositoryImpl,
     Configuration,
+    LighthouseApi,
     LighthouseClient,
     RichPresence,
     Updater,
