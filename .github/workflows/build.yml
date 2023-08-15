@@ -48,36 +48,25 @@ jobs:
       run: dotnet publish -c Release -r win-x64 --self-contained PLRPC.CLI
     - name: Publish CLI for Linux x64
       run: dotnet publish -c Release -r linux-x64 --self-contained PLRPC.CLI
-    - name: Publish CLI for macOS x64
-      run: dotnet publish -c Release -r osx-x64 --self-contained PLRPC.CLI
     - name: Publish GUI for Windows x64
       run: dotnet publish -c Release -r win-x64 --self-contained PLRPC.GUI.Windows
     - name: Publish GUI for Linux x64
       run: dotnet publish -c Release -r linux-x64 --self-contained PLRPC.GUI.Linux
-    - name: Publish GUI for macOS x64
-      run: dotnet publish -c Release -r osx-x64 --self-contained PLRPC.GUI.MacOS
           
     - name: Upload Windows x64 CLI build
       uses: actions/upload-artifact@v3.1.1
       with:
-        name: PLRPC CLI Windows x64 [${{ steps.hash.outputs.hash }}]
-        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.CLI/bin/Release/net7.0/win-x64/publish/"
-        if-no-files-found: error
-        retention-days: 3
+          name: PLRPC CLI Windows x64 [${{ steps.hash.outputs.hash }}]
+          path: "/home/runner/work/PLRPC/PLRPC/PLRPC.CLI/bin/Release/net7.0/win-x64/publish/"
+          if-no-files-found: error
+          retention-days: 3
     - name: Upload Linux x64 CLI build
       uses: actions/upload-artifact@v3.1.1
       with:
-        name: PLRPC CLI Linux x64 [${{ steps.hash.outputs.hash }}]
-        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.CLI/bin/Release/net7.0/linux-x64/publish/"
-        if-no-files-found: error
-        retention-days: 3
-    - name: Upload macOS x64 CLI build
-      uses: actions/upload-artifact@v3.1.1
-      with:
-        name: PLRPC CLI macOS x64 [${{ steps.hash.outputs.hash }}]
-        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.CLI/bin/Release/net7.0/osx-x64/publish/"
-        if-no-files-found: error
-        retention-days: 3
+          name: PLRPC CLI Linux x64 [${{ steps.hash.outputs.hash }}]
+          path: "/home/runner/work/PLRPC/PLRPC/PLRPC.CLI/bin/Release/net7.0/linux-x64/publish/"
+          if-no-files-found: error
+          retention-days: 3
     - name: Upload Windows x64 GUI build
       uses: actions/upload-artifact@v3.1.1
       with:
@@ -90,12 +79,5 @@ jobs:
       with:
         name: PLRPC GUI Linux x64 [${{ steps.hash.outputs.hash }}]
         path: "/home/runner/work/PLRPC/PLRPC/PLRPC.GUI.Linux/bin/Release/net7.0/linux-x64/publish/"
-        if-no-files-found: error
-        retention-days: 3
-    - name: Upload macOS x64 GUI build
-      uses: actions/upload-artifact@v3.1.1
-      with:
-        name: PLRPC GUI macOS x64 [${{ steps.hash.outputs.hash }}]
-        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.GUI.MacOS/bin/Release/net7.0/osx-x64/publish/"
         if-no-files-found: error
         retention-days: 3
