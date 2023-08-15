@@ -11,15 +11,13 @@ Below is a table depicting all currently supported PLRPC builds.
 > **Warning**
 > Individual commit artifacts are to be considered pre-release.
 
-| Version | Supported                 |
-|---------|---------------------------|
-| v0.1.x  | :x: *(not supported)*     |
-| v1.0.x  | :x: *(not supported)*     |
-| v1.1.x  | :x: *(not supported)*     |
-| v2.0.x  | :x: *(not supported)*     |
-| v2.1.x  | :warning: *(deprecated)*  |
-| v3.0.x  | :warning: *(deprecated)*  |
-| v3.1.x  | ✅                         |  
+| Version | Supported                |
+|---------|--------------------------|
+| v0.x.x  | :x: *(not supported)*    |
+| v1.x.x  | :x: *(not supported)*    |
+| v2.x.x  | :x: *(not supported)*    |
+| v3.x.x  | :warning: *(deprecated)* |
+| v4.x.x  | ✅                        |  
 
 ## Reporting a Vulnerability
 
