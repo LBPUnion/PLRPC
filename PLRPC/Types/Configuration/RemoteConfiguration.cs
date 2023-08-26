@@ -22,6 +22,9 @@ public class RemoteConfiguration
 [Serializable]
 public class RpcAssets
 {
+    [JsonPropertyName("useApplicationAssets")]
+    public bool UseApplicationAssets { get; set; }
+
     [JsonPropertyName("podAsset")]
     public string? PodAsset { get; set; }
 

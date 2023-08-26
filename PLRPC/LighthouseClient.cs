@@ -50,6 +50,7 @@ public class LighthouseClient
             this.logger.Information($"Updated client presence ({e.Presence.Party.ID})", LogArea.RichPresence);
     }
 
+    // ReSharper disable once CognitiveComplexity
     private async Task UpdatePresence()
     {
         User? user = await this.lighthouseApi.GetUser(this.username);
@@ -91,13 +92,15 @@ public class LighthouseClient
                 SlotType.Unknown => this.remoteConfiguration.Assets.FallbackAsset,
                 _ => this.remoteConfiguration.Assets.FallbackAsset,
             };
-            if (iconHash == null) this.logger.Warning($"Remote asset hash for {slotType.ToString()} is null", LogArea.Configuration);
+            if (iconHash == null) this.logger.Warning($"Remote asset for {slotType.ToString()} doesn't exist", LogArea.Configuration);
 
             slot = new Slot
             {
                 IconHash = iconHash,
             };
         }
+
+        bool useApplicationAssets = this.remoteConfiguration.Assets.UseApplicationAssets;
 
         int playersInRoom = userStatus.CurrentRoom.PlayerIds.Length;
         int roomId = userStatus.CurrentRoom.RoomId;
@@ -123,15 +126,26 @@ public class LighthouseClient
             _ => "Unknown State",
         };
 
+        string? largeImageKey = useApplicationAssets ? slot.IconHash : this.serverUrl + "/gameAssets/" + slot.IconHash;
+        string? smallImageKey = useApplicationAssets ? null : this.serverUrl + "/gameAssets/" + user.YayHash;
+
+        if (useApplicationAssets)
+        {
+            if (largeImageKey == null)
+                this.logger.Warning($"Application asset for {slotType.ToString()} doesn't exist", LogArea.Configuration);
+            if (smallImageKey == null)
+                this.logger.Information("Server prefers application assets, small image will be hidden", LogArea.Configuration);
+        }
+
         RichPresence newPresence = new()
         {
             Details = details,
             State = state,
             Assets = new Assets
             {
-                LargeImageKey = this.serverUrl + "/gameAssets/" + slot.IconHash,
+                LargeImageKey = largeImageKey,
                 LargeImageText = slot.Name,
-                SmallImageKey = this.serverUrl + "/gameAssets/" + user.YayHash,
+                SmallImageKey = smallImageKey,
                 SmallImageText = user.Username + user.PermissionLevel.ToPrettyString(),
             },
             Timestamps = new Timestamps
