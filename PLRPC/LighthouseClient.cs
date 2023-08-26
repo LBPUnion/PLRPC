@@ -92,7 +92,7 @@ public class LighthouseClient
                 SlotType.Unknown => this.remoteConfiguration.Assets.FallbackAsset,
                 _ => this.remoteConfiguration.Assets.FallbackAsset,
             };
-            if (iconHash == null) this.logger.Warning($"Remote asset for {slotType.ToString()} doesn't exist", LogArea.Configuration);
+            if (iconHash == null) this.logger.Warning($"Server asset for {slotType.ToString()} doesn't exist", LogArea.Configuration);
 
             slot = new Slot
             {
