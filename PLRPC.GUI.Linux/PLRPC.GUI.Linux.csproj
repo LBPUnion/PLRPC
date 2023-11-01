@@ -19,7 +19,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Eto.Platform.Gtk" Version="2.8.0"/>
+        <PackageReference Include="Eto.Platform.Gtk" Version="2.8.1"/>
         <ProjectReference Include="..\PLRPC.GUI\PLRPC.GUI.csproj"/>
     </ItemGroup>
 
