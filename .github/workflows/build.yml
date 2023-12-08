@@ -43,27 +43,27 @@ jobs:
       uses: actions/upload-artifact@v3.1.1
       with:
         name: PLRPC CLI Windows x64 [${{ steps.hash.outputs.hash }}]
-        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.CLI/bin/Release/net7.0/win-x64/publish/"
+        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.CLI/bin/Release/net8.0/win-x64/publish/"
         if-no-files-found: error
         retention-days: 3
     - name: Upload Linux x64 CLI build
       uses: actions/upload-artifact@v3.1.1
       with:
         name: PLRPC CLI Linux x64 [${{ steps.hash.outputs.hash }}]
-        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.CLI/bin/Release/net7.0/linux-x64/publish/"
+        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.CLI/bin/Release/net8.0/linux-x64/publish/"
         if-no-files-found: error
         retention-days: 3
     - name: Upload Windows x64 GUI build
       uses: actions/upload-artifact@v3.1.1
       with:
         name: PLRPC GUI Windows x64 [${{ steps.hash.outputs.hash }}]
-        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.GUI.Windows/bin/Release/net7.0-windows/win-x64/publish/"
+        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.GUI.Windows/bin/Release/net8.0-windows/win-x64/publish/"
         if-no-files-found: error
         retention-days: 3
     - name: Upload Linux x64 GUI build
       uses: actions/upload-artifact@v3.1.1
       with:
         name: PLRPC GUI Linux x64 [${{ steps.hash.outputs.hash }}]
-        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.GUI.Linux/bin/Release/net7.0/linux-x64/publish/"
+        path: "/home/runner/work/PLRPC/PLRPC/PLRPC.GUI.Linux/bin/Release/net8.0/linux-x64/publish/"
         if-no-files-found: error
         retention-days: 3
