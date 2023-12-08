@@ -9,7 +9,7 @@
 
     <PropertyGroup>
         <SelfContained>true</SelfContained>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
     </PropertyGroup>
 

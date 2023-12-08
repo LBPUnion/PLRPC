@@ -10,7 +10,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <SelfContained>true</SelfContained>
-        <TargetFramework>net7.0-windows</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     </PropertyGroup>
 
